@@ -14,7 +14,8 @@ before_script:
   - cp config/database.yml.travis config/database.yml
 
 script:
-  - 'bundle exec rails db:create && rails db:schema:load'
+  - 'bundle exec rake db:create'
+  - 'bundle exec rake db:schema:load'
   - 'bundle exec rspec'
 
 notifications:
