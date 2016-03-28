@@ -1,0 +1,20 @@
+---
+connector_1:
+  id: 1
+  connector_name: 'CartoDb test set'
+  connector_format: 0
+  connector_url: 'https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint'
+  connector_provider: 0
+  connector_path: 'rows'
+  created_at: '2016-03-01 20:00:00.050118'
+  updated_at: '2016-03-01 20:00:00.050118'
+
+connector_2:
+  id: 2
+  connector_name: 'CartoDb test set'
+  connector_format: 0
+  connector_url: 'https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint'
+  connector_provider: 0
+  connector_path: 'rows'
+  created_at: '2016-03-02 20:00:00.050118'
+  updated_at: '2016-03-02 20:00:00.050118'

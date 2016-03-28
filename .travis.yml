@@ -1,0 +1,25 @@
+language: ruby
+cache: bundler
+
+rvm:
+  - 2.3.0
+
+addons:
+  postgresql: '9.4'
+
+services:
+  - redis-server
+
+before_script:
+  - cp config/database.yml.travis config/database.yml
+
+script:
+  - 'bundle exec rake db:create'
+  - 'bundle exec rspec'
+
+notifications:
+  email:
+    recipients:
+      - sebastian.schkudlara@vizzuality.com
+    on_failure: change
+    on_success: never
