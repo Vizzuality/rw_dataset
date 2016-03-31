@@ -32,6 +32,8 @@ class RestConnector < ApplicationRecord
 
     def get_meta_data
       url = connector_url
+      url = URI.decode(url)
+      url = URI.escape(url)
 
       @request = ::Typhoeus::Request.new(url, method: :get, followlocation: true)
 

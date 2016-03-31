@@ -23,7 +23,7 @@ module V1
       end
 
       it 'Allows to create dataset' do
-        post "/datasets", {"dataset": {"connector_name": "Carto test api", "connector_url": "https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint", "connector_format": 0, "connector_provider": 0, "connector_path": "rows", "attributes_path": "fields", "dataset_attributes": {"table_name": "public.carts_test_endoint"}}}
+        post "/datasets", params: {"dataset": {"connector_name": "Carto test api", "connector_url": "https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint", "connector_format": 0, "connector_provider": 0, "connector_path": "rows", "attributes_path": "fields", "dataset_attributes": {"table_name": "public.carts_test_endoint"}}}
 
         data = json
 
@@ -37,7 +37,7 @@ module V1
       end
 
       it 'Allows to update dataset' do
-        put "/datasets/#{dataset.id}", {"dataset": {"connector_name": "Carto test api update"}}
+        put "/datasets/#{dataset.id}", params: {"dataset": {"connector_name": "Carto test api update"}}
 
         data = json
 
