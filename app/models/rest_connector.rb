@@ -13,6 +13,10 @@ class RestConnector < ApplicationRecord
 
   before_create :validate_data
   after_create  :get_meta_data
+  before_update :get_meta_data, if: 'connector_url_changed?'
+
+  # ToDo: Validation for connector_url - defined table_name is part of connector_url?
+  # Separated provider specific functions
 
   accepts_nested_attributes_for :rest_connector_params, allow_destroy: true
   accepts_nested_attributes_for :dataset,               allow_destroy: true
