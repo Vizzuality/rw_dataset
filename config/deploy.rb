@@ -16,7 +16,6 @@ set :deploy_to, '/home/ubuntu/rw_dataset'
 set :repository, 'https://github.com/Vizzuality/rw_dataset.git'
 set :branch, 'master'
 set :rails_env, 'production'
-set :user, 'ubuntu'
 set :application, 'rw_dataset'
 
 # For system-wide RVM install.
