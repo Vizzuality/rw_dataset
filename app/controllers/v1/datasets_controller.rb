@@ -3,7 +3,7 @@ module V1
     before_action :set_dataset, except: [:index, :create]
 
     def index
-      @datasets = RestConnector.all
+      @datasets = RestConnector.includes(:dataset, :rest_connector_params)
       render json: @datasets, each_serializer: DatasetArraySerializer, root: false
     end
 

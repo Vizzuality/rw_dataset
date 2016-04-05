@@ -13,6 +13,10 @@ class RestConnector < ApplicationRecord
 
   before_create :validate_data
   after_create  :get_meta_data
+  before_update :get_meta_data, if: 'connector_url_changed?'
+
+  # ToDo: Validation for connector_url - defined table_name is part of connector_url?
+  # Separated provider specific functions
 
   accepts_nested_attributes_for :rest_connector_params, allow_destroy: true
   accepts_nested_attributes_for :dataset,               allow_destroy: true
@@ -32,6 +36,8 @@ class RestConnector < ApplicationRecord
 
     def get_meta_data
       url = connector_url
+      url = URI.decode(url)
+      url = URI.escape(url)
 
       @request = ::Typhoeus::Request.new(url, method: :get, followlocation: true)
 
@@ -39,14 +45,11 @@ class RestConnector < ApplicationRecord
         if response.success?
           # cool
         elsif response.timed_out?
-          # aw hell no
-          # log("got a time out")
+          'got a time out'
         elsif response.code == 0
-          # Could not get an http response, something's wrong.
-          # log(response.return_message)
+          response.return_message
         else
-          # Received a non-successful http response.
-          # log("HTTP request failed: " + response.code.to_s)
+          'HTTP request failed: ' + response.code.to_s
         end
       end
 

@@ -1,0 +1,45 @@
+{
+    "id": "rw_dataset_v1",
+    "name": "RW Dataset v1",
+    "urls": [{
+        "url": "/datasets",
+        "method": "GET",
+        "endpoints": [{
+            "method": "GET",
+            "baseUrl": "#(service.uri)",
+            "path": "/datasets"
+        }]
+    },{
+        "url": "/datasets/:id",
+        "method": "GET",
+        "endpoints": [{
+            "method": "GET",
+            "baseUrl": "#(service.uri)",
+            "path": "/datasets/:id"
+        }]
+    },{
+        "url": "/datasets",
+        "method": "POST",
+        "endpoints": [{
+            "method": "POST",
+            "baseUrl": "#(service.uri)",
+            "path": "/datasets"
+        }]
+    },{
+        "url": "/datasets/:id",
+        "method": "PUT",
+        "endpoints": [{
+            "method": "PUT",
+            "baseUrl": "#(service.uri)",
+            "path": "/datasets/:id"
+        }]
+    },{
+        "url": "/datasets/:id",
+        "method": "DELETE",
+        "endpoints": [{
+            "method": "DELETE",
+            "baseUrl": "#(service.uri)",
+            "path": "/datasets/:id"
+        }]
+    }]
+}

@@ -1,0 +1,17 @@
+web:
+  build: .
+  command: run
+  ports:
+    - "5007:5007"
+  links:
+    - postgres
+  volumes:
+    - .:/rw_dataset
+
+postgres:
+  image: postgres
+  container_name: rw_database_dataset-postgres
+  ports:
+    - "5432:5432"
+  environment:
+    - POSTGRES_DB=resource_watch_development
