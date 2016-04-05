@@ -31,6 +31,7 @@ end
 
 # Server
 gem 'puma'
+gem 'foreman'
 gem 'dotenv-rails'
 gem 'redis', '~> 3.2'
 gem 'rack-cors'
