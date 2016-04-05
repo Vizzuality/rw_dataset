@@ -45,14 +45,11 @@ class RestConnector < ApplicationRecord
         if response.success?
           # cool
         elsif response.timed_out?
-          # aw hell no
-          # log("got a time out")
+          'got a time out'
         elsif response.code == 0
-          # Could not get an http response, something's wrong.
-          # log(response.return_message)
+          response.return_message
         else
-          # Received a non-successful http response.
-          # log("HTTP request failed: " + response.code.to_s)
+          'HTTP request failed: ' + response.code.to_s
         end
       end
 
