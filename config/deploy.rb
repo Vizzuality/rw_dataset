@@ -17,6 +17,7 @@ set :repository, 'https://github.com/Vizzuality/rw_dataset.git'
 set :branch, 'master'
 set :rails_env, 'production'
 set :application, 'rw_dataset'
+set :foreman_sudo, 'ubuntu'
 
 # For system-wide RVM install.
 #   set :rvm_path, '/usr/local/rvm/bin/rvm'
@@ -84,16 +85,14 @@ task :deploy => :environment do
     # invoke :'rails:db_migrate'
     # invoke :'rails:assets_precompile'
     invoke :'deploy:cleanup'
-    invoke 'foreman:export'
+    # invoke :'foreman:export'
+    queue  "cd #{deploy_to}/#{current_path} ; rvmsudo bundle exec foreman export upstart /etc/init -a #{application} -u ubuntu -d #{deploy_to}/#{current_path} -l #{deploy_to}/#{shared_path}/log -f Procfile"
 
     to :launch do
-      queue "foreman:restart"
+      queue 'sudo kill -9 $(lsof -i tcp:3000 -t)'
+      queue 'cd /etc/init/ && sh rw_dataset-web-1.conf'
     end
   end
-end
-
-task :restart do
-  queue 'bundle exec foreman restart'
 end
 
 # For help in making your deploy script, see the Mina documentation:
