@@ -88,8 +88,15 @@ task :deploy => :environment do
     queue  "cd #{deploy_to}/#{current_path} ; rvmsudo bundle exec foreman export upstart /etc/init -a #{application} -u ubuntu -d #{deploy_to}/#{current_path} -l #{deploy_to}/#{shared_path}/log -f Procfile"
 
     to :launch do
-      queue 'fuser -n tcp -k 3000'
-      queue 'bundle exec puma -d -t 5:5 -p 3000 -e production -S ~/puma -C config/puma.rb'
+      queue %[
+        ps -ef | grep 3000 | grep puma
+        if [ $? -eq 1 ]
+        then
+          bundle exec puma -d -t 5:5 -d -p 3000 -e production -S ~/puma -C config/puma.rb
+        else
+          fuser -n tcp -k 3000 && bundle exec puma -d -t 5:5 -d -p 3000 -e production -S ~/puma -C config/puma.rb
+        fi
+      ]
     end
   end
 end
