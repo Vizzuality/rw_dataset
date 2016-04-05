@@ -86,11 +86,11 @@ task :deploy => :environment do
     # invoke :'rails:assets_precompile'
     invoke :'deploy:cleanup'
     # invoke :'foreman:export'
-    queue  "cd #{deploy_to}/#{current_path} ; rvmsudo bundle exec foreman export upstart /etc/init -a #{application} -u ubuntu -d #{deploy_to}/#{current_path} -l #{deploy_to}/#{shared_path}/log -f Procfile"
+    # queue  "cd #{deploy_to}/#{current_path} ; rvmsudo bundle exec foreman export upstart /etc/init -a #{application} -u ubuntu -d #{deploy_to}/#{current_path} -l #{deploy_to}/#{shared_path}/log -f Procfile"
 
     to :launch do
-      queue 'sudo kill -9 $(lsof -i tcp:3000 -t)'
-      queue 'cd /etc/init/ && sh rw_dataset-web-1.conf'
+      queue 'fuser -n tcp -k 3000'
+      queue 'bundle exec puma -d -t 5:5 -p 3000 -e production -S ~/puma -C config/puma.rb'
     end
   end
 end
