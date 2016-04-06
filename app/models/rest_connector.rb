@@ -1,5 +1,6 @@
 require 'typhoeus'
 require 'uri'
+require 'oj'
 
 class RestConnector < ApplicationRecord
   self.table_name = :rest_connectors
@@ -39,6 +40,7 @@ class RestConnector < ApplicationRecord
       url = URI.decode(url)
       url = URI.escape(url)
 
+      hydra    = Typhoeus::Hydra.new max_concurrency: 100
       @request = ::Typhoeus::Request.new(url, method: :get, followlocation: true)
 
       @request.on_complete do |response|
@@ -53,8 +55,10 @@ class RestConnector < ApplicationRecord
         end
       end
 
-      response = @request.run
-      get_attributes = JSON.parse(response.response_body)[attributes_path]
+      hydra.queue @request
+      hydra.run
+
+      get_attributes = Oj.load(@request.response.body.force_encoding(Encoding::UTF_8))[attributes_path]
       self.dataset.update_attributes(table_columns: get_attributes)
     end
 end

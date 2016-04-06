@@ -7,6 +7,7 @@ gem 'rails', '>= 5.0.0.beta3', '< 5.1'
 gem 'pg', '~> 0.18'
 
 gem 'oj'
+gem 'oj_mimic_json'
 gem 'active_model_serializers', '~> 0.8.1' # '~> 0.10.0.rc4'
 gem 'typhoeus', require: false
 
