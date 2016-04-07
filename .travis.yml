@@ -24,7 +24,10 @@ before_script:
   - cp config/database.yml.travis config/database.yml
 
 script:
+  - sudo apt-get update
   - 'bash ./pg-travis-test.sh'
+  - sudo /etc/init.d/postgresql stop
+  - sudo /etc/init.d/postgresql start 9.5
   - 'bundle exec rake db:create'
   - 'bundle exec rake db:schema:load'
   - 'bundle exec rspec'
