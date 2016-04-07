@@ -3,7 +3,7 @@ class RestConnectorParam < ApplicationRecord
 
   belongs_to :rest_connector, class_name: 'RestConnector'
 
-  PARAM_TYPES = %w(Header Query)
+  PARAM_TYPES = %w(Header Query).freeze
 
   def param_type_txt
     PARAM_TYPES[param_type - 1]

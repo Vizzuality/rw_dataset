@@ -20,7 +20,10 @@ AllCops:
     - '**/Vagabondfile'
   Exclude:
     - 'vendor/**/*'
-    - 'spec/*'
+    - 'spec/**/*'
+    - 'db/**'
+    - 'config/**/*'
+    - 'script/**'
   # Default formatter will be used if no -f/--format option is given.
   DefaultFormatter: progress
   # Cop names are not displayed in offense messages by default. Change behavior
@@ -503,7 +506,7 @@ Style/HashSyntax:
   UseHashRocketsWithSymbolValues: false
 
 Style/IfUnlessModifier:
-  MaxLineLength: 80
+  MaxLineLength: 160
 
 Style/IndentationConsistency:
   # The difference between `rails` and `normal` is that the `rails` style
@@ -512,7 +515,7 @@ Style/IndentationConsistency:
   # protected and private members shall be indented one step more than the
   # modifiers. Other than that, both styles mean that entities on the same
   # logical depth shall have the same indentation.
-  EnforcedStyle: normal
+  EnforcedStyle: rails
   SupportedStyles:
     - normal
     - rails
@@ -923,7 +926,7 @@ Style/VariableName:
     - camelCase
 
 Style/WhileUntilModifier:
-  MaxLineLength: 80
+  MaxLineLength: 160
 
 Style/WordArray:
   EnforcedStyle: percent
@@ -1097,3 +1100,6 @@ Rails/TimeZone:
 Rails/Validation:
   Include:
     - app/models/**/*.rb
+
+Documentation:
+  Enabled: false

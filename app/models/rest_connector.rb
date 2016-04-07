@@ -5,18 +5,17 @@ require 'oj'
 class RestConnector < ApplicationRecord
   self.table_name = :rest_connectors
 
-  FORMAT   = %w(JSON)
-  PROVIDER = %w(CartoDb)
+  FORMAT   = %w(JSON).freeze
+  PROVIDER = %w(CartoDb).freeze
 
   has_many :rest_connector_params, foreign_key: 'connector_id'
 
   has_one  :dataset, as: :dateable, dependent: :destroy, inverse_of: :dateable
 
-  before_create :validate_data
-  after_create  :get_meta_data
-  before_update :get_meta_data, if: 'connector_url_changed?'
+  after_create  :recive_meta_data
+  before_update :recive_meta_data, if: 'connector_url_changed?'
 
-  # ToDo: Validation for connector_url - defined table_name is part of connector_url?
+  # TODO: Validation for connector_url - defined table_name is part of connector_url?
   # Separated provider specific functions
 
   accepts_nested_attributes_for :rest_connector_params, allow_destroy: true
@@ -32,16 +31,10 @@ class RestConnector < ApplicationRecord
 
   private
 
-    def validate_data
-    end
-
-    def get_meta_data
-      url = connector_url
-      url = URI.decode(url)
-      url = URI.escape(url)
-
+    def recive_meta_data
+      url      = URI.decode(connector_url)
       hydra    = Typhoeus::Hydra.new max_concurrency: 100
-      @request = ::Typhoeus::Request.new(url, method: :get, followlocation: true)
+      @request = ::Typhoeus::Request.new(URI.escape(url), method: :get, followlocation: true)
 
       @request.on_complete do |response|
         if response.success?
@@ -58,7 +51,7 @@ class RestConnector < ApplicationRecord
       hydra.queue @request
       hydra.run
 
-      get_attributes = Oj.load(@request.response.body.force_encoding(Encoding::UTF_8))[attributes_path]
-      self.dataset.update_attributes(table_columns: get_attributes)
+      recive_attributes = Oj.load(@request.response.body.force_encoding(Encoding::UTF_8))[attributes_path]
+      dataset.update_attributes(table_columns: recive_attributes)
     end
 end
