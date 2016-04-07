@@ -12,7 +12,7 @@ addons:
     packages:
       - postgresql-9.5
       - postgresql-contrib-9.5
-  postgresql: 9.5
+  postgresql: '9.5'
 
 env:
   global:
@@ -24,7 +24,8 @@ services:
 
 before_script:
   - cp config/database.yml.travis config/database.yml
-  - sudo /etc/init.d/postgresql restart
+  - sudo /etc/init.d/postgresql stop
+  - sudo /etc/init.d/postgresql start 9.5
 
 script:
   - 'bundle exec rake db:create'
