@@ -4,9 +4,6 @@ cache: bundler
 rvm:
   - 2.3.0
 
-addons:
-  postgresql: '9.5'
-
 before_install:
   - sudo /etc/init.d/postgresql stop
   - wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
