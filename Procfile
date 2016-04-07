@@ -1,1 +1,1 @@
-web: bundle exec puma -t 5:5 -p 3000 -e production -S ~/puma -C config/puma.rb
+web: bundle exec puma -t 5:5 -p ${RW_DATASET_PORT:-3000} -e ${RW_DATASET_ENV:-development} -S ~/puma -C config/puma.rb

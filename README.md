@@ -1,6 +1,6 @@
 # Resource Watch Dataset Service
 
-[![Build Status](https://travis-ci.org/Vizzuality/rw_dataset.svg?branch=master)](https://travis-ci.org/Vizzuality/rw_dataset)
+[![Build Status](https://travis-ci.org/Vizzuality/rw_dataset.svg?branch=master)](https://travis-ci.org/Vizzuality/rw_dataset) [![Issue Count](https://codeclimate.com/github/Vizzuality/rw_dataset/badges/issue_count.svg)](https://codeclimate.com/github/Vizzuality/rw_dataset)
 
 TODO: Write a project description
 
