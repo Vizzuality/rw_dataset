@@ -2,4 +2,3 @@ test:
   adapter: postgresql
   database: resource_watch_test
   username: postgres
-  port: 55435
