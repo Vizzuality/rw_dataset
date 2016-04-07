@@ -7,7 +7,7 @@ rvm:
 
 before_install:
   - wget https://gist.github.com/petere/5893799/raw/apt.postgresql.org.sh
-  - wget https://gist.githubusercontent.com/rschumann/b17e65d965759c38fb2d0fa8f7a0e60f/raw/a9883c6acc7f20d11edff8ee2f03419e99ea3f11/pg-travis-test.sh
+  - wget https://gist.github.com/rschumann/b17e65d965759c38fb2d0fa8f7a0e60f/raw/7d01b4669fd7cf997373fcd29bb7f676bcf3beb5/pg-travis-test.sh
   - sudo sh ./apt.postgresql.org.sh
 env:
   - PGVERSION=9.5
