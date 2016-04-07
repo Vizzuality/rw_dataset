@@ -5,21 +5,29 @@ sudo: required
 rvm:
   - 2.3.0
 
-before_install:
-  - wget https://gist.github.com/petere/5893799/raw/apt.postgresql.org.sh
-  - wget https://gist.github.com/rschumann/b17e65d965759c38fb2d0fa8f7a0e60f/raw/7d01b4669fd7cf997373fcd29bb7f676bcf3beb5/pg-travis-test.sh
-  - sudo sh ./apt.postgresql.org.sh
+addons:
+  apt:
+    sources:
+      - precise-pgdg-9.5
+    packages:
+      - postgresql-9.5
+      - postgresql-contrib-9.5
+  postgresql: 9.5
+
 env:
-  - PGVERSION=9.5
+  global:
+    - PGPORT=5433
+    - PGHOST=localhost
 
 services:
   - redis-server
 
 before_script:
   - cp config/database.yml.travis config/database.yml
+  - sudo cp /etc/postgresql/9.4/main/pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
+  - sudo /etc/init.d/postgresql restart
 
 script:
-  - 'bash ./pg-travis-test.sh'
   - 'bundle exec rake db:create'
   - 'bundle exec rake db:schema:load'
   - 'bundle exec rspec'
