@@ -2,5 +2,4 @@ test:
   adapter: postgresql
   database: resource_watch_test
   username: postgres
-  host: localhost
   port: 5433
