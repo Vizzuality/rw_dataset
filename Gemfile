@@ -29,6 +29,7 @@ end
 
 group :test do
   gem 'timecop'
+  gem 'codeclimate-test-reporter', require: nil
 end
 
 # Server

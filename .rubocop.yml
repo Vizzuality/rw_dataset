@@ -1059,3 +1059,6 @@ Rails/TimeZone:
 # Use validates :attribute, hash of validations.
 Rails/Validation:
   Enabled: false
+
+Documentation:
+  Enabled: false
