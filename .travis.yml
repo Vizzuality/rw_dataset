@@ -6,7 +6,6 @@ env:
   global:
     - PGPORT=5433
     - PGHOST=localhost
-  - PGVERSION=9.5
 
 rvm:
   - 2.3.0
