@@ -21,10 +21,10 @@ services:
 
 before_script:
   - sudo /etc/init.d/postgresql stop
-  - sudo cp /etc/postgresql/9.1/main/pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
+  - sudo cp /etc/postgresql/9.2/main/pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
   - sudo sh -c 'echo "local all postgres trust" > /etc/postgresql/9.5/main/pg_hba.conf'
   - sudo sh -c 'echo -n "host all all 127.0.0.1/32 trust" >> /etc/postgresql/9.5/main/pg_hba.conf'
-  - sudo /etc/init.d/postgresql restart
+  - sudo /etc/init.d/postgresql start 9.5
   - psql --version
   - cp config/database.yml.travis config/database.yml
 
