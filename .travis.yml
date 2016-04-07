@@ -19,7 +19,6 @@ before_script:
   - cp config/database.yml.travis config/database.yml
 
 script:
-  - 'bash ./pg-travis-test.sh'
   - 'bundle exec rake db:create'
   - 'bundle exec rake db:schema:load'
   - 'bundle exec rspec'
