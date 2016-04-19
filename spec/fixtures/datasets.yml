@@ -1,15 +1,69 @@
 ---
-connector_1:
+rest_data_1:
   id: 1
   dateable_id: 1
   dateable_type: 'RestConnector'
-  table_name:  'carts_test_endoint'
   created_at: '2016-03-01 20:00:00.050118'
   updated_at: '2016-03-01 20:00:00.050118'
-connector_2:
+  data_columns: '{
+                  "iso": {"type": "string" },
+                  "name": {"type": "string" },
+                  "year": {"type": "string" },
+                  "the_geom": {"type": "geometry" },
+                  "cartodb_id": {"type": "number" },
+                  "population": {"type": "number" },
+                  "the_geom_webmercator": {"type": "geometry" }
+                }'
+
+rest_data_2:
   id: 2
   dateable_id: 2
   dateable_type: 'RestConnector'
-  table_name:  'carts_test_endoint'
   created_at: '2016-03-02 20:00:00.050118'
   updated_at: '2016-03-02 20:00:00.050118'
+  data_columns: '{
+                  "iso": {"type": "string" },
+                  "name": {"type": "string" },
+                  "year": {"type": "string" },
+                  "the_geom": {"type": "geometry" },
+                  "cartodb_id": {"type": "number" },
+                  "population": {"type": "number" },
+                  "the_geom_webmercator": {"type": "geometry" }
+                }'
+
+json_data_1:
+  id: 3
+  dateable_id: 1
+  dateable_type: 'JsonConnector'
+  created_at: '2016-03-03 20:00:00.050118'
+  updated_at: '2016-03-03 20:00:00.050118'
+  data: '[
+          {"cartodb_id": 1,"the_geom": null,"the_geom_webmercator": null,"iso": "BRA","name": "Brazil","year": "2012","population": 218613196},
+          {"cartodb_id": 5,"the_geom": null,"the_geom_webmercator": null,"iso": "BRA","name": "Brazil","year": "2015","population": 198739269},
+          {"cartodb_id": 7,"the_geom": null,"the_geom_webmercator": null,"iso": "BRA","name": "Brazil","year": "2010","population": 178865342}
+        ]'
+  data_columns: '{
+                  "iso": {"type": "string" },
+                  "name": {"type": "string" },
+                  "year": {"type": "string" },
+                  "the_geom": {"type": "geometry" },
+                  "cartodb_id": {"type": "number" },
+                  "population": {"type": "number" },
+                  "the_geom_webmercator": {"type": "geometry" }
+                }'
+
+json_data_2:
+  id: 4
+  dateable_id: 2
+  dateable_type: 'JsonConnector'
+  created_at: '2016-03-03 20:00:00.050118'
+  updated_at: '2016-03-03 20:00:00.050118'
+  data_columns: '{
+                  "iso": {"type": "string" },
+                  "name": {"type": "string" },
+                  "year": {"type": "string" },
+                  "the_geom": {"type": "geometry" },
+                  "cartodb_id": {"type": "number" },
+                  "population": {"type": "number" },
+                  "the_geom_webmercator": {"type": "geometry" }
+                }'
