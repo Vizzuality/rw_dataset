@@ -1,21 +1,13 @@
 class DatasetSerializer < ActiveModel::Serializer
-  attributes :id, :provider, :format, :connector_name, :connector_path
+  attributes :id, :provider, :format, :name, :data_path, :attributes_path
 
   def attributes
     data = super
-    data['connector_url']   = object.dateable.try(:connector_url) if object.dateable.try(:connector_url).present?
-    data['table_name']      = object.dateable.try(:table_name)    if object.dateable.try(:table_name).present?
-    data['data_attributes'] = object.try(:data_columns)
-    data['cloned_host']     = cloned_host if cloned_host.any?
+    data['connector_url'] = object.dateable.try(:connector_url)
+    data['table_name']    = object.dateable.try(:table_name)
+    data['cloned_host']   = cloned_host if cloned_host.any?
+    data['meta']          = meta
     data
-  end
-
-  def connector_name
-    object.dateable.try(:connector_name)
-  end
-
-  def connector_path
-    object.dateable.try(:connector_path)
   end
 
   def provider
@@ -23,15 +15,24 @@ class DatasetSerializer < ActiveModel::Serializer
   end
 
   def format
-    object.dateable.try(:format_txt)
+    object.try(:format_txt)
   end
 
   def cloned_host
     data = {}
-    data['host_provider'] = object.dateable.parent_provider_txt         if object.dateable.try(:parent_connector_provider).present?
-    data['host_url']      = object.dateable.try(:parent_connector_url)  if object.dateable.try(:parent_connector_url).present?
-    data['host_id']       = object.dateable.try(:parent_connector_id)   if object.dateable.try(:parent_connector_id).present?
-    data['host_type']     = object.dateable.try(:parent_connector_type) if object.dateable.try(:parent_connector_type).present?
+    data['host_provider'] = object.dateable.try(:parent_connector_provider_txt)
+    data['host_url']      = object.dateable.try(:parent_connector_url)
+    data['host_id']       = object.dateable.try(:parent_connector_id)
+    data['host_type']     = object.dateable.try(:parent_connector_type)
+    data
+  end
+
+  def meta
+    data = {}
+    data['status']     = object.try(:status_txt)
+    data['updated_at'] = object.try(:updated_at)
+    data['created_at'] = object.try(:created_at)
+    data['rows']       = object.try(:row_count)
     data
   end
 end

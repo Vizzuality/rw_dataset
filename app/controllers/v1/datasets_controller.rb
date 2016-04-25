@@ -12,37 +12,35 @@ module V1
     end
 
     def update
-      if @dataset.dateable.update(dataset_params)
-        render json: @dataset, status: 201, serializer: DatasetSerializer, root: false
+      if @dateable.update(dataset_params)
+        render json: @dataset.reload, status: 201, serializer: DatasetSerializer, root: false
       else
         render json: { success: false, message: 'Error creating dataset' }, status: 422
       end
     end
 
     def create
-      @dataset = Connector.new(dataset_params)
-      if @dataset.save
-        build_dataset
-        render json: @dataset.dataset, status: 201, serializer: DatasetSerializer, root: false
+      @dateable = Connector.new(dataset_params)
+      if @dateable.save
+        render json: @dateable.dataset, status: 201, serializer: DatasetSerializer, root: false
+        @dateable.connect_to_service(dataset_params)
       else
         render json: { success: false, message: 'Error creating dataset' }, status: 422
       end
     end
 
     def clone
-      @connector_attributes = @dataset.dateable.attributes
-      @connector = build_connector
-      @dataset   = clone_dataset
+      @dataset = clone_dataset.dataset
       if @dataset && @dataset.save
         render json: @dataset, status: 201, serializer: DatasetSerializer, root: false
+        @dataset.dateable.connect_to_service(dataset_params)
       else
         render json: { success: false, message: 'Error cloning dataset' }, status: 422
       end
     end
 
     def destroy
-      @dataset.dateable.destroy
-      @dataset.destroy
+      @dateable.destroy
       begin
         render json: { message: 'Dataset deleted' }, status: 200
       rescue ActiveRecord::RecordNotDestroyed
@@ -52,29 +50,19 @@ module V1
 
     private
 
-      def build_dataset
-        return if dataset_params['connector_type'].present? && dataset_params['connector_type'].include?('json')
-        Dataset.create(dataset_params['dataset_attributes'])
-      end
-
-      def build_connector
-        JsonConnector.create(
-          connector_name: @connector_attributes['connector_name'] + '_copy',
-          connector_path: @connector_attributes['connector_path'],
-          attributes_path: @connector_attributes['attributes_path'],
-          parent_connector_url: dataset_params['dataset_url'],
-          parent_connector_provider: @connector_attributes['connector_provider'],
-          parent_connector_type: @dataset.dateable.class.name,
-          parent_connector_id: @dataset.attributes['id']
-        ) if dataset_params['dataset_url'].present?
-      end
-
       def clone_dataset
-        Dataset.new(
-          dateable_type: 'JsonConnector',
-          dateable_id: @connector.id,
-          data_columns: @dataset.attributes['data_columns'],
-          data: ConnectorService.connect_to_provider(dataset_params['dataset_url'], 'data')
+        JsonConnector.create(
+          parent_connector_url: dataset_params['dataset_url'],
+          parent_connector_provider: @dateable.attributes['connector_provider'],
+          parent_connector_type: @dateable.class.name,
+          parent_connector_id: @dataset.attributes['id'],
+          dataset_attributes: {
+            name: @dataset.attributes['name'] + '_copy',
+            format: @dataset.attributes['format'],
+            data_path: @dataset.attributes['data_path'],
+            attributes_path: @dataset.attributes['attributes_path'],
+            row_count: @dataset.attributes['row_count']
+          }
         ) if dataset_params['dataset_url'].present?
       end
 
@@ -83,7 +71,8 @@ module V1
       end
 
       def set_dataset
-        @dataset = Dataset.find(params[:id])
+        @dataset  = Dataset.find(params[:id])
+        @dateable = @dataset.dateable
       end
 
       def dataset_params

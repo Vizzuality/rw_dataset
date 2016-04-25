@@ -12,10 +12,13 @@ class Connector
     end
 
     def new(options)
-      connector_type = options['connector_type'] if options['connector_type'].present?
-      options = options['connector_type'].present? ? options.except(:connector_type) : options
+      connector_type = options['connector_type']          if options['connector_type'].present?
+      options        = options['connector_type'].present? ? options.except(:connector_type)  : options
       case connector_type
-      when 'json' then JsonConnector.new(options)
+      when 'json'
+        options = options['data'].present?            ? options.except(:data)            : options
+        options = options['data_attributes'].present? ? options.except(:data_attributes) : options
+        JsonConnector.new(options)
       else
         RestConnector.new(options)
       end

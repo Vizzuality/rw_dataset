@@ -7,9 +7,12 @@ case "$1" in
         then
           case "$2" in
             develop)
+              echo "Starting redis"
               echo "Startting server..."
               bundle exec puma -t 5:5 -d -p ${RW_DATASET_PORT:-3000} -e ${RW_DATASET_ENV:-development} -S ~/puma -C config/puma.rb
               echo "Server running on port 3000 ;)!"
+              echo "Starting sidekiq..."
+              bundle exec sidekiq -C config/sidekiq.yml
               echo "Register RW Dataset"
               curl --request POST \
                    --url http://192.168.99.100:8000/gateway/service \
@@ -32,6 +35,8 @@ case "$1" in
           kill -9 $(lsof -i tcp:3000 -t)
           echo "Server is down."
         fi
+        echo "Stopping sidekiq..."
+        bundle exec sidekiqctl stop tmp/pids/sidekiq.pid 0
         ;;
     status)
         ps -ef | grep 3000 | grep puma
@@ -50,6 +55,8 @@ case "$1" in
         else
           kill -9 $(lsof -i tcp:3000 -t) && bundle exec puma -t 5:5 -d -p ${RW_DATASET_PORT:-3000} -e ${RW_DATASET_ENV:-development} -S ~/puma -C config/puma.rb
         fi
+        echo "Starting sidekiq..."
+        bundle exec sidekiq -C config/sidekiq.yml
         ;;
   *)
         echo "Usage: server {start|stop|status|restart}" >&2
