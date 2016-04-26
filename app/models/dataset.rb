@@ -3,7 +3,7 @@
 # Table name: datasets
 #
 #  id              :uuid             not null, primary key
-#  dateable_id     :integer
+#  dateable_id     :uuid
 #  dateable_type   :string
 #  name            :string
 #  format          :integer          default("0")
@@ -23,7 +23,7 @@ class Dataset < ApplicationRecord
 
   belongs_to :dateable, polymorphic: true
 
-  before_create :update_data_path, if: "dateable_type.include?('JsonConnector')"
+  after_create :update_data_path, if: "dateable_type.include?('JsonConnector')"
 
   scope :recent, -> { order('updated_at DESC') }
 
@@ -41,6 +41,6 @@ class Dataset < ApplicationRecord
   private
 
     def update_data_path
-      data_path == 'data'
+      self.update_attributes(data_path: 'data')
     end
 end

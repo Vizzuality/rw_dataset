@@ -103,6 +103,7 @@ CREATE TABLE json_connectors (
     parent_connector_id integer,
     parent_connector_type character varying,
     parent_connector_provider integer,
+    parent_connector_data_path character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );

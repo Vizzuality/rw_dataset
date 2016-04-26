@@ -24,6 +24,7 @@ class DatasetSerializer < ActiveModel::Serializer
     data['host_url']      = object.dateable.try(:parent_connector_url)
     data['host_id']       = object.dateable.try(:parent_connector_id)
     data['host_type']     = object.dateable.try(:parent_connector_type)
+    data['host_path']     = object.dateable.try(:parent_connector_data_path)
     data
   end
 

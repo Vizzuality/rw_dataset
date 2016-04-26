@@ -9,8 +9,7 @@ class ConnectorService
     body['attributes_path'] = options['attributes_path'] if options['attributes_path'].present?
     body['data_columns']    = options['data_attributes'] if options['data_attributes'].present?
     body['data']            = options['data']            if options['data'].present?
-    body['dataset_url']     = options['dataset_url']     if options['dataset_url'].present?
-    # body['data_path']       = options['data_path']       if options['data_path'].present?
+    body['data_path']       = options['data_path']       if options['data_path'].present?
 
     url = if object_class.include?('JsonConnector')
             URI.decode("#{ENV['API_GATEWAY_URL']}/json-datasets")

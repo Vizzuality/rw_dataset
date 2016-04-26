@@ -3,7 +3,7 @@
 # Table name: datasets
 #
 #  id              :uuid             not null, primary key
-#  dateable_id     :integer
+#  dateable_id     :uuid
 #  dateable_type   :string
 #  name            :string
 #  format          :integer          default("0")

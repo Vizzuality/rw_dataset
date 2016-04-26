@@ -56,6 +56,7 @@ module V1
           parent_connector_provider: @dateable.attributes['connector_provider'],
           parent_connector_type: @dateable.class.name,
           parent_connector_id: @dataset.attributes['id'],
+          parent_connector_data_path: 'data',
           dataset_attributes: {
             name: @dataset.attributes['name'] + '_copy',
             format: @dataset.attributes['format'],

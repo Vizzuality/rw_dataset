@@ -2,13 +2,14 @@
 #
 # Table name: rest_connectors
 #
-#  id                 :integer          not null, primary key
+#  id                 :uuid             not null, primary key
 #  connector_provider :integer          default("0")
 #  connector_url      :string
 #  table_name         :string
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #
+
 class RestConnector < ApplicationRecord
   self.table_name = :rest_connectors
 
@@ -29,8 +30,8 @@ class RestConnector < ApplicationRecord
     object = self.class.name
     params_for_adapter = {}
     params_for_adapter['dataset_id']      = dataset.id
-    params_for_adapter['connector_url']   = self.try(:connector_url)
-    params_for_adapter['attributes_path'] = dataset.try(:attributes_path)
+    params_for_adapter['connector_url']   = connector_url
+    params_for_adapter['attributes_path'] = dataset.attributes_path
 
     # ConnectorServiceJob.perform_later(object, params_for_adapter)
     ConnectorService.connect_to_service(object, params_for_adapter)

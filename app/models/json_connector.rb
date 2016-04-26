@@ -2,15 +2,17 @@
 #
 # Table name: json_connectors
 #
-#  id                        :integer          not null, primary key
-#  connector_provider        :integer          default("0")
-#  parent_connector_url      :string
-#  parent_connector_id       :integer
-#  parent_connector_type     :string
-#  parent_connector_provider :integer
-#  created_at                :datetime         not null
-#  updated_at                :datetime         not null
+#  id                         :uuid             not null, primary key
+#  connector_provider         :integer          default("0")
+#  parent_connector_url       :string
+#  parent_connector_id        :integer
+#  parent_connector_type      :string
+#  parent_connector_provider  :integer
+#  parent_connector_data_path :string
+#  created_at                 :datetime         not null
+#  updated_at                 :datetime         not null
 #
+
 require 'oj'
 
 class JsonConnector < ApplicationRecord
@@ -37,8 +39,8 @@ class JsonConnector < ApplicationRecord
     object = self.class.name
     params_for_adapter = {}
     params_for_adapter['dataset_id']      = dataset.id
-    params_for_adapter['data_path']       = dataset.try(:data_path)
-    params_for_adapter['dataset_url']     = options['dataset_url']              if options['dataset_url'].present?
+    params_for_adapter['data_path']       = self.try(:parent_connector_data_path)
+    params_for_adapter['connector_url']   = self.try(:parent_connector_url)
     params_for_adapter['data_attributes'] = Oj.dump(options['data_attributes']) if options['data_attributes'].present?
     params_for_adapter['data']            = Oj.dump(options['data'])            if options['data'].present?
 
