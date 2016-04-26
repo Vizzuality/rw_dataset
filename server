@@ -7,7 +7,6 @@ case "$1" in
         then
           case "$2" in
             develop)
-              echo "Starting redis"
               echo "Startting server..."
               bundle exec puma -t 5:5 -d -p ${RW_DATASET_PORT:-3000} -e ${RW_DATASET_ENV:-development} -S ~/puma -C config/puma.rb
               echo "Server running on port 3000 ;)!"

@@ -44,7 +44,6 @@ class JsonConnector < ApplicationRecord
     params_for_adapter['data_attributes'] = Oj.dump(options['data_attributes']) if options['data_attributes'].present?
     params_for_adapter['data']            = Oj.dump(options['data'])            if options['data'].present?
 
-    # ConnectorServiceJob.perform_later(self.class.name, params_for_adapter)
-    ConnectorService.connect_to_service(object, params_for_adapter)
+    ConnectorServiceJob.perform_later(self.class.name, params_for_adapter)
   end
 end
