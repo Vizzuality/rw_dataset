@@ -5,7 +5,7 @@ class DatasetSerializer < ActiveModel::Serializer
     data = super
     data['connector_url'] = object.dateable.try(:connector_url)
     data['table_name']    = object.dateable.try(:table_name)
-    data['cloned_host']   = cloned_host if cloned_host.any?
+    data['cloned_host']   = cloned_host
     data['meta']          = meta
     data
   end
