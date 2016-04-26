@@ -1,57 +1,39 @@
-require 'typhoeus'
-require 'uri'
-require 'oj'
+# == Schema Information
+#
+# Table name: rest_connectors
+#
+#  id                 :uuid             not null, primary key
+#  connector_provider :integer          default("0")
+#  connector_url      :string
+#  table_name         :string
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#
 
 class RestConnector < ApplicationRecord
   self.table_name = :rest_connectors
 
-  FORMAT   = %w(JSON).freeze
   PROVIDER = %w(CartoDb).freeze
 
-  has_many :rest_connector_params, foreign_key: 'connector_id'
-
-  has_one  :dataset, as: :dateable, dependent: :destroy, inverse_of: :dateable
-
-  after_create  :recive_meta_data
-  before_update :recive_meta_data, if: 'connector_url_changed?'
-
-  # TODO: Validation for connector_url - defined table_name is part of connector_url?
-  # Separated provider specific functions
-
-  accepts_nested_attributes_for :rest_connector_params, allow_destroy: true
-  accepts_nested_attributes_for :dataset,               allow_destroy: true
-
-  def format_txt
-    FORMAT[connector_format - 0]
-  end
+  has_one :dataset, as: :dateable, dependent: :destroy, inverse_of: :dateable
+  accepts_nested_attributes_for :dataset, allow_destroy: true, update_only: true
 
   def provider_txt
     PROVIDER[connector_provider - 0]
   end
 
-  private
+  def self.parent_provider_txt(parent_connector_provider)
+    PROVIDER[parent_connector_provider - 0]
+  end
 
-    def recive_meta_data
-      url      = URI.decode(connector_url)
-      hydra    = Typhoeus::Hydra.new max_concurrency: 100
-      @request = ::Typhoeus::Request.new(URI.escape(url), method: :get, followlocation: true)
+  def connect_to_service(options)
+    object = self.class.name
+    params_for_adapter = {}
+    params_for_adapter['dataset_id']      = dataset.id
+    params_for_adapter['connector_url']   = connector_url
+    params_for_adapter['attributes_path'] = dataset.attributes_path
 
-      @request.on_complete do |response|
-        if response.success?
-          # cool
-        elsif response.timed_out?
-          'got a time out'
-        elsif response.code == 0
-          response.return_message
-        else
-          'HTTP request failed: ' + response.code.to_s
-        end
-      end
-
-      hydra.queue @request
-      hydra.run
-
-      recive_attributes = Oj.load(@request.response.body.force_encoding(Encoding::UTF_8))[attributes_path]
-      dataset.update_attributes(table_columns: recive_attributes)
-    end
+    # ConnectorServiceJob.perform_later(object, params_for_adapter)
+    ConnectorService.connect_to_service(object, params_for_adapter)
+  end
 end

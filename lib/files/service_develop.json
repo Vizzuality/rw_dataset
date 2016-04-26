@@ -6,7 +6,7 @@
         "method": "GET",
         "endpoints": [{
             "method": "GET",
-            "baseUrl": "#(service.uri)",
+            "baseUrl": "http://192.168.1.57:3000",
             "path": "/datasets"
         }]
     },{
@@ -14,7 +14,7 @@
         "method": "GET",
         "endpoints": [{
             "method": "GET",
-            "baseUrl": "#(service.uri)",
+            "baseUrl": "http://192.168.1.57:3000",
             "path": "/datasets/:id"
         }]
     },{
@@ -22,15 +22,23 @@
         "method": "POST",
         "endpoints": [{
             "method": "POST",
-            "baseUrl": "#(service.uri)",
+            "baseUrl": "http://192.168.1.57:3000",
             "path": "/datasets"
+        }]
+    },{
+        "url": "/datasets/:id/clone",
+        "method": "POST",
+        "endpoints": [{
+            "method": "POST",
+            "baseUrl": "http://192.168.1.57:3000",
+            "path": "/datasets/:id/clone"
         }]
     },{
         "url": "/datasets/:id",
         "method": "PUT",
         "endpoints": [{
             "method": "PUT",
-            "baseUrl": "#(service.uri)",
+            "baseUrl": "http://192.168.1.57:3000",
             "path": "/datasets/:id"
         }]
     },{
@@ -38,7 +46,7 @@
         "method": "DELETE",
         "endpoints": [{
             "method": "DELETE",
-            "baseUrl": "#(service.uri)",
+            "baseUrl": "http://192.168.1.57:3000",
             "path": "/datasets/:id"
         }]
     }]

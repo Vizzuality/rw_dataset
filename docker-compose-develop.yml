@@ -2,7 +2,7 @@ web:
   build: .
   command: run
   ports:
-    - "5007:5007"
+    - "3000:3000"
   links:
     - postgres
   volumes:
@@ -14,4 +14,4 @@ postgres:
   ports:
     - "5432:5432"
   environment:
-    - POSTGRES_DB=resource_watch_development
+    - POSTGRES_DB=rw_dataset_development
