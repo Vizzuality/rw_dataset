@@ -33,7 +33,6 @@ class RestConnector < ApplicationRecord
     params_for_adapter['connector_url']   = connector_url
     params_for_adapter['attributes_path'] = dataset.attributes_path
 
-    # ConnectorServiceJob.perform_later(object, params_for_adapter)
-    ConnectorService.connect_to_service(object, params_for_adapter)
+    ConnectorServiceJob.perform_later(object, params_for_adapter)
   end
 end
