@@ -8,7 +8,7 @@ case "$1" in
           case "$2" in
             develop)
               echo "Startting server..."
-              bundle exec puma -t 5:5 -d -p ${RW_DATASET_PORT:-3000} -e ${RW_DATASET_ENV:-development} -S ~/puma -C config/puma.rb
+              bundle exec puma -C config/puma.rb
               echo "Server running on port 3000 ;)!"
               echo "Starting sidekiq..."
               bundle exec sidekiq -C config/sidekiq.yml
@@ -50,12 +50,10 @@ case "$1" in
         ps -ef | grep 3000 | grep puma
         if [ $? -eq 1 ]
         then
-          bundle exec puma -t 5:5 -d -p ${RW_DATASET_PORT:-3000} -e ${RW_DATASET_ENV:-development} -S ~/puma -C config/puma.rb
+          bundle exec puma -C config/puma.rb
         else
-          kill -9 $(lsof -i tcp:3000 -t) && bundle exec puma -t 5:5 -d -p ${RW_DATASET_PORT:-3000} -e ${RW_DATASET_ENV:-development} -S ~/puma -C config/puma.rb
+          kill -9 $(lsof -i tcp:3000 -t) && bundle exec puma -C config/puma.rb
         fi
-        echo "Starting sidekiq..."
-        bundle exec sidekiq -C config/sidekiq.yml
         ;;
     register-service)
         curl --request POST \
@@ -65,7 +63,7 @@ case "$1" in
              --data "$(cat lib/files/service.json)"
         ;;
   *)
-        echo "Usage: server {start|stop|status|restart}" >&2
+        echo "Usage: server {start develop - production|stop|status|restart|register-service}" >&2
         exit 1
         ;;
 esac

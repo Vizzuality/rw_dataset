@@ -19,13 +19,14 @@ class Dataset < ApplicationRecord
   self.table_name = :datasets
 
   FORMAT = %w(JSON).freeze
-  STATUS = %w(pending saved failed).freeze
+  STATUS = %w(pending saved failed deleted).freeze
 
   belongs_to :dateable, polymorphic: true
 
   after_create :update_data_path, if: "dateable_type.include?('JsonConnector')"
 
   scope :recent, -> { order('updated_at DESC') }
+  scope :available, -> { where(status: 1) }
 
   scope :filter_rest, -> { where(dateable_type: 'RestConnector').includes(:dateable) }
   scope :filter_json, -> { where(dateable_type: 'JsonConnector').includes(:dateable) }
@@ -36,6 +37,10 @@ class Dataset < ApplicationRecord
 
   def status_txt
     STATUS[status - 0]
+  end
+
+  def deleted?
+    status_txt == 'deleted'
   end
 
   private

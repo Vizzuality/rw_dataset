@@ -78,8 +78,7 @@ module V1
           delete "/datasets/#{dataset_id}"
 
           expect(status).to eq(200)
-          expect(json['message']).to eq('Dataset deleted')
-          expect(Dataset.where(id: dataset_id)).to be_empty
+          expect(json['message']).to eq('Dataset would be deleted!')
         end
       end
 
@@ -115,8 +114,7 @@ module V1
           delete "/datasets/#{dataset_id}"
 
           expect(status).to eq(200)
-          expect(json['message']).to eq('Dataset deleted')
-          expect(Dataset.where(id: dataset_id)).to be_empty
+          expect(json['message']).to eq('Dataset would be deleted!')
         end
       end
     end

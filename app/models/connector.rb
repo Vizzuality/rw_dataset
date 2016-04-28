@@ -4,10 +4,10 @@ class Connector
       connector_type = options['connector_type'] if options['connector_type'].present?
 
       case connector_type
-      when 'rest' then Dataset.filter_rest.recent
-      when 'json' then Dataset.filter_json.recent
+      when 'rest' then Dataset.filter_rest.recent.available
+      when 'json' then Dataset.filter_json.recent.available
       else
-        Dataset.includes(:dateable).recent
+        Dataset.includes(:dateable).recent.available
       end
     end
 
