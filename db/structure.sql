@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.0
--- Dumped by pg_dump version 9.5.0
+-- Dumped from database version 9.5.2
+-- Dumped by pg_dump version 9.5.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -100,7 +100,7 @@ CREATE TABLE json_connectors (
     id uuid DEFAULT uuid_generate_v4() NOT NULL,
     connector_provider integer DEFAULT 0,
     parent_connector_url character varying,
-    parent_connector_id integer,
+    parent_connector_id uuid,
     parent_connector_type character varying,
     parent_connector_provider integer,
     parent_connector_data_path character varying,

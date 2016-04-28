@@ -40,11 +40,11 @@ module V1
     end
 
     def destroy
-      @dateable.destroy
-      begin
-        render json: { message: 'Dataset deleted' }, status: 200
-      rescue ActiveRecord::RecordNotDestroyed
-        return render json: @dataset.erors, message: 'Dataset could not be deleted', status: 422
+      if @dataset.deleted?
+        render json: { success: true, message: 'Dataset deleted!' }, status: 200
+      else
+        @dateable.connect_to_service('delete')
+        render json: { success: true, message: 'Dataset would be deleted!' }, status: 200
       end
     end
 
