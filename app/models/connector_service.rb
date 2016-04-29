@@ -4,23 +4,8 @@ require 'uri'
 class ConnectorService
   class << self
     def establish_connection(url, method, body={})
-      hydra    = Typhoeus::Hydra.new max_concurrency: 100
       @request = ::Typhoeus::Request.new(URI.escape(url), method: method, headers: { 'Accept' => 'application/json' }, body: { connector: body })
-
-      @request.on_complete do |response|
-        if response.success?
-          # cool
-        elsif response.timed_out?
-          'got a time out'
-        elsif response.code == 0
-          response.return_message
-        else
-          'HTTP request failed: ' + response.code.to_s
-        end
-      end
-
-      hydra.queue @request
-      hydra.run
+      @request.run
     end
 
     def connect_to_service(object_class, options)
