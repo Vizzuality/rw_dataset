@@ -1,0 +1,53 @@
+{
+    "id": "rw_dataset_v1",
+    "name": "RW Dataset v1",
+    "urls": [{
+        "url": "/datasets",
+        "method": "GET",
+        "endpoints": [{
+            "method": "GET",
+            "baseUrl": "https://rw-dataset.herokuapp.com",
+            "path": "/datasets"
+        }]
+    },{
+        "url": "/datasets/:id",
+        "method": "GET",
+        "endpoints": [{
+            "method": "GET",
+            "baseUrl": "http://rw-dataset.herokuapp.com",
+            "path": "/datasets/:id"
+        }]
+    },{
+        "url": "/datasets",
+        "method": "POST",
+        "endpoints": [{
+            "method": "POST",
+            "baseUrl": "http://rw-dataset.herokuapp.com",
+            "path": "/datasets"
+        }]
+    },{
+        "url": "/datasets/:id/clone",
+        "method": "POST",
+        "endpoints": [{
+            "method": "POST",
+            "baseUrl": "http://rw-dataset.herokuapp.com",
+            "path": "/datasets/:id/clone"
+        }]
+    },{
+        "url": "/datasets/:id",
+        "method": "PUT",
+        "endpoints": [{
+            "method": "PUT",
+            "baseUrl": "http://rw-dataset.herokuapp.com",
+            "path": "/datasets/:id"
+        }]
+    },{
+        "url": "/datasets/:id",
+        "method": "DELETE",
+        "endpoints": [{
+            "method": "DELETE",
+            "baseUrl": "http://rw-dataset.herokuapp.com",
+            "path": "/datasets/:id"
+        }]
+    }]
+}
