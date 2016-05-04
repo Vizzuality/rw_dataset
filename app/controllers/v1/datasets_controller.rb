@@ -22,8 +22,8 @@ module V1
     def create
       @dateable = Connector.new(dataset_params)
       if @dateable.save
-        render json: @dateable.dataset, status: 201, serializer: DatasetSerializer, root: false
         @dateable.connect_to_service(dataset_params)
+        render json: @dateable.dataset, status: 201, serializer: DatasetSerializer, root: false
       else
         render json: { success: false, message: 'Error creating dataset' }, status: 422
       end
@@ -32,8 +32,8 @@ module V1
     def clone
       @dataset = clone_dataset.dataset
       if @dataset && @dataset.save
-        render json: @dataset, status: 201, serializer: DatasetSerializer, root: false
         @dataset.dateable.connect_to_service(dataset_params)
+        render json: @dataset, status: 201, serializer: DatasetSerializer, root: false
       else
         render json: { success: false, message: 'Error cloning dataset' }, status: 422
       end
