@@ -1,6 +1,6 @@
 # Resource Watch Dataset Service
 
-[![Build Status](https://travis-ci.org/resource-watch/rw_dataset.svg?branch=develop)](https://travis-ci.org/resource-watch/rw_dataset) [![Code Climate](https://codeclimate.com/github/resource-watch/rw_dataset/badges/gpa.svg)](https://codeclimate.com/github/resource-watch/rw_dataset) [![Test Coverage](https://codeclimate.com/github/resource-watch/rw_dataset/badges/coverage.svg)](https://codeclimate.com/github/resource-watch/rw_dataset/coverage)
+[![Build Status](https://travis-ci.org/resource-watch/rw_dataset.svg?branch=develop)](https://travis-ci.org/resource-watch/rw_dataset) [![Code Climate](https://codeclimate.com/github/resource-watch/rw_dataset/badges/gpa.svg)](https://codeclimate.com/github/resource-watch/rw_dataset) [![Test Coverage](https://codeclimate.com/github/Vizzuality/rw_dataset/badges/coverage.svg)](https://codeclimate.com/github/Vizzuality/rw_dataset/coverage)
 
 TODO: Write a project description
 
