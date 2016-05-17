@@ -13,7 +13,7 @@ module V1
 
     def update
       if @dateable.update(dataset_params)
-        render json: @dataset.reload, status: 201, serializer: DatasetSerializer, root: false
+        render json: @dataset.reload, status: 200, serializer: DatasetSerializer, root: false
       else
         render json: { success: false, message: 'Error creating dataset' }, status: 422
       end
