@@ -1,7 +1,8 @@
 {
     "id": "rw_dataset_v1",
     "name": "RW Dataset v1",
-    "urls": [{
+    "urls": [
+      {
         "url": "/datasets",
         "method": "GET",
         "endpoints": [{
@@ -9,7 +10,8 @@
             "baseUrl": "http://localhost:3000",
             "path": "/datasets"
         }]
-    },{
+      },
+      {
         "url": "/datasets/:id",
         "method": "GET",
         "endpoints": [{
@@ -17,7 +19,8 @@
             "baseUrl": "http://localhost:3000",
             "path": "/datasets/:id"
         }]
-    },{
+      },
+      {
         "url": "/datasets",
         "method": "POST",
         "endpoints": [{
@@ -25,7 +28,8 @@
             "baseUrl": "http://localhost:3000",
             "path": "/datasets"
         }]
-    },{
+      },
+      {
         "url": "/datasets/:id/clone",
         "method": "POST",
         "endpoints": [{
@@ -33,7 +37,8 @@
             "baseUrl": "http://localhost:3000",
             "path": "/datasets/:id/clone"
         }]
-    },{
+      },
+      {
         "url": "/datasets/:id",
         "method": "PUT",
         "endpoints": [{
@@ -41,7 +46,8 @@
             "baseUrl": "http://localhost:3000",
             "path": "/datasets/:id"
         }]
-    },{
+      },
+      {
         "url": "/datasets/:id",
         "method": "DELETE",
         "endpoints": [{
@@ -49,5 +55,418 @@
             "baseUrl": "http://localhost:3000",
             "path": "/datasets/:id"
         }]
-    }]
+      }
+    ],
+    "swagger": {
+      "swagger": "2.0",
+      "info": {
+        "title": "RW Dataset API",
+        "description": "Resource Watch - Dataset API",
+        "version": "1.0.0"
+      },
+      "host": "ec2-52-23-163-254.compute-1.amazonaws.com",
+      "schemes": [
+        "http"
+      ],
+      "produces": [
+        "application/json"
+      ],
+      "paths": {
+        "/datasets/{id}": {
+          "get": {
+            "description": "Returns dataset based on a single ID, if the geostore not exist return 404",
+            "produces": [
+              "application/json"
+            ],
+            "tags": [
+              "Dataset"
+            ],
+            "parameters": [
+              {
+                "name": "id",
+                "in": "path",
+                "description": "ID of dataset to fetch",
+                "required": true,
+                "type": "string"
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Dataset obtained",
+                "schema": {
+                  "$ref": "#/definitions/Dataset"
+                }
+              },
+              "404": {
+                "description": "Dataset not found",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              },
+              "500": {
+                "description": "Unexpected error",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              },
+              "default": {
+                "description": "unexpected error",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              }
+            }
+          },
+          "put": {
+            "description": "Update dataset based on a single ID, if the geostore not exist return 404",
+            "produces": [
+              "application/json"
+            ],
+            "tags": [
+              "Dataset"
+            ],
+            "parameters": [
+              {
+                "name": "id",
+                "in": "path",
+                "description": "ID of dataset to update",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "name": "dataset",
+                "in": "body",
+                "description": "New data of the dataset",
+                "required": true,
+                "schema": {
+                  "$ref": "#/definitions/DatasetCreate"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Dataset updated",
+                "schema": {
+                  "$ref": "#/definitions/Dataset"
+                }
+              },
+              "404": {
+                "description": "Dataset not found",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              },
+              "500": {
+                "description": "Unexpected error",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              },
+              "default": {
+                "description": "unexpected error",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              }
+            }
+          },
+          "delete": {
+            "description": "Delete dataset based on a single ID, if the geostore not exist return 404",
+            "produces": [
+              "application/json"
+            ],
+            "tags": [
+              "Dataset"
+            ],
+            "parameters": [
+              {
+                "name": "id",
+                "in": "path",
+                "description": "ID of dataset to delete",
+                "required": true,
+                "type": "string"
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Dataset updated",
+                "schema": {
+                  "$ref": "#/definitions/Dataset"
+                }
+              },
+              "404": {
+                "description": "Dataset not found",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              },
+              "500": {
+                "description": "Unexpected error",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              },
+              "default": {
+                "description": "unexpected error",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              }
+            }
+          }
+        },
+        "/datasets": {
+          "get": {
+            "description": "Returns all datasets",
+            "produces": [
+              "application/json"
+            ],
+            "tags": [
+              "Dataset"
+            ],
+            "responses": {
+              "200": {
+                "description": "Datasets obtained",
+                "schema": {
+                  "$ref": "#/definitions/Datasets"
+                }
+              },
+              "500": {
+                "description": "Unexpected error",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              },
+              "default": {
+                "description": "unexpected error",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              }
+            }
+          },
+          "post": {
+            "summary": "Create rest or json dataset (depends on connector_type - json or rest)",
+            "description": "Create dataset",
+            "produces": [
+              "application/json"
+            ],
+            "tags": [
+              "Dataset"
+            ],
+            "parameters": [
+              {
+                "name": "dataset",
+                "in": "body",
+                "description": "Dataset to save",
+                "required": true,
+                "schema": {
+                  "$ref": "#/definitions/DatasetCreate"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "The object created",
+                "schema": {
+                  "$ref": "#/definitions/Dataset"
+                }
+              },
+              "400": {
+                "description": "Validate error",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              },
+              "500": {
+                "description": "Unexpected error",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              },
+              "default": {
+                "description": "Unexpected error",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "definitions": {
+        "Data": {
+          "type": "object"
+        },
+        "DatasetCreate": {
+          "type": "object",
+          "properties": {
+            "dataset": {
+              "type": "object",
+              "properties": {
+                "connector_type": {
+                  "type": "string",
+                  "description": "Dataset type (rest - Carto, json - JSON)"
+                },
+                "connector_url": {
+                  "type": "string",
+                  "description": "Url of dataset (for rest dataset)"
+                },
+                "table_name": {
+                  "type": "string",
+                  "description": "Table name to obtain data (for rest dataset)"
+                },
+                "connector_provider": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "Id of the provider (0 - Carto)"
+                },
+                "data_attributes": {
+                  "type": "object",
+                  "description": "Data attributes (for json dataset)"
+                },
+                "data": {
+                  "type": "array",
+                  "description": "Data (for json dataset)",
+                  "items": {
+                    "$ref": "#/definitions/Data"
+                  }
+                },
+                "dataset_attributes": {
+                  "type": "object",
+                  "description": "Attributes of dataset",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the dataset"
+                    },
+                    "format": {
+                      "type": "integer",
+                      "format": "int32",
+                      "description": "Id of the format (0 - JSON)"
+                    },
+                    "data_path": {
+                      "type": "string",
+                      "description": "Path to data (for rest dataset)"
+                    },
+                    "attributes_path": {
+                      "type": "string",
+                      "description": "Path to attributes (for rest dataset)"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Datasets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DatasetArray"
+          }
+        },
+        "DatasetArray": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64",
+              "description": "Dataset id"
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of the dataset"
+            },
+            "provider": {
+              "type": "string",
+              "description": "Name of the provider"
+            },
+            "format": {
+              "type": "string",
+              "description": "Dataset format"
+            }
+          }
+        },
+        "Dataset": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "format": "int64",
+              "description": "Dataset id"
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of the dataset"
+            },
+            "data_path": {
+              "type": "string",
+              "description": "Path for data"
+            },
+            "attributes_path": {
+              "type": "string",
+              "description": "Path for data attributes"
+            },
+            "provider": {
+              "type": "string",
+              "description": "Name of the provider"
+            },
+            "format": {
+              "type": "string",
+              "description": "Dataset format"
+            },
+            "connector_url": {
+              "type": "string",
+              "description": "Url of connector"
+            },
+            "table_name": {
+              "type": "string",
+              "description": "Name of the table of the dataset"
+            },
+            "meta": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "Status"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "description": "Date"
+                },
+                "created_at": {
+                  "type": "string",
+                  "description": "Date"
+                },
+                "rows": {
+                  "type": "number",
+                  "description": "Number of data rows"
+                }
+              }
+            }
+          }
+        },
+        "Error": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "description": "The HTTP status code applicable to this problem, expressed as a string value"
+            },
+            "error": {
+              "type": "string",
+              "description": "An application-specific error code, expressed as a string value"
+            },
+            "exception": {
+              "type": "string",
+              "description": "A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization."
+            },
+            "traces": {
+              "type": "string",
+              "description": "A human-readable explanation specific to this occurrence of the problem. Like title, this field's value can be localized"
+            }
+          }
+        }
+      }
+    }
 }

@@ -127,7 +127,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     post:
-      summary: Create dataset
+      summary: Create rest or json dataset (depends on connector_type - json or rest)
       description: Create dataset
       produces:
         - application/json
@@ -159,44 +159,75 @@ paths:
             $ref: '#/definitions/Error'
 
 definitions:
+  Data:
+    type: object
+
   DatasetCreate:
     type: object
     properties:
       dataset:
         type: object
         properties:
-          connector_name:
+          connector_type:
             type: string
-            description: Name of the dataset
+            description: Dataset type (rest - Carto, json - JSON)
           connector_url:
             type: string
-            description: Url of dataset
-          connector_path:
+            description: Url of dataset (for rest dataset)
+          table_name:
             type: string
-            description: Path of connector
+            description: Table name to obtain data (for rest dataset)
           connector_provider:
             type: integer
             format: int32
             description: Id of the provider (0 - Carto)
-          connector_format:
-            type: integer
-            format: int32
-            description: Id of the format (0 - Carto)
-          attributes_path:
-            type: string
-            description: Attributes of the path
+          data_attributes:
+            type: object
+            description: Data attributes (for json dataset)
+          data:
+            type: array
+            description: Data (for json dataset)
+            items:
+              $ref: '#/definitions/Data'
           dataset_attributes:
             type: object
             description: Attributes of dataset
             properties:
-              table_name:
+              name:
                 type: string
-                description: Table name to obtain data
+                description: Name of the dataset
+              format:
+                type: integer
+                format: int32
+                description: Id of the format (0 - JSON)
+              data_path:
+                type: string
+                description: Path to data (for rest dataset)
+              attributes_path:
+                type: string
+                description: Path to attributes (for rest dataset)
 
   Datasets:
     type: array
     items:
-      $ref: '#/definitions/Dataset'
+      $ref: '#/definitions/DatasetArray'
+
+  DatasetArray:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Dataset id
+      name:
+        type: string
+        description: Name of the dataset
+      provider:
+        type: string
+        description: Name of the provider
+      format:
+        type: string
+        description: Dataset format
 
   Dataset:
     type: object
@@ -205,35 +236,42 @@ definitions:
         type: integer
         format: int64
         description: Dataset id
-      connector_name:
+      name:
         type: string
         description: Name of the dataset
+      data_path:
+        type: string
+        description: Path for data
+      attributes_path:
+        type: string
+        description: Path for data attributes
       provider:
         type: string
         description: Name of the provider
       format:
         type: string
-        description: Data format
-      rest_connector_params:
-        type: array
-        items:
-          type: object
-          description: Objects {key, value} with headers, params, that it is neccesary to attack url dataset
-      dataset_meta:
+        description: Dataset format
+      connector_url:
+        type: string
+        description: Url of connector
+      table_name:
+        type: string
+        description: Name of the table of the dataset
+      meta:
         type: object
         properties:
-          connector_url:
+          status:
             type: string
-            description: Url of connector
-          connector_path:
+            description: Status
+          updated_at:
             type: string
-            description: Path of connector
-          table_name:
+            description: Date
+          created_at:
             type: string
-            description: Name of the table of the dataset
-          table_columns:
-            type: object
-            description: Object with key (name of column) and type (type of data)
+            description: Date
+          rows:
+            type: number
+            description: Number of data rows
 
   Error:
     type: object

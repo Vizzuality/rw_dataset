@@ -68,7 +68,7 @@ module V1
         it 'Allows to update dataset' do
           put "/datasets/#{dataset_id}", params: {"dataset": {"dataset_attributes": {"name": "Carto test api update"}}}
 
-          expect(status).to eq(201)
+          expect(status).to eq(200)
           expect(json['name']).to         eq('Carto test api update')
           expect(json['provider']).not_to be_nil
           expect(json['format']).to       be_present
@@ -88,7 +88,7 @@ module V1
         it 'Allows to update dataset' do
           put "/datasets/#{dataset_id}", params: {"dataset": {"dataset_attributes": {"name": "Json test api update"}}}
 
-          expect(status).to eq(201)
+          expect(status).to eq(200)
           expect(json['name']).to eq('Json test api update')
         end
 
