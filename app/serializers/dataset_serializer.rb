@@ -1,5 +1,23 @@
+# == Schema Information
+#
+# Table name: datasets
+#
+#  id              :uuid             not null, primary key
+#  dateable_id     :uuid
+#  dateable_type   :string
+#  name            :string
+#  format          :integer          default(0)
+#  data_path       :string
+#  attributes_path :string
+#  row_count       :integer
+#  status          :integer          default(0)
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  tags            :jsonb
+#
+
 class DatasetSerializer < ActiveModel::Serializer
-  attributes :id, :name, :data_path, :attributes_path, :provider, :format, :connector_url, :table_name, :cloned_host, :meta
+  attributes :id, :name, :data_path, :attributes_path, :provider, :format, :connector_url, :table_name, :tags, :cloned_host, :meta
 
   def provider
     object.dateable.try(:provider_txt)

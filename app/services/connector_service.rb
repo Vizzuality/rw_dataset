@@ -17,8 +17,9 @@ class ConnectorService
       body['data']            = options['data']            if options['data'].present?
       body['data_path']       = options['data_path']       if options['data_path'].present?
 
-      service_url = if object_class.include?('JsonConnector')
-                      "#{ENV['API_GATEWAY_URL']}/json-datasets"
+      service_url = case object_class
+                    when 'JsonConnector' then "#{ENV['API_GATEWAY_URL']}/json-datasets"
+                    when 'Dataset'       then "#{ENV['API_GATEWAY_URL']}/tags"
                     else
                       "#{ENV['API_GATEWAY_URL']}/rest-datasets/cartodb"
                     end
