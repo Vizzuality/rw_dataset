@@ -27,10 +27,13 @@ class Dataset < ApplicationRecord
   before_save  :merge_tags,        if: "tags_changed?"
   after_save   :call_tags_service, if: "tags_changed?"
   after_create :update_data_path,  if: "dateable_type.include?('JsonConnector')"
-  # after_update :call_tags_service, if: "tags_changed?"
 
-  scope :recent, -> { order('updated_at DESC') }
-  scope :available, -> { where(status: 1) }
+  scope :recent,             -> { order('updated_at DESC') }
+  scope :filter_pending,     -> { where(status: 0)         }
+  scope :filter_saved,       -> { where(status: 1)         }
+  scope :filter_failed,      -> { where(status: 2)         }
+  scope :filter_inactives,   -> { where(status: 3)         }
+  scope :available,          -> { filter_saved             }
 
   scope :filter_rest, -> { where(dateable_type: 'RestConnector').includes(:dateable) }
   scope :filter_json, -> { where(dateable_type: 'JsonConnector').includes(:dateable) }

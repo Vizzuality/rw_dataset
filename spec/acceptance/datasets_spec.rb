@@ -35,6 +35,34 @@ module V1
         expect(json.length).to eq(2)
         expect(dataset['provider']).to eq('RwJson')
       end
+
+      it 'Show list of all datasets using status filter all' do
+        get '/datasets?status=all'
+
+        expect(status).to eq(200)
+        expect(json.size).to eq(6)
+      end
+
+      it 'Show list of datasets with pending status' do
+        get '/datasets?status=pending'
+
+        expect(status).to eq(200)
+        expect(json.size).to eq(1)
+      end
+
+      it 'Show list of datasets with active status' do
+        get '/datasets?status=active'
+
+        expect(status).to eq(200)
+        expect(json.size).to eq(4)
+      end
+
+      it 'Show list of datasets with disabled status' do
+        get '/datasets?status=disabled'
+
+        expect(status).to eq(200)
+        expect(json.size).to eq(1)
+      end
     end
 
     context 'For specific dataset' do
