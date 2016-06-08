@@ -88,7 +88,8 @@ CREATE TABLE datasets (
     row_count integer,
     status integer DEFAULT 0,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    tags jsonb DEFAULT '[]'::jsonb
 );
 
 
@@ -180,6 +181,13 @@ CREATE UNIQUE INDEX index_datasets_on_connector_and_connector_type ON datasets U
 
 
 --
+-- Name: index_datasets_on_tags; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_datasets_on_tags ON datasets USING gin (tags);
+
+
+--
 -- Name: index_json_connectors_on_connector_provider; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -199,6 +207,6 @@ CREATE INDEX index_rest_connectors_on_connector_provider ON rest_connectors USIN
 
 SET search_path TO "$user", public;
 
-INSERT INTO schema_migrations (version) VALUES ('20160420124502'), ('20160420124523'), ('20160420124632'), ('20160420124652');
+INSERT INTO schema_migrations (version) VALUES ('20160420124502'), ('20160420124523'), ('20160420124632'), ('20160420124652'), ('20160520110354');
 
 
