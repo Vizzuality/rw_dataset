@@ -224,6 +224,20 @@
             "tags": [
               "Dataset"
             ],
+            "parameters": [
+              {
+                "name": "status",
+                "in": "query",
+                "description": "Filter datasets on status (pending, active, failed, disabled, all)",
+                "type": "string"
+              },
+              {
+                "name": "connector_type",
+                "in": "query",
+                "description": "Filter datasets on type (rest, json)",
+                "type": "string"
+              }
+            ],
             "responses": {
               "200": {
                 "description": "Datasets obtained",

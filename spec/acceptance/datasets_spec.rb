@@ -35,6 +35,34 @@ module V1
         expect(json.length).to eq(2)
         expect(dataset['provider']).to eq('RwJson')
       end
+
+      it 'Show list of all datasets using status filter all' do
+        get '/datasets?status=all'
+
+        expect(status).to eq(200)
+        expect(json.size).to eq(6)
+      end
+
+      it 'Show list of datasets with pending status' do
+        get '/datasets?status=pending'
+
+        expect(status).to eq(200)
+        expect(json.size).to eq(1)
+      end
+
+      it 'Show list of datasets with active status' do
+        get '/datasets?status=active'
+
+        expect(status).to eq(200)
+        expect(json.size).to eq(4)
+      end
+
+      it 'Show list of datasets with disabled status' do
+        get '/datasets?status=disabled'
+
+        expect(status).to eq(200)
+        expect(json.size).to eq(1)
+      end
     end
 
     context 'For specific dataset' do
@@ -53,7 +81,22 @@ module V1
           expect(json['table_name']).to    be_present
         end
 
-        it 'Allows to create rest dataset' do
+        it 'Allows to create rest dataset without tags' do
+          post '/datasets', params: {"dataset": {"connector_provider": 0, "table_name": "public.carts_test_endoint",
+                                                 "connector_url": "https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint",
+                                                 "dataset_attributes": {"name": "Carto test api", "format": 0, "data_path": "rows", "attributes_path": "fields"}}}
+
+          expect(status).to eq(201)
+          expect(json['name']).not_to      be_nil
+          expect(json['provider']).to      eq('CartoDb')
+          expect(json['format']).to        be_present
+          expect(json['connector_url']).to be_present
+          expect(json['data_path']).to     be_present
+          expect(json['table_name']).to    be_present
+          expect(json['tags']).to          be_empty
+        end
+
+        it 'Allows to create rest dataset with tags' do
           post '/datasets', params: {"dataset": {"connector_provider": 0, "table_name": "public.carts_test_endoint",
                                                  "connector_url": "https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint",
                                                  "dataset_attributes": {"name": "Carto test api", "format": 0, "data_path": "rows", "attributes_path": "fields",
