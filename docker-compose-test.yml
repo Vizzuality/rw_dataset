@@ -1,0 +1,11 @@
+test:
+  build: .
+  command: test
+  volumes:
+    - .:/rw_dataset
+  links:
+    - postgres
+  env_file: test.env
+
+postgres:
+  image: postgres_rw_dataset

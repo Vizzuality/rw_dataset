@@ -12,7 +12,6 @@
 /tmp/*
 !/log/.keep
 !/tmp/.keep
-config/database.yml
 
 # Ignore Byebug command history file.
 .byebug_history
@@ -20,6 +19,7 @@ config/database.yml
 # Ignore MacOSX files
 /.DS_Store
 .DS_Store
+spec/.DS_Store
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
@@ -27,3 +27,5 @@ config/database.yml
 
 # Ignore environment variables
 /.env.*
+/test.env
+/dev.env
