@@ -51,6 +51,11 @@ module V1
     def info
       @docs = Oj.load(File.read('lib/files/service.json'))
       render json: @docs
+
+      # http://localhost:3000/info?token=sdasda43443243dsfdsfffdsf&url=http://192.168.99.100:8000
+      # ServiceSettings.save_info(params)
+      # @api_gateway_token = params[:token]
+      # @api_gateway_url   = params[:url]
     end
 
     private
