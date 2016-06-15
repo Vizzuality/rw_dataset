@@ -49,13 +49,13 @@ module V1
     end
 
     def info
-      @docs = Oj.load(File.read('lib/files/service.json'))
-      render json: @docs
-
-      # http://localhost:3000/info?token=sdasda43443243dsfdsfffdsf&url=http://192.168.99.100:8000
-      # ServiceSettings.save_info(params)
-      # @api_gateway_token = params[:token]
-      # @api_gateway_url   = params[:url]
+      @service = ServiceSetting.save_gateway_settings(params)
+      if @service
+        @docs = Oj.load(File.read("lib/files/service_#{ENV['RAILS_ENV']}.json"))
+        render json: @docs
+      else
+        render json: { success: false, message: 'Missing url and token params' }, status: 422
+      end
     end
 
     private
