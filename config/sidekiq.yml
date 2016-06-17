@@ -8,6 +8,8 @@ test:
   :logfile: ./log/sidekiq.log
 production:
   :concurrency: 24
+  :pidfile: ./tmp/pids/sidekiq.pid
+  :logfile: ./log/sidekiq.log
 :queues:
   - default
   - [high_priority, 2]

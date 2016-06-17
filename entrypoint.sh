@@ -32,7 +32,8 @@ case "$1" in
         bundle exec rake db:exists RAILS_ENV=production
 
         export SECRET_KEY_BASE=$(rake secret)
-
+        mkdir -p tmp/pids
+        mkdir -p log
         exec ./server start production
         ;;
     *)
