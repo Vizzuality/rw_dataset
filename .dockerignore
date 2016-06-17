@@ -38,6 +38,8 @@ config/app_config.yml
 
 *.log
 tmp/
+!/tmp/.keep
+!/tmp/pids/.gitkeep
 *.sql
 *.sqlite
 *.sqlite3
