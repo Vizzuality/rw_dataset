@@ -8,4 +8,4 @@ test:
   env_file: test.env
 
 postgres:
-  image: postgres_rw_dataset
+  image: postgres
