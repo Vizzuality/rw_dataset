@@ -28,7 +28,7 @@ case "$1" in
         echo "Running Start"
         gem install bundler
         bundle install --without=development,test
-        bundle exec rake db:drop RAILS_ENV=production DISABLE_DATABASE_ENVIRONMENT_CHECK=1
+
         bundle exec rake db:exists RAILS_ENV=production
 
         export SECRET_KEY_BASE=$(rake secret)
