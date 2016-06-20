@@ -13,7 +13,7 @@
 class RestConnector < ApplicationRecord
   self.table_name = :rest_connectors
 
-  PROVIDER = %w(CartoDb).freeze
+  PROVIDER = %w(CartoDb Arcgis).freeze
 
   has_one :dataset, as: :dateable, dependent: :destroy, inverse_of: :dateable
   accepts_nested_attributes_for :dataset, allow_destroy: true, update_only: true
@@ -31,6 +31,11 @@ class RestConnector < ApplicationRecord
     params_for_adapter = {}
     params_for_adapter['dataset_id']      = dataset.id
     params_for_adapter['connector_url']   = connector_url
+    params_for_adapter['provider']        = case connector_provider
+                                            when 0 then 'cartodb'
+                                            when 1 then 'arcgis'
+                                            end
+
     params_for_adapter['attributes_path'] = dataset.attributes_path
     params_for_adapter['to_delete']       = true if options.include?('delete')
 
