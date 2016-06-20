@@ -23,9 +23,7 @@ class ConnectorService
 
       service_url = case object_class
                     when 'JsonConnector' then "#{ServiceSetting.gateway_url}/json-datasets"
-                    # when 'Dataset'       then "#{ServiceSetting.gateway_url}/tags"
-                    else
-                      "#{ServiceSetting.gateway_url}/rest-datasets/cartodb"
+                    when 'RestConnector' then "#{ServiceSetting.gateway_url}/rest-datasets/#{options['provider']}"
                     end
 
       url  = service_url

@@ -8,19 +8,21 @@ class TagService
       @request.run
     end
 
-    def connect_to_service(options)
+    def connect_to_service(object_class, options)
       body = options
 
       headers = {}
       headers['Accept']         = 'application/json'
       headers['authentication'] = ServiceSetting.auth_token if ServiceSetting.auth_token.present?
 
-      url  = "#{ServiceSetting.gateway_url}/tags"
+      service_url = "#{ServiceSetting.gateway_url}/tags"
+
+      url  = service_url
       url  = URI.decode(url)
 
       method = 'post'
 
-      establish_connection(url, method. headers, body)
+      establish_connection(url, method, headers, body)
     end
   end
 end

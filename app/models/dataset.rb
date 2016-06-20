@@ -71,6 +71,6 @@ class Dataset < ApplicationRecord
       params_for_adapter['taggable_slug'] = self.try(:slug)
       params_for_adapter['tags_list']     = tags
 
-      TagServiceJob.perform_later(params_for_adapter)
+      TagServiceJob.perform_later('Dataset', params_for_adapter)
     end
 end
