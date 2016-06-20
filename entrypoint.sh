@@ -33,7 +33,8 @@ case "$1" in
 
         export SECRET_KEY_BASE=$(rake secret)
         mkdir -p tmp/pids
-        mkdir -p log
+        mkdir log
+
         exec ./server start production
         ;;
     *)
