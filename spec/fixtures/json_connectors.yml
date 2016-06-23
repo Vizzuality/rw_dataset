@@ -3,9 +3,9 @@
 # Table name: json_connectors
 #
 #  id                         :uuid             not null, primary key
-#  connector_provider         :integer          default("0")
+#  connector_provider         :integer          default(0)
 #  parent_connector_url       :string
-#  parent_connector_id        :integer
+#  parent_connector_id        :uuid
 #  parent_connector_type      :string
 #  parent_connector_provider  :integer
 #  parent_connector_data_path :string

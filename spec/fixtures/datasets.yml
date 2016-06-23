@@ -6,13 +6,14 @@
 #  dateable_id     :uuid
 #  dateable_type   :string
 #  name            :string
-#  format          :integer          default("0")
+#  format          :integer          default(0)
 #  data_path       :string
 #  attributes_path :string
 #  row_count       :integer
-#  status          :integer          default("0")
+#  status          :integer          default(0)
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  tags            :jsonb
 #
 
 ---
@@ -27,6 +28,7 @@ rest_data_1:
   status: 1
   created_at: '2016-03-01 20:00:00.050118'
   updated_at: '2016-03-01 20:00:00.050118'
+  tags: ["tag1", "tag3", "tag2"]
 
 rest_data_2:
   dateable_id: 'd547146d-de0c-47ff-a406-5125667fd5e1'
@@ -37,6 +39,30 @@ rest_data_2:
   attributes_path: 'fields'
   row_count: 3
   status: 1
+  created_at: '2016-03-02 20:00:00.050118'
+  updated_at: '2016-03-02 20:00:00.050118'
+
+rest_data_3:
+  dateable_id: 'd547146d-de0c-47ff-a406-5125667fd533'
+  dateable_type: 'RestConnector'
+  name: 'CartoDb test set 3'
+  format: 0
+  data_path: 'rows'
+  attributes_path: 'fields'
+  row_count: 3
+  status: 0
+  created_at: '2016-03-02 20:00:00.050118'
+  updated_at: '2016-03-02 20:00:00.050118'
+
+rest_data_4:
+  dateable_id: 'd547146d-de0c-47ff-a406-5125667fd321'
+  dateable_type: 'RestConnector'
+  name: 'CartoDb test set 4'
+  format: 0
+  data_path: 'rows'
+  attributes_path: 'fields'
+  row_count: 3
+  status: 3
   created_at: '2016-03-02 20:00:00.050118'
   updated_at: '2016-03-02 20:00:00.050118'
 

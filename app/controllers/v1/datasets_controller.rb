@@ -1,6 +1,6 @@
 module V1
   class DatasetsController < ApplicationController
-    before_action :set_dataset, except: [:index, :create]
+    before_action :set_dataset, except: [:index, :create, :info]
 
     def index
       @datasets = Connector.fetch_all(connector_type_filter)
@@ -48,6 +48,16 @@ module V1
       end
     end
 
+    def info
+      @service = ServiceSetting.save_gateway_settings(params)
+      if @service
+        @docs = Oj.load(File.read("lib/files/service_#{ENV['RAILS_ENV']}.json"))
+        render json: @docs
+      else
+        render json: { success: false, message: 'Missing url and token params' }, status: 422
+      end
+    end
+
     private
 
       def clone_dataset
@@ -68,7 +78,7 @@ module V1
       end
 
       def connector_type_filter
-        params.permit(:connector_type)
+        params.permit(:connector_type, :status, :dataset)
       end
 
       def set_dataset

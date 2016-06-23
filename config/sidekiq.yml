@@ -6,4 +6,6 @@ production:
 :queues:
   - default
   - [high_priority, 2]
+  - connector_data
+  - tags
 :daemon: true

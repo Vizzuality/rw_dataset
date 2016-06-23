@@ -3,7 +3,7 @@
 # Table name: rest_connectors
 #
 #  id                 :uuid             not null, primary key
-#  connector_provider :integer          default("0")
+#  connector_provider :integer          default(0)
 #  connector_url      :string
 #  table_name         :string
 #  created_at         :datetime         not null

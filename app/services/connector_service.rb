@@ -3,8 +3,8 @@ require 'uri'
 
 class ConnectorService
   class << self
-    def establish_connection(url, method, body={})
-      @request = ::Typhoeus::Request.new(URI.escape(url), method: method, headers: { 'Accept' => 'application/json' }, body: { connector: body })
+    def establish_connection(url, method, headers={}, body={})
+      @request = ::Typhoeus::Request.new(URI.escape(url), method: method, headers: headers, body: { connector: body })
       @request.run
     end
 
@@ -17,10 +17,13 @@ class ConnectorService
       body['data']            = options['data']            if options['data'].present?
       body['data_path']       = options['data_path']       if options['data_path'].present?
 
-      service_url = if object_class.include?('JsonConnector')
-                      "#{ENV['API_GATEWAY_URL']}/json-datasets"
-                    else
-                      "#{ENV['API_GATEWAY_URL']}/rest-datasets/cartodb"
+      headers = {}
+      headers['Accept']         = 'application/json'
+      headers['authentication'] = ServiceSetting.auth_token if ServiceSetting.auth_token.present?
+
+      service_url = case object_class
+                    when 'JsonConnector' then "#{ServiceSetting.gateway_url}/json-datasets"
+                    when 'RestConnector' then "#{ServiceSetting.gateway_url}/rest-datasets/#{options['provider']}"
                     end
 
       url  = service_url
@@ -29,7 +32,7 @@ class ConnectorService
 
       method = options['to_delete'].present? ? 'delete' : 'post'
 
-      establish_connection(url, method, body)
+      establish_connection(url, method, headers, body)
     end
   end
 end
