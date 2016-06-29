@@ -12,6 +12,14 @@ prod:
   log_opt:
     gelf-address: ${GELF_ADDRESS}
 
+worker:
+  build: .
+  volumes_from:
+    - prod
+  links:
+    - redis
+  env_file: prod.env
+
 redis:
   image: redis
   container_name: redis_rw_dataset

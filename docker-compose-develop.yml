@@ -10,6 +10,14 @@ web:
     - redis
   env_file: dev.env
 
+worker:
+  build: .
+  volumes_from:
+    - web
+  links:
+    - redis
+  env_file: dev.env
+
 postgres:
   image: postgres
   container_name: postgres_rw_dataset

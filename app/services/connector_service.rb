@@ -17,6 +17,10 @@ class ConnectorService
       body['data']            = options['data']            if options['data'].present?
       body['data_path']       = options['data_path']       if options['data_path'].present?
 
+
+      # for Csv
+      # connector_url, id
+
       headers = {}
       headers['Accept']         = 'application/json'
       headers['authentication'] = ServiceSetting.auth_token if ServiceSetting.auth_token.present?
@@ -24,6 +28,7 @@ class ConnectorService
       service_url = case object_class
                     when 'JsonConnector' then "#{ServiceSetting.gateway_url}/json-datasets"
                     when 'RestConnector' then "#{ServiceSetting.gateway_url}/rest-datasets/#{options['provider']}"
+                    when 'DocConnector'  then "#{ServiceSetting.gateway_url}/doc-datasets/#{options['provider']}"
                     end
 
       url  = service_url
