@@ -12,9 +12,11 @@ web:
 
 worker:
   build: .
+  command: bundle exec puma -C config/puma.rb
   volumes_from:
     - web
   links:
+    - postgres
     - redis
   env_file: dev.env
 
