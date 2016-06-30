@@ -188,6 +188,21 @@ module V1
           expect(json['message']).to eq('Dataset would be deleted!')
         end
       end
+
+      context 'Doc dataset' do
+        it 'Allows to create csv dataset with tags' do
+          post '/datasets', params: {"dataset": {"connector_type": "document",
+                                                 "connector_url": "https://test-csv.csv",
+                                                 "dataset_attributes": {"name": "csv file", "tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
+
+          expect(status).to eq(201)
+          expect(json['name']).not_to      be_nil
+          expect(json['provider']).to      eq('CSV')
+          expect(json['format']).to        be_present
+          expect(json['connector_url']).to be_present
+          expect(json['tags']).to          eq(["tag1", "tag2"])
+        end
+      end
     end
   end
 end

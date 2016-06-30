@@ -9,6 +9,7 @@ class Connector
       datasets = case connector_type
                  when 'rest' then datasets.filter_rest.recent
                  when 'json' then datasets.filter_json.recent
+                 when 'doc'  then datasets.filter_doc.recent
                  else
                    datasets
                  end
@@ -43,6 +44,8 @@ class Connector
         options = options['data'].present?            ? options.except(:data)            : options
         options = options['data_attributes'].present? ? options.except(:data_attributes) : options
         JsonConnector.new(options)
+      when 'document'
+        DocConnector.new(options)
       else
         RestConnector.new(options)
       end

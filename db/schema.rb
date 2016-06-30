@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160615130530) do
+ActiveRecord::Schema.define(version: 20160630155651) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,6 +31,14 @@ ActiveRecord::Schema.define(version: 20160615130530) do
     t.jsonb    "tags",            default: []
     t.index ["dateable_id", "dateable_type"], name: "index_datasets_on_connector_and_connector_type", unique: true, using: :btree
     t.index ["tags"], name: "index_datasets_on_tags", using: :gin
+  end
+
+  create_table "doc_connectors", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.integer  "connector_provider", default: 0
+    t.string   "connector_url"
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.index ["connector_provider"], name: "index_doc_connectors_on_connector_provider", using: :btree
   end
 
   create_table "json_connectors", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|

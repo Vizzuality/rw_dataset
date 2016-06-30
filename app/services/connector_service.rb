@@ -17,10 +17,6 @@ class ConnectorService
       body['data']            = options['data']            if options['data'].present?
       body['data_path']       = options['data_path']       if options['data_path'].present?
 
-
-      # for Csv
-      # connector_url, id
-
       headers = {}
       headers['Accept']         = 'application/json'
       headers['authentication'] = ServiceSetting.auth_token if ServiceSetting.auth_token.present?
