@@ -10,7 +10,7 @@ RUN gem install bundler --no-ri --no-rdoc
 WORKDIR /rw_dataset
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
-RUN bundle install
+RUN bundle install --without development test doc --jobs=4
 
 ADD . /rw_dataset
 
