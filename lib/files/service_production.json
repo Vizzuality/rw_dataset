@@ -320,7 +320,7 @@
               "properties": {
                 "connector_type": {
                   "type": "string",
-                  "description": "Dataset type (rest - Carto, json - JSON)"
+                  "description": "Dataset type (rest - Carto - Arcgis, json - JSON, document)"
                 },
                 "connector_url": {
                   "type": "string",
@@ -331,9 +331,8 @@
                   "description": "Table name to obtain data (for rest dataset)"
                 },
                 "connector_provider": {
-                  "type": "integer",
-                  "format": "int32",
-                  "description": "Id of the provider (0 - Carto)"
+                  "type": "string",
+                  "description": "Id of the provider (cartodb, arcgis for rest connector, csv for document connector)"
                 },
                 "data_attributes": {
                   "type": "object",

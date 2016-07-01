@@ -1,13 +1,7 @@
-require 'typhoeus'
 require 'uri'
 
 class ConnectorService
   class << self
-    def establish_connection(url, method, headers={}, body={})
-      @request = ::Typhoeus::Request.new(URI.escape(url), method: method, headers: headers, body: { connector: body })
-      @request.run
-    end
-
     def connect_to_service(object_class, options)
       body = {}
       body['id']              = options['dataset_id']
@@ -33,7 +27,7 @@ class ConnectorService
 
       method = options['to_delete'].present? ? 'delete' : 'post'
 
-      establish_connection(url, method, headers, body)
+      ConcernConnection.establish_connection(url, method, headers, { connector: body })
     end
   end
 end
