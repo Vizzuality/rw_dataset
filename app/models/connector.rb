@@ -38,7 +38,7 @@ class Connector
 
     def new(options)
       connector_type = options['connector_type']          if options['connector_type'].present?
-      options        = options['connector_type'].present? ? options.except(:connector_type)  : options
+      options        = options['connector_type'].present? ? options.except(:connector_type) : options
       case connector_type
       when 'json'
         options = options['data'].present?            ? options.except(:data)            : options

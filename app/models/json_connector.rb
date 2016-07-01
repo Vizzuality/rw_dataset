@@ -3,7 +3,7 @@
 # Table name: json_connectors
 #
 #  id                         :uuid             not null, primary key
-#  connector_provider         :integer          default(0)
+#  connector_provider         :integer          default("rwjson")
 #  parent_connector_url       :string
 #  parent_connector_id        :uuid
 #  parent_connector_type      :string
@@ -18,13 +18,15 @@ require 'oj'
 class JsonConnector < ApplicationRecord
   self.table_name = :json_connectors
 
-  PROVIDER = %w(RwJson).freeze
+  PROVIDER = %w(rwjson).freeze
+
+  enum connector_provider: { rwjson: 0 }
 
   has_one :dataset, as: :dateable, dependent: :destroy, inverse_of: :dateable
   accepts_nested_attributes_for :dataset, allow_destroy: true, update_only: true
 
   def provider_txt
-    PROVIDER[connector_provider - 0]
+    connector_provider
   end
 
   def parent_connector_provider_txt
