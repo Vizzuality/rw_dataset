@@ -10,7 +10,7 @@ module V1
       context 'Rest dataset' do
         let!(:dataset_id) { Dataset.find_by(name: 'cartodb test set').id }
 
-        it 'Allows to clone rest dataset' do
+        it 'Allows to clone cartodb dataset' do
           post "/datasets/#{dataset_id}/clone", params: {"dataset": {"dataset_url": "http://ec2-52-23-163-254.compute-1.amazonaws.com/query/4?select[]=iso,population&filter=(iso=='ESP','AUS')&aggr_by[]=iso&aggr_func=sum&order[]=-iso"} }
 
           expect(status).to eq(201)

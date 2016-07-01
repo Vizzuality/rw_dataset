@@ -26,6 +26,7 @@ class DocConnector < ApplicationRecord
     params_for_adapter = {}
     params_for_adapter['dataset_id']    = dataset.id
     params_for_adapter['connector_url'] = connector_url
+    params_for_adapter['provider']      = 'csv'
     params_for_adapter['to_delete']     = true if options.include?('delete')
 
     ConnectorServiceJob.perform_later(object, params_for_adapter)
