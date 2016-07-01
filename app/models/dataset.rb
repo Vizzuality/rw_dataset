@@ -37,6 +37,7 @@ class Dataset < ApplicationRecord
 
   scope :filter_rest, -> { where(dateable_type: 'RestConnector').includes(:dateable) }
   scope :filter_json, -> { where(dateable_type: 'JsonConnector').includes(:dateable) }
+  scope :filter_doc,  -> { where(dateable_type: 'DocConnector').includes(:dateable)  }
 
   def format_txt
     FORMAT[format - 0]

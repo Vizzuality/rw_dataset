@@ -3,7 +3,7 @@
 # Table name: rest_connectors
 #
 #  id                 :uuid             not null, primary key
-#  connector_provider :integer          default(0)
+#  connector_provider :integer          default("cartodb")
 #  connector_url      :string
 #  table_name         :string
 #  created_at         :datetime         not null
@@ -13,13 +13,15 @@
 class RestConnector < ApplicationRecord
   self.table_name = :rest_connectors
 
-  PROVIDER = %w(CartoDb Arcgis).freeze
+  PROVIDER = %w(cartodb arcgis).freeze
+
+  enum connector_provider: { cartodb: 0, arcgis: 1 }
 
   has_one :dataset, as: :dateable, dependent: :destroy, inverse_of: :dateable
   accepts_nested_attributes_for :dataset, allow_destroy: true, update_only: true
 
   def provider_txt
-    PROVIDER[connector_provider - 0]
+    connector_provider
   end
 
   def self.parent_provider_txt(parent_connector_provider)

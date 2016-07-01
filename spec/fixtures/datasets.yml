@@ -20,7 +20,7 @@
 rest_data_1:
   dateable_id: 'c547146d-de0c-47ff-a406-5125667fd5e1'
   dateable_type: 'RestConnector'
-  name: 'CartoDb test set'
+  name: 'cartodb test set'
   format: 0
   data_path: 'rows'
   attributes_path: 'fields'
@@ -33,7 +33,7 @@ rest_data_1:
 rest_data_2:
   dateable_id: 'd547146d-de0c-47ff-a406-5125667fd5e1'
   dateable_type: 'RestConnector'
-  name: 'CartoDb test set 2'
+  name: 'cartodb test set 2'
   format: 0
   data_path: 'rows'
   attributes_path: 'fields'
@@ -45,7 +45,7 @@ rest_data_2:
 rest_data_3:
   dateable_id: 'd547146d-de0c-47ff-a406-5125667fd533'
   dateable_type: 'RestConnector'
-  name: 'CartoDb test set 3'
+  name: 'cartodb test set 3'
   format: 0
   data_path: 'rows'
   attributes_path: 'fields'
@@ -57,7 +57,7 @@ rest_data_3:
 rest_data_4:
   dateable_id: 'd547146d-de0c-47ff-a406-5125667fd321'
   dateable_type: 'RestConnector'
-  name: 'CartoDb test set 4'
+  name: 'cartodb test set 4'
   format: 0
   data_path: 'rows'
   attributes_path: 'fields'

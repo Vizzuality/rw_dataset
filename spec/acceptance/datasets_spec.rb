@@ -14,8 +14,8 @@ module V1
         dataset_rest = json[3]
         expect(status).to eq(200)
         expect(json.length).to eq(4)
-        expect(dataset_json['provider']).to eq('RwJson')
-        expect(dataset_rest['provider']).to eq('CartoDb')
+        expect(dataset_json['provider']).to eq('rwjson')
+        expect(dataset_rest['provider']).to eq('cartodb')
       end
 
       it 'Allows to access datasets list filtering by type rest' do
@@ -24,7 +24,7 @@ module V1
         dataset = json[0]
         expect(status).to eq(200)
         expect(json.length).to eq(2)
-        expect(dataset['provider']).to eq('CartoDb')
+        expect(dataset['provider']).to eq('cartodb')
       end
 
       it 'Allows to access datasets list filtering by type json' do
@@ -33,7 +33,7 @@ module V1
         dataset = json[0]
         expect(status).to eq(200)
         expect(json.length).to eq(2)
-        expect(dataset['provider']).to eq('RwJson')
+        expect(dataset['provider']).to eq('rwjson')
       end
 
       it 'Show list of all datasets using status filter all' do
@@ -67,14 +67,14 @@ module V1
 
     context 'For specific dataset' do
       context 'Rest dataset' do
-        let!(:dataset_id) { Dataset.find_by(name: 'CartoDb test set').id }
+        let!(:dataset_id) { Dataset.find_by(name: 'cartodb test set').id }
 
         it 'Allows to access dataset details' do
           get "/datasets/#{dataset_id}"
 
           expect(status).to eq(200)
-          expect(json['name']).to          eq('CartoDb test set')
-          expect(json['provider']).to      eq('CartoDb')
+          expect(json['name']).to          eq('cartodb test set')
+          expect(json['provider']).to      eq('cartodb')
           expect(json['format']).to        eq('JSON')
           expect(json['connector_url']).to be_present
           expect(json['data_path']).to     be_present
@@ -82,13 +82,13 @@ module V1
         end
 
         it 'Allows to create rest dataset without tags' do
-          post '/datasets', params: {"dataset": {"connector_provider": 0, "table_name": "public.carts_test_endoint",
+          post '/datasets', params: {"dataset": {"connector_provider": "cartodb", "table_name": "public.carts_test_endoint",
                                                  "connector_url": "https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint",
                                                  "dataset_attributes": {"name": "Carto test api", "format": 0, "data_path": "rows", "attributes_path": "fields"}}}
 
           expect(status).to eq(201)
           expect(json['name']).not_to      be_nil
-          expect(json['provider']).to      eq('CartoDb')
+          expect(json['provider']).to      eq('cartodb')
           expect(json['format']).to        be_present
           expect(json['connector_url']).to be_present
           expect(json['data_path']).to     be_present
@@ -97,14 +97,14 @@ module V1
         end
 
         it 'Allows to create rest dataset with tags' do
-          post '/datasets', params: {"dataset": {"connector_provider": 0, "table_name": "public.carts_test_endoint",
+          post '/datasets', params: {"dataset": {"connector_provider": "cartodb", "table_name": "public.carts_test_endoint",
                                                  "connector_url": "https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint",
                                                  "dataset_attributes": {"name": "Carto test api", "format": 0, "data_path": "rows", "attributes_path": "fields",
                                                   "tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
 
           expect(status).to eq(201)
           expect(json['name']).not_to      be_nil
-          expect(json['provider']).to      eq('CartoDb')
+          expect(json['provider']).to      eq('cartodb')
           expect(json['format']).to        be_present
           expect(json['connector_url']).to be_present
           expect(json['data_path']).to     be_present
@@ -136,15 +136,15 @@ module V1
           expect(json['message']).to eq('Dataset would be deleted!')
         end
 
-        it 'Allows to create rest dataset for Arcgis with tags' do
-          post '/datasets', params: {"dataset": {"connector_provider": 1,
+        it 'Allows to create rest dataset for arcgis with tags' do
+          post '/datasets', params: {"dataset": {"connector_provider": "arcgis",
                                                  "connector_url": "https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga_County/FeatureServer/0?f=json",
-                                                 "dataset_attributes": {"name": "Arcgis test api", "format": 0, "data_path": "features", "attributes_path": "fields",
+                                                 "dataset_attributes": {"name": "arcgis test api", "format": 0, "data_path": "features", "attributes_path": "fields",
                                                   "tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
 
           expect(status).to eq(201)
           expect(json['name']).not_to      be_nil
-          expect(json['provider']).to      eq('Arcgis')
+          expect(json['provider']).to      eq('arcgis')
           expect(json['format']).to        be_present
           expect(json['connector_url']).to be_present
           expect(json['data_path']).to     be_present
@@ -165,6 +165,7 @@ module V1
         it 'Allows to create json dataset with tags' do
           post '/datasets', params: {"dataset": {
                                       "connector_type": "json",
+                                      "connector_provider": "rwjson",
                                       "dataset_attributes": {"name": "Json test api", "format": 0, "tags": ["tag1", "tag1", "Tag1", "tag2"]},
                                       "data": [
                                         {"cartodb_id": 1,"iso": "BRA","name": "Brazil","year": "2012","population": 218613196},
@@ -176,7 +177,7 @@ module V1
 
           expect(status).to eq(201)
           expect(json['name']).to     eq('Json test api')
-          expect(json['provider']).to eq('RwJson')
+          expect(json['provider']).to eq('rwjson')
           expect(json['format']).to   be_present
           expect(json['tags']).to     eq(["tag1", "tag2"])
         end
@@ -186,6 +187,21 @@ module V1
 
           expect(status).to eq(200)
           expect(json['message']).to eq('Dataset would be deleted!')
+        end
+      end
+
+      context 'Doc dataset' do
+        it 'Allows to create csv dataset with tags' do
+          post '/datasets', params: {"dataset": {"connector_type": "document",
+                                                 "connector_url": "https://test-csv.csv",
+                                                 "dataset_attributes": {"name": "csv file", "tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
+
+          expect(status).to eq(201)
+          expect(json['name']).not_to      be_nil
+          expect(json['provider']).to      eq('csv')
+          expect(json['format']).to        be_present
+          expect(json['connector_url']).to be_present
+          expect(json['tags']).to          eq(["tag1", "tag2"])
         end
       end
     end
