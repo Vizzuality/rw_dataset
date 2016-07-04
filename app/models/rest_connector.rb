@@ -13,9 +13,9 @@
 class RestConnector < ApplicationRecord
   self.table_name = :rest_connectors
 
-  PROVIDER = %w(cartodb arcgis).freeze
+  PROVIDER = %w(cartodb featureservice).freeze
 
-  enum connector_provider: { cartodb: 0, arcgis: 1 }
+  enum connector_provider: { cartodb: 0, featureservice: 1 }
 
   has_one :dataset, as: :dateable, dependent: :destroy, inverse_of: :dateable
   accepts_nested_attributes_for :dataset, allow_destroy: true, update_only: true

@@ -137,14 +137,14 @@ module V1
         end
 
         it 'Allows to create rest dataset for arcgis with tags' do
-          post '/datasets', params: {"dataset": {"connector_provider": "arcgis",
+          post '/datasets', params: {"dataset": {"connector_provider": "featureservice",
                                                  "connector_url": "https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga_County/FeatureServer/0?f=json",
                                                  "dataset_attributes": {"name": "arcgis test api", "format": 0, "data_path": "features", "attributes_path": "fields",
                                                   "tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
 
           expect(status).to eq(201)
           expect(json['name']).not_to      be_nil
-          expect(json['provider']).to      eq('arcgis')
+          expect(json['provider']).to      eq('featureservice')
           expect(json['format']).to        be_present
           expect(json['connector_url']).to be_present
           expect(json['data_path']).to     be_present
