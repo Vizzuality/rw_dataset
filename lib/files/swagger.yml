@@ -179,17 +179,13 @@ definitions:
         properties:
           connector_type:
             type: string
-            description: Dataset type (rest - Carto, json - JSON)
+            description: Dataset type (rest - for cartodb or arcgis , json - JSON)
           connector_url:
             type: string
-            description: Url of dataset (for rest dataset)
-          table_name:
-            type: string
-            description: Table name to obtain data (for rest dataset)
+            description: Url of dataset (for rest dataset example - for cartodb https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map, for arcgis https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga_County/FeatureServer/0?f=json)
           connector_provider:
-            type: integer
-            format: int32
-            description: Id of the provider (0 - Carto)
+            type: string
+            description: Id of the provider (cartodb, featureservice for rest connector and csv for document connector)
           data_attributes:
             type: object
             description: Data attributes (for json dataset)
@@ -205,16 +201,6 @@ definitions:
               name:
                 type: string
                 description: Name of the dataset
-              format:
-                type: integer
-                format: int32
-                description: Id of the format (0 - JSON)
-              data_path:
-                type: string
-                description: Path to data (for rest dataset)
-              attributes_path:
-                type: string
-                description: Path to attributes (for rest dataset)
 
   Datasets:
     type: array

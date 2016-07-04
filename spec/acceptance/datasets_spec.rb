@@ -112,6 +112,20 @@ module V1
           expect(json['tags']).to          eq(["tag1", "tag2"])
         end
 
+        it 'Allows to create rest dataset without tags and only required attributes' do
+          post '/datasets', params: {"dataset": {"connector_provider": "cartodb",
+                                                 "connector_url": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
+                                                 "dataset_attributes": {"name": "Carto test api"}}}
+
+          expect(status).to eq(201)
+          expect(json['name']).not_to       be_nil
+          expect(json['provider']).to       eq('cartodb')
+          expect(json['format']).to         be_present
+          expect(json['connector_url']).to  be_present
+          expect(json['data_path']).not_to  be_present
+          expect(json['table_name']).not_to be_present
+        end
+
         it 'Allows to update dataset' do
           put "/datasets/#{dataset_id}", params: {"dataset": {"dataset_attributes": {"name": "Carto test api update"}}}
 
