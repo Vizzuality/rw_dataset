@@ -46,4 +46,6 @@ Rails.application.configure do
     t = Time.local(2015, 6, 1, 12, 0, 0, 0)
     Timecop.travel(t)
   end
+
+  config.active_record.dump_schema_after_migration = false
 end
