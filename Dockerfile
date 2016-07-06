@@ -1,20 +1,28 @@
-FROM ruby:2.3.0
+FROM ruby:2.3.0-alpine
 MAINTAINER Sebastian Schkudlara "sebastian.schkudlara@vizzuality.com"
 
-RUN apt-get update -qq && apt-get install -y build-essential
+ENV BUILD_PACKAGES bash build-base build-base libxml2-dev libxslt-dev postgresql-dev
 
-RUN mkdir /rw_dataset
+# Update and install all of the required packages.
+# At the end, remove the apk cache
+RUN apk update && \
+    apk upgrade && \
+    apk add $BUILD_PACKAGES && \
+    rm -rf /var/cache/apk/*
 
 RUN gem install bundler --no-ri --no-rdoc
+
+# Use libxml2, libxslt a packages from alpine for building nokogiri
+RUN bundle config build.nokogiri
+
+RUN mkdir /rw_dataset
 
 WORKDIR /rw_dataset
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
-RUN bundle install --without development test doc --jobs=3
+RUN bundle install
 
 ADD . /rw_dataset
-
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 EXPOSE 3000
 
