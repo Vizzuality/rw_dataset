@@ -20,7 +20,7 @@ RUN mkdir /rw_dataset
 WORKDIR /rw_dataset
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
-RUN bundle install
+RUN bundle install --jobs 20 --retry 5 --without development test doc
 
 ADD . /rw_dataset
 
