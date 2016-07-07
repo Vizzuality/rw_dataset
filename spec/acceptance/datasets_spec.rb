@@ -196,6 +196,18 @@ module V1
           expect(json['tags']).to     eq(["tag1", "tag2"])
         end
 
+        it 'Allows to create json dataset from json url' do
+          post '/datasets', params: {"dataset": {
+                                      "connector_type": "json",
+                                      "dataset_attributes": {"name": "Json external data test api", "data_path": "data"},
+                                      "connector_url": "http://api.resourcewatch.org:81/query/3db3a4cd-f654-41bd-b26b-8c865f02f933?limit=10"
+                                    }}
+
+          expect(status).to eq(201)
+          expect(json['name']).to     eq('Json external data test api')
+          expect(json['provider']).to eq('rwjson')
+        end
+
         it 'Allows to delete dataset' do
           delete "/datasets/#{dataset_id}"
 
