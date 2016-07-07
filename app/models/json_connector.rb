@@ -41,8 +41,10 @@ class JsonConnector < ApplicationRecord
     object = self.class.name
     params_for_adapter = {}
     params_for_adapter['dataset_id']      = dataset.id
-    params_for_adapter['data_path']       = self.try(:parent_connector_data_path)
-    params_for_adapter['connector_url']   = self.try(:parent_connector_url)
+    params_for_adapter['data_path']       = dataset.data_path.present? ? dataset.data_path : self.try(:parent_connector_data_path)
+    params_for_adapter['attributes_path'] = dataset.attributes_path if dataset.attributes_path.present?
+
+    params_for_adapter['connector_url']   = self.try(:parent_connector_url).present? ? self.try(:parent_connector_url) : options['connector_url']
     params_for_adapter['data_attributes'] = Oj.dump(options['data_attributes']) if options['data_attributes'].present?
     params_for_adapter['data']            = Oj.dump(options['data'])            if options['data'].present?
     params_for_adapter['to_delete']       = true                                if options.include?('delete')

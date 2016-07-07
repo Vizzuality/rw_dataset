@@ -34,6 +34,7 @@ class RestConnector < ApplicationRecord
     params_for_adapter['dataset_id']      = dataset.id
     params_for_adapter['connector_url']   = connector_url
     params_for_adapter['provider']        = connector_provider
+    params_for_adapter['data_path']       = dataset.data_path
 
     params_for_adapter['attributes_path'] = dataset.attributes_path
     params_for_adapter['to_delete']       = true if options.include?('delete')
