@@ -220,6 +220,7 @@ module V1
         it 'Allows to create csv dataset with tags' do
           post '/datasets', params: {"dataset": {"connector_type": "document",
                                                  "connector_url": "https://test-csv.csv",
+                                                 "table_name": "my_table",
                                                  "dataset_attributes": {"name": "csv file", "tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
 
           expect(status).to eq(201)
