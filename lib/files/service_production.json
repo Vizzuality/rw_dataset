@@ -64,7 +64,7 @@
         "description": "Resource Watch - Dataset API",
         "version": "1.0.0"
       },
-      "host": "ec2-52-23-163-254.compute-1.amazonaws.com",
+      "host": "api.resourcewatch.org:81",
       "schemes": [
         "http"
       ],
@@ -306,6 +306,115 @@
               }
             }
           }
+        },
+        "/query/{id}": {
+          "get": {
+            "description": "Do query to dataset using SQL or Featureservice (EXAMPLE SQL - http://api.resourcewatch.org:81/query/db6ea452-a89b-43e3-923e-10b5db4f6cb9?sql=select country_iso,sum(loss) as loss,avg(emiss) as emiss from data where country_iso in ('BRA','PER') group by country_iso order by country_iso DESC)",
+            "produces": [
+              "application/json"
+            ],
+            "tags": [
+              "Query"
+            ],
+            "parameters": [
+              {
+                "name": "id",
+                "in": "path",
+                "description": "ID of dataset to do query",
+                "required": true,
+                "type": "string"
+              },
+              {
+                "name": "sql",
+                "in": "query",
+                "description": "SQL query - Only support SELECT, WHERE, ORDER BY, GROUP BY, LIMIT, AS, aggregate functions (count, sum, min, max, avg, stddev, var)",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "name": "tableName",
+                "in": "query",
+                "description": "Name of the table",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "name": "outFields",
+                "in": "query",
+                "description": "Select param of the feature service (example 'COL1,COL2 AS COL')",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "name": "where",
+                "in": "query",
+                "description": "Where param of the feature service (example 'COL1 = \\'juan\\' and COL2=2')",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "name": "outStatistics",
+                "in": "query",
+                "description": "outStatistics param of the feature service (example '[{\"statisticType\":\"count\",\"onStatisticField\":\"FIELD\",\"outStatisticFieldName\":\"OUTFIELD\"}]')",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "name": "groupByFieldsForStatistics",
+                "in": "query",
+                "description": "groupByFieldsForStatistics param of the feature service (example 'COL2')",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "name": "resultRecordCount",
+                "in": "query",
+                "description": "resultRecordCount param of the feature service (example 10)",
+                "required": false,
+                "type": "number"
+              },
+              {
+                "name": "orderByFields",
+                "in": "query",
+                "description": "orderByFields param of the feature service (example 'COL1 ASC,COL2 DESC')",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "name": "limit",
+                "in": "query",
+                "description": "limit results list (example 10)",
+                "required": false,
+                "type": "integer"
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Results obtained",
+                "schema": {
+                  "$ref": "#/definitions/QueryResponse"
+                }
+              },
+              "404": {
+                "description": "Dataset/Query not found",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              },
+              "500": {
+                "description": "Unexpected error",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              },
+              "default": {
+                "description": "unexpected error",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              }
+            }
+          }
         }
       },
       "definitions": {
@@ -438,6 +547,23 @@
                   "type": "number",
                   "description": "Number of data rows"
                 }
+              }
+            }
+          }
+        },
+        "QueryResponse": {
+          "type": "object",
+          "properties": {
+            "fields": {
+              "type": "object",
+              "description": "Object with key (name of column) and type (type of data)"
+            },
+            "data": {
+              "type": "array",
+              "description": "Result objects returned by the query.",
+              "items": {
+                "type": "object",
+                "description": "Objects with the columns of the query"
               }
             }
           }
