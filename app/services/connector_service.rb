@@ -10,6 +10,7 @@ class ConnectorService
       body['data_columns']    = options['data_attributes'] if options['data_attributes'].present?
       body['data']            = options['data']            if options['data'].present?
       body['data_path']       = options['data_path']       if options['data_path'].present?
+      body['table_name']      = options['table_name']      if options['table_name'].present?
 
       headers = {}
       headers['Accept']         = 'application/json'
