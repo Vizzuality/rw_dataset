@@ -12,10 +12,28 @@ module V1
     end
 
     def update
-      if @dateable.update(dataset_params)
+      if @dateable.update(dataset_params_for_update)
         render json: @dataset.reload, status: 200, serializer: DatasetSerializer, root: false
       else
         render json: { success: false, message: 'Error creating dataset' }, status: 422
+      end
+    end
+
+    def update_data
+      begin
+        @dateable.connect_to_service(dataset_data_params_for_update)
+        render json: { success: true, message: 'Dataset data updated' }, status: 200
+      rescue
+        render json: { success: false, message: 'Error updating dataset data' }, status: 422
+      end
+    end
+
+    def delete_data
+      begin
+        @dateable.connect_to_service(dataset_data_params_for_delete)
+        render json: { success: true, message: 'Dataset data deleted' }, status: 200
+      rescue
+        render json: { success: false, message: 'Error deleting dataset data' }, status: 422
       end
     end
 
@@ -88,6 +106,28 @@ module V1
 
       def dataset_params
         params.require(:dataset).permit!
+      end
+
+      def dataset_params_for_update
+        if @dateable.class.name.include?('JsonConnector')
+          params.require(:dataset).except(:data, :data_attributes, :connector_url).permit!
+        else
+          params.require(:dataset).except(:data, :data_attributes).permit!
+        end
+      end
+
+      def dataset_data_params_for_update
+        if @dateable.class.name.include?('JsonConnector') && params[:data_id].present?
+          params.require(:dataset).merge(data_to_update: true, data_id: params[:data_id]).permit!
+        else
+          params.require(:dataset).merge(to_update: true).permit!
+        end
+      end
+
+      def dataset_data_params_for_delete
+        if @dateable.class.name.include?('JsonConnector') && params[:data_id].present?
+          params.merge(to_delete: true, data_to_update: true, data_id: params[:data_id])
+        end
       end
   end
 end

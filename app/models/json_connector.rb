@@ -41,6 +41,7 @@ class JsonConnector < ApplicationRecord
     object = self.class.name
     params_for_adapter = {}
     params_for_adapter['dataset_id']      = dataset.id
+    params_for_adapter['data_id']         = options['data_id'] if options['data_id'].present?
     params_for_adapter['data_path']       = if options['dataset_attributes'].present? && options['dataset_attributes']['data_path'].present?
                                               options['dataset_attributes']['data_path']
                                             elsif self.try(:parent_connector_data_path).present?
@@ -54,7 +55,9 @@ class JsonConnector < ApplicationRecord
     params_for_adapter['connector_url']   = self.try(:parent_connector_url).present? ? self.try(:parent_connector_url) : options['connector_url']
     params_for_adapter['data_attributes'] = Oj.dump(options['data_attributes']) if options['data_attributes'].present?
     params_for_adapter['data']            = Oj.dump(options['data'])            if options['data'].present?
-    params_for_adapter['to_delete']       = true                                if options.include?('delete')
+    params_for_adapter['to_delete']       = true                                if options.include?('delete') || options['to_delete'].present?
+    params_for_adapter['to_update']       = true                                if options['to_update'].present?
+    params_for_adapter['data_to_update']  = true                                if options['data_to_update'].present?
 
     ConnectorServiceJob.perform_later(object, params_for_adapter)
     dataset.update_attributes(status: 0)
