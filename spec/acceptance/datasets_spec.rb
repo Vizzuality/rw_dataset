@@ -127,7 +127,9 @@ module V1
         end
 
         it 'Allows to update dataset' do
-          put "/datasets/#{dataset_id}", params: {"dataset": {"dataset_attributes": {"name": "Carto test api update"}}}
+          put "/datasets/#{dataset_id}", params: {"dataset": {"dataset_attributes": {"name": "Carto test api update"},
+                                                  "data": [{"cartodb_id": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
+                                                           {"cartodb_id": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
 
           expect(status).to eq(200)
           expect(json['name']).to         eq('Carto test api update')
@@ -170,7 +172,10 @@ module V1
         let!(:dataset_id) { Dataset.find_by(name: 'Json test set').id }
 
         it 'Allows to update dataset' do
-          put "/datasets/#{dataset_id}", params: {"dataset": {"dataset_attributes": {"name": "Json test api update"}}}
+          put "/datasets/#{dataset_id}", params: {"dataset": {"dataset_attributes": {"name": "Json test api update"},
+                                                  "connector_url": "http://test.qwerty",
+                                                  "data": [{"cartodb_id": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
+                                                           {"cartodb_id": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
 
           expect(status).to eq(200)
           expect(json['name']).to eq('Json test api update')
@@ -213,6 +218,22 @@ module V1
 
           expect(status).to eq(200)
           expect(json['message']).to eq('Dataset would be deleted!')
+        end
+
+        it 'Allows to update dataset data' do
+          post "/datasets/#{dataset_id}/data", params: {"dataset": {"data": [
+                                                       {"cartodb_id": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
+                                                       {"cartodb_id": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
+
+          expect(status).to eq(200)
+          expect(json['message']).to eq('Dataset data updated')
+        end
+
+        it 'Allows to delete dataset data' do
+          delete "/datasets/#{dataset_id}/data/e3b4acca-d34d-46b9-833f-08c3a14fe2f5"
+
+          expect(status).to eq(200)
+          expect(json['message']).to eq('Dataset data deleted')
         end
       end
 

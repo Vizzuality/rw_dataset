@@ -30,6 +30,7 @@ class DocConnector < ApplicationRecord
     params_for_adapter['provider']      = 'csv'
     params_for_adapter['table_name']    = table_name
     params_for_adapter['to_delete']     = true if options.include?('delete')
+    params_for_adapter['to_update']     = true if options['to_update'].present?
 
     ConnectorServiceJob.perform_later(object, params_for_adapter)
     dataset.update_attributes(status: 0)
