@@ -5,6 +5,7 @@ class ConnectorService
     def connect_to_service(object_class, options)
       body = {}
       body['id']              = options['dataset_id']
+      body['data_id']         = options['data_id']         if options['data_id'].present?
       body['connector_url']   = options['connector_url']   if options['connector_url'].present?
       body['attributes_path'] = options['attributes_path'] if options['attributes_path'].present?
       body['data_columns']    = options['data_attributes'] if options['data_attributes'].present?
@@ -23,7 +24,8 @@ class ConnectorService
                     end
 
       url  = service_url
-      url += "/#{options['dataset_id']}" if options['to_delete'].present?
+      url += "/#{options['dataset_id']}"   if options['to_delete'].present? || options['to_update'].present? || options['data_to_update'].present?
+      url += "/data/#{options['data_id']}" if options['data_to_update'].present?
       url  = URI.decode(url)
 
       method = options['to_delete'].present? ? 'delete' : 'post'

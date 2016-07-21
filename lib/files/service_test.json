@@ -48,6 +48,33 @@
         }]
       },
       {
+        "url": "/datasets/:id/data",
+        "method": "POST",
+        "endpoints": [{
+            "method": "POST",
+            "baseUrl": "http://192.168.99.100:3000",
+            "path": "/datasets/:id/data"
+        }]
+      },
+      {
+        "url": "/datasets/:id/data/:data_id",
+        "method": "POST",
+        "endpoints": [{
+            "method": "POST",
+            "baseUrl": "http://192.168.99.100:3000",
+            "path": "/datasets/:id/data/:data_id"
+        }]
+      },
+      {
+        "url": "/datasets/:id/data/:data_id",
+        "method": "DELETE",
+        "endpoints": [{
+            "method": "DELETE",
+            "baseUrl": "http://192.168.99.100:3000",
+            "path": "/datasets/:id/data/:data_id"
+        }]
+      },
+      {
         "url": "/datasets/:id",
         "method": "DELETE",
         "endpoints": [{
