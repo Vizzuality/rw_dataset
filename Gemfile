@@ -2,17 +2,17 @@ source 'https://rubygems.org'
 
 ruby '2.3.0'
 
-gem 'rails', '>= 5.0.0.rc2', '< 5.1'
+gem 'rails', '~> 5.0.0'
 
 gem 'pg', '~> 0.18'
 
 gem 'oj'
 gem 'oj_mimic_json'
-gem 'active_model_serializers', '~> 0.10.0.rc5'
+gem 'active_model_serializers', '~> 0.10.2'
 gem 'typhoeus', require: false
 
 group :development, :test do
-  gem 'rspec-rails', '3.5.0.beta2'
+  gem 'rspec-rails', '~> 3.5.1'
   gem 'byebug'
   gem 'faker'
   gem 'rubocop', require: false
