@@ -244,6 +244,80 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
+  /datasets/{id}/data:
+    post:
+      summary: Update dataset data (Insert new data for json dataset)
+      description: Update dataset data
+      produces:
+        - application/json
+      tags:
+        - Dataset
+      parameters:
+        - name: dataset
+          in: body
+          description: Dataset data to save
+          required: true
+          schema:
+            $ref: '#/definitions/DatasetData'
+      responses:
+        200:
+          description: The object updated
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Dataset data updated
+        400:
+          description: Validate error
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /datasets/{id}/data/{data_id}:
+    post:
+      summary: Update a specific data object
+      description: Update dataset data - specific data object
+      produces:
+        - application/json
+      tags:
+        - Dataset
+      parameters:
+        - name: dataset
+          in: body
+          description: Dataset data value to save
+          required: true
+          schema:
+            $ref: '#/definitions/DatasetSpecificData'
+      responses:
+        200:
+          description: The object updated
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Dataset data updated
+        400:
+          description: Validate error
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
 definitions:
   Data:
     type: object
@@ -278,6 +352,34 @@ definitions:
               name:
                 type: string
                 description: Name of the dataset
+
+  DatasetData:
+    type: object
+    properties:
+      dataset:
+        type: object
+        properties:
+          connector_url:
+            type: string
+            description: Url of dataset json data - get json data from external url
+          data_path:
+            type: string
+            description: Path to access data
+          data:
+            type: array
+            description: Data (for json dataset)
+            items:
+              $ref: '#/definitions/Data'
+
+  DatasetSpecificData:
+    type: object
+    properties:
+      dataset:
+        type: object
+        properties:
+          data:
+            type: object
+            description: Data values (sample - {"dataset" => { "data" => { "key1" => "new value", "key2" => "new value"... } } })
 
   Datasets:
     type: array
