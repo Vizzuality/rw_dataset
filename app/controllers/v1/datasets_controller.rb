@@ -105,7 +105,7 @@ module V1
       end
 
       def connector_type_filter
-        params.permit(:connector_type, :status, :dataset)
+        params.permit(:connector_type, :status, :dataset, :app)
       end
 
       def set_dataset
