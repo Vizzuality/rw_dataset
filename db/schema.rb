@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160711073748) do
+ActiveRecord::Schema.define(version: 20160726125317) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,7 +29,11 @@ ActiveRecord::Schema.define(version: 20160711073748) do
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
     t.jsonb    "tags",            default: []
+    t.jsonb    "application",     default: []
+    t.jsonb    "layer_info",      default: []
+    t.index ["application"], name: "index_datasets_on_application", using: :gin
     t.index ["dateable_id", "dateable_type"], name: "index_datasets_on_connector_and_connector_type", unique: true, using: :btree
+    t.index ["layer_info"], name: "index_datasets_on_layer_info", using: :gin
     t.index ["tags"], name: "index_datasets_on_tags", using: :gin
   end
 

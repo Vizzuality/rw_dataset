@@ -17,7 +17,7 @@
 #
 
 class DatasetSerializer < ActiveModel::Serializer
-  attributes :id, :name, :data_path, :attributes_path, :provider, :format, :connector_url, :table_name, :tags, :cloned_host, :meta
+  attributes :id, :application, :name, :data_path, :attributes_path, :provider, :format, :layers, :connector_url, :table_name, :tags, :cloned_host, :meta
 
   def provider
     object.dateable.try(:provider_txt)
@@ -33,6 +33,10 @@ class DatasetSerializer < ActiveModel::Serializer
 
   def table_name
     object.dateable.try(:table_name)
+  end
+
+  def layers
+    object.try(:layer_info)
   end
 
   def cloned_host
