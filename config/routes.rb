@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     post   'datasets/:id/data',            to: 'datasets#update_data'
     post   'datasets/:id/data/(:data_id)', to: 'datasets#update_data'
     delete 'datasets/:id/data/(:data_id)', to: 'datasets#delete_data'
+    put    'datasets/:id/layer',           to: 'datasets#update_layer_info'
 
     get 'info', to: 'datasets#info'
   end

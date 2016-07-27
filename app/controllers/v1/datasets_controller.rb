@@ -28,6 +28,15 @@ module V1
       end
     end
 
+    def update_layer_info
+      begin
+        @dataset.update_layer_info(params)
+        render json: { success: true, message: 'Dataset layer info updated' }, status: 200
+      rescue
+        render json: { success: false, message: 'Error updating dataset data' }, status: 422
+      end
+    end
+
     def delete_data
       begin
         @dateable.connect_to_service(dataset_data_params_for_delete)

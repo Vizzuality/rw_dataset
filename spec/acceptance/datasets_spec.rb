@@ -145,6 +145,23 @@ module V1
           expect(json['tags']).to eq(["tag1", "tag2"])
         end
 
+        it 'Allows to add layers to existing dataset' do
+          put "/datasets/#{dataset_id}/layer", params: {"dataset": {"dataset_attributes": {"layer_info": {"application": "wrw", "default": true, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30l"}}}}
+
+          expect(status).to eq(200)
+          expect(json['message']).to eq('Dataset layer info updated')
+          expect(Dataset.find(dataset_id).layer_info.size).to eq(2)
+        end
+
+        it 'Allows to add layers to existing dataset' do
+          put "/datasets/#{dataset_id}/layer", params: {"dataset": {"dataset_attributes": {"layer_info": {"application": "wrw", "default": true, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30m"}}}}
+
+          expect(status).to eq(200)
+          expect(json['message']).to eq('Dataset layer info updated')
+          expect(Dataset.find(dataset_id).layer_info.size).to eq(1)
+          expect(Dataset.find(dataset_id).layer_info[0]['default']).to eq('true')
+        end
+
         it 'Allows to delete dataset' do
           delete "/datasets/#{dataset_id}"
 
