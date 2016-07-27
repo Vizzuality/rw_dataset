@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+rails_env = echo $RAILS_ENV
 
 case "$1" in
     develop)
@@ -20,11 +21,11 @@ case "$1" in
         ;;
     start)
         echo "Running Start"
-        bundle exec rake db:exists RAILS_ENV=$(RAILS_ENV)
+        bundle exec rake db:exists RAILS_ENV=rails_env
 
         export SECRET_KEY_BASE=$(rake secret)
 
-        exec ./server start $(RAILS_ENV)
+        exec ./server start rails_env
         ;;
     *)
         exec "$@"
