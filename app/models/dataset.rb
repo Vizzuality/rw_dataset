@@ -55,6 +55,23 @@ class Dataset < ApplicationRecord
     status_txt == 'saved'
   end
 
+  def update_layer_info(options)
+    data      = options['dataset']['dataset_attributes']['layer_info']
+    layer_obj = self.layer_info.find { |l| l['layer_id'] == data['layer_id'] && l['application'] == data['application'] }
+
+    layer_info_data = if layer_info.any? && layer_obj.present?
+                        data       = layer_obj.merge(data)
+                        layer_info = self.layer_info.delete_if { |l| l['layer_id'] == data['layer_id'] && l['application'] == data['application'] }
+                        layer_info.inject([data], :<<)
+                      elsif layer_obj.blank?
+                        self.layer_info.inject([data], :<<)
+                      else
+                        [data]
+                      end
+
+    update(layer_info: layer_info_data)
+  end
+
   private
 
     def merge_tags
