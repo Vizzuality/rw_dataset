@@ -48,6 +48,15 @@
         }]
       },
       {
+        "url": "/datasets/:id/layer",
+        "method": "PUT",
+        "endpoints": [{
+            "method": "PUT",
+            "baseUrl": "http://localhost:3000",
+            "path": "/datasets/:id/layer"
+        }]
+      },
+      {
         "url": "/datasets/:id/data",
         "method": "POST",
         "endpoints": [{
