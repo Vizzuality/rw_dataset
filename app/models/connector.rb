@@ -1,8 +1,9 @@
 class Connector
   class << self
     def fetch_all(options)
-      connector_type = options['connector_type'] if options['connector_type'].present?
-      status         = options['status']         if options['status'].present?
+      connector_type = options['connector_type'].downcase if options['connector_type'].present?
+      status         = options['status'].downcase         if options['status'].present?
+      app            = options['app'].downcase            if options['app'].present?
 
       datasets = Dataset.includes(:dateable).recent
 
@@ -13,6 +14,8 @@ class Connector
                  else
                    datasets
                  end
+
+      datasets = app_filter(datasets, app) if app
 
       if status
         status_filter(datasets, status)
@@ -29,6 +32,17 @@ class Connector
                  when 'failed'   then datasets.filter_failed
                  when 'disabled' then datasets.filter_inactives
                  when 'all'      then datasets
+                 else
+                   datasets.available
+                 end
+
+      datasets
+    end
+
+    def app_filter(scope, app)
+      datasets = scope
+      datasets = if app.present? && !app.include?('all')
+                   datasets.filter_apps(app)
                  else
                    datasets.available
                  end

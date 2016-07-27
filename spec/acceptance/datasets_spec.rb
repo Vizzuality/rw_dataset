@@ -63,6 +63,34 @@ module V1
         expect(status).to eq(200)
         expect(json.size).to eq(1)
       end
+
+      it 'Show list of datasets for app GFW' do
+        get '/datasets?app=GFw'
+
+        expect(status).to eq(200)
+        expect(json.size).to eq(2)
+      end
+
+      it 'Show list of datasets for app WRW' do
+        get '/datasets?app=wrw'
+
+        expect(status).to eq(200)
+        expect(json.size).to eq(1)
+      end
+
+      it 'Show blank list of datasets for not existing app' do
+        get '/datasets?app=notexisting'
+
+        expect(status).to eq(200)
+        expect(json.size).to eq(0)
+      end
+
+      it 'Show blank list of datasets for not existing app' do
+        get '/datasets?app=all'
+
+        expect(status).to eq(200)
+        expect(json.size).to eq(4)
+      end
     end
 
     context 'For specific dataset' do

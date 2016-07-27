@@ -25,6 +25,7 @@ class Dataset < ApplicationRecord
   belongs_to :dateable, polymorphic: true
 
   before_save  :merge_tags,        if: "tags_changed?"
+  before_save  :merge_apps,        if: "application_changed?"
   after_save   :call_tags_service, if: "tags_changed?"
   after_create :update_data_path,  if: "dateable_type.include?('JsonConnector')"
 
@@ -38,6 +39,8 @@ class Dataset < ApplicationRecord
   scope :filter_rest, -> { where(dateable_type: 'RestConnector').includes(:dateable) }
   scope :filter_json, -> { where(dateable_type: 'JsonConnector').includes(:dateable) }
   scope :filter_doc,  -> { where(dateable_type: 'DocConnector').includes(:dateable)  }
+
+  scope :filter_apps, -> (app) { where('application ?| array[:keys]', keys: ["#{app}"]) }
 
   def format_txt
     FORMAT[format - 0]
@@ -76,6 +79,10 @@ class Dataset < ApplicationRecord
 
     def merge_tags
       self.tags = self.tags.each { |t| t.downcase! }.uniq
+    end
+
+    def merge_apps
+      self.application = self.application.each { |a| a.downcase! }.uniq
     end
 
     def update_data_path
