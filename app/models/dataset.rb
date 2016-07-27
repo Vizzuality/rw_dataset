@@ -14,6 +14,8 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  tags            :jsonb
+#  application     :jsonb
+#  layer_info      :jsonb
 #
 
 class Dataset < ApplicationRecord
