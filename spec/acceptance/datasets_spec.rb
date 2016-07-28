@@ -68,7 +68,9 @@ module V1
         get '/datasets?app=GFw'
 
         expect(status).to eq(200)
-        expect(json.size).to eq(2)
+        expect(json.size).to                           eq(2)
+        expect(json[0]['layers'][0]['application']).to eq('gfw')
+        expect(json[0]['application'][0]).to           eq('gfw')
       end
 
       it 'Show list of datasets for app WRW' do

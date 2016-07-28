@@ -1,5 +1,5 @@
 class DatasetArraySerializer < ActiveModel::Serializer
-  attributes :id, :provider, :format, :name, :status
+  attributes :id, :provider, :format, :name, :status, :application, :layers
 
   def status
     object.status_txt
@@ -11,5 +11,9 @@ class DatasetArraySerializer < ActiveModel::Serializer
 
   def format
     object.try(:format_txt)
+  end
+
+  def layers
+    object.try(:layer_info)
   end
 end
