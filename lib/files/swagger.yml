@@ -91,9 +91,13 @@ paths:
           type: string
       responses:
         200:
-          description: Dataset updated
+          description: Dataset deleted
           schema:
-            $ref: '#/definitions/Dataset'
+            type: object
+            properties:
+              message:
+                type: string
+                description: Dataset would be deleted!
         404:
           description: Dataset not found
           schema:
@@ -122,6 +126,10 @@ paths:
         - name: connector_type
           in: query
           description: Filter datasets on type (rest, json)
+          type: string
+        - name: app
+          in: query
+          description: Filter datasets on application (prep, gfw, etc..)
           type: string
       responses:
         200:
@@ -253,6 +261,11 @@ paths:
       tags:
         - Dataset
       parameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: ID of dataset
         - name: dataset
           in: body
           description: Dataset data to save
@@ -290,6 +303,16 @@ paths:
       tags:
         - Dataset
       parameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: ID of dataset
+        - name: data_id
+          in: path
+          type: string
+          required: true
+          description: ID of dataset's data object
         - name: dataset
           in: body
           description: Dataset data value to save
@@ -352,6 +375,9 @@ definitions:
               name:
                 type: string
                 description: Name of the dataset
+          application:
+            type: object
+            description: Array of applications name
 
   DatasetData:
     type: object
@@ -402,6 +428,24 @@ definitions:
       format:
         type: string
         description: Dataset format
+      application:
+        type: object
+        description: Array of applications name
+      layer:
+        type: object
+        properties:
+          layer_id:
+            type: string
+            description: ID of layer
+          default:
+            type: boolean
+            description: true or false for default layer
+          application:
+            type: string
+            description: App name
+      status:
+        type: string
+        description: Status
 
   Dataset:
     type: object
@@ -431,6 +475,21 @@ definitions:
       table_name:
         type: string
         description: Name of the table of the dataset
+      application:
+        type: object
+        description: Array of applications name
+      layer:
+        type: object
+        properties:
+          layer_id:
+            type: string
+            description: ID of layer
+          default:
+            type: boolean
+            description: true or false for default layer
+          application:
+            type: string
+            description: App name
       meta:
         type: object
         properties:
