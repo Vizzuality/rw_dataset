@@ -1,6 +1,7 @@
 {
     "id": "rw_dataset_v1",
     "name": "RW Dataset v1",
+    "tags": ["rw"],
     "urls": [
       {
         "url": "/datasets",
