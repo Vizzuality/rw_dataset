@@ -88,6 +88,7 @@ module V1
     private
 
       def clone_dataset
+        dataset_params['dataset_url'] = dataset_url_fixer
         JsonConnector.create(
           parent_connector_url: dataset_params['dataset_url'],
           parent_connector_provider: @dateable.attributes['connector_provider'],
@@ -102,6 +103,10 @@ module V1
             row_count: @dataset.attributes['row_count']
           }
         ) if dataset_params['dataset_url'].present?
+      end
+
+      def dataset_url_fixer
+        dataset_params['dataset_url'].include?('http://') ? dataset_params['dataset_url'] : "#{ServiceSetting.gateway_url}#{dataset_params['dataset_url']}"
       end
 
       def connector_type_filter
