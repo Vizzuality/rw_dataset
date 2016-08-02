@@ -13,6 +13,8 @@
 class DocConnector < ApplicationRecord
   self.table_name = :doc_connectors
 
+  PROVIDER = %w(csv).freeze
+
   enum connector_provider: { csv: 0 }
 
   has_one :dataset, as: :dateable, dependent: :destroy, inverse_of: :dateable
@@ -20,6 +22,10 @@ class DocConnector < ApplicationRecord
 
   def provider_txt
     connector_provider
+  end
+
+  def self.parent_provider_txt(parent_connector_provider)
+    PROVIDER[parent_connector_provider - 0]
   end
 
   def connect_to_service(options)
