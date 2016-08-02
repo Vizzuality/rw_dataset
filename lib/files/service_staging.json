@@ -89,6 +89,7 @@
       {
         "url": "/datasets/:id",
         "method": "DELETE",
+        "authenticated": true,
         "endpoints": [{
             "method": "DELETE",
             "baseUrl": "http://localhost:3000",
