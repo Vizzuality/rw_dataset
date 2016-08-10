@@ -19,7 +19,7 @@
 #
 
 class DatasetSerializer < ActiveModel::Serializer
-  attributes :id, :application, :name, :data_path, :attributes_path, :provider, :format, :layers, :connector_url, :table_name, :tags, :cloned_host, :meta
+  attributes :id, :application, :name, :data_path, :attributes_path, :provider, :format, :layers, :connector_url, :table_name, :tags, :cloned_host
 
   def provider
     object.dateable.try(:provider_txt)
@@ -48,15 +48,6 @@ class DatasetSerializer < ActiveModel::Serializer
     data['host_id']       = object.dateable.try(:parent_connector_id)
     data['host_type']     = object.dateable.try(:parent_connector_type)
     data['host_path']     = object.dateable.try(:parent_connector_data_path)
-    data
-  end
-
-  def meta
-    data = {}
-    data['status']     = object.try(:status_txt)
-    data['updated_at'] = object.try(:updated_at)
-    data['created_at'] = object.try(:created_at)
-    data['rows']       = object.try(:row_count)
     data
   end
 end
