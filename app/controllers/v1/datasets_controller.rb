@@ -4,11 +4,13 @@ module V1
 
     def index
       @datasets = Connector.fetch_all(connector_type_filter)
-      render json: @datasets, each_serializer: DatasetArraySerializer, root: false
+      render json: @datasets, each_serializer: DatasetSerializer, root: false
     end
 
     def show
-      render json: @dataset, serializer: DatasetSerializer, root: false
+      render json: @dataset, serializer: DatasetSerializer, root: false, meta: { status: @dataset.try(:status_txt),
+                                                                                 updated_at: @dataset.try(:updated_at),
+                                                                                 created_at: @dataset.try(:created_at) }
     end
 
     def update
