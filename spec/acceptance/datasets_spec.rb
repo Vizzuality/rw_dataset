@@ -153,7 +153,7 @@ module V1
           expect(json['attributes']['format']).to         be_present
           expect(json['attributes']['connector_url']).to  be_present
           expect(json['attributes']['data_path']).not_to  be_present
-          expect(json['attributes']['table_name']).not_to be_present
+          expect(json['attributes']['table_name']).to     eq('cait_2_0_country_ghg_emissions_filtered')
         end
 
         it 'Allows to update dataset' do
