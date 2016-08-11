@@ -18,7 +18,7 @@
 #  layer_info      :jsonb
 #
 
-class DatasetSerializer < ActiveModel::Serializer
+class DatasetSerializer < ApplicationSerializer
   attributes :id, :application, :name, :data_path, :attributes_path, :provider, :format, :layers, :connector_url, :table_name, :tags, :cloned_host
 
   def provider
