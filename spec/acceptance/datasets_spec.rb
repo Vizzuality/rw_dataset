@@ -106,9 +106,9 @@ module V1
           expect(json['attributes']['name']).to          eq('cartodb test set')
           expect(json['attributes']['provider']).to      eq('cartodb')
           expect(json['attributes']['format']).to        eq('JSON')
-          expect(json['attributes']['connectorUrl']).to be_present
-          expect(json['attributes']['dataPath']).to     be_present
-          expect(json['attributes']['tableName']).to    be_present
+          expect(json['attributes']['connector_url']).to be_present
+          expect(json['attributes']['data_path']).to     be_present
+          expect(json['attributes']['table_name']).to    be_present
         end
 
         it 'Allows to create rest dataset without tags' do
@@ -120,9 +120,9 @@ module V1
           expect(json['attributes']['name']).not_to      be_nil
           expect(json['attributes']['provider']).to      eq('cartodb')
           expect(json['attributes']['format']).to        be_present
-          expect(json['attributes']['connectorUrl']).to be_present
-          expect(json['attributes']['dataPath']).to     be_present
-          expect(json['attributes']['tableName']).to    be_present
+          expect(json['attributes']['connector_url']).to be_present
+          expect(json['attributes']['data_path']).to     be_present
+          expect(json['attributes']['table_name']).to    be_present
           expect(json['attributes']['tags']).to          be_empty
         end
 
@@ -136,9 +136,9 @@ module V1
           expect(json['attributes']['name']).not_to      be_nil
           expect(json['attributes']['provider']).to      eq('cartodb')
           expect(json['attributes']['format']).to        be_present
-          expect(json['attributes']['connectorUrl']).to be_present
-          expect(json['attributes']['dataPath']).to     be_present
-          expect(json['attributes']['tableName']).to    be_present
+          expect(json['attributes']['connector_url']).to be_present
+          expect(json['attributes']['data_path']).to     be_present
+          expect(json['attributes']['table_name']).to    be_present
           expect(json['attributes']['tags']).to          eq(["tag1", "tag2"])
         end
 
@@ -151,9 +151,9 @@ module V1
           expect(json['attributes']['name']).not_to       be_nil
           expect(json['attributes']['provider']).to       eq('cartodb')
           expect(json['attributes']['format']).to         be_present
-          expect(json['attributes']['connectorUrl']).to  be_present
-          expect(json['attributes']['dataPath']).not_to  be_present
-          expect(json['attributes']['tableName']).not_to be_present
+          expect(json['attributes']['connector_url']).to  be_present
+          expect(json['attributes']['data_path']).not_to  be_present
+          expect(json['attributes']['table_name']).not_to be_present
         end
 
         it 'Allows to update dataset' do
@@ -209,8 +209,8 @@ module V1
           expect(json['attributes']['name']).not_to      be_nil
           expect(json['attributes']['provider']).to      eq('featureservice')
           expect(json['attributes']['format']).to        be_present
-          expect(json['attributes']['connectorUrl']).to be_present
-          expect(json['attributes']['dataPath']).to     be_present
+          expect(json['attributes']['connector_url']).to be_present
+          expect(json['attributes']['data_path']).to     be_present
           expect(json['attributes']['tags']).to          eq(["tag1", "tag2"])
         end
       end
@@ -295,7 +295,7 @@ module V1
           expect(json['attributes']['name']).not_to      be_nil
           expect(json['attributes']['provider']).to      eq('csv')
           expect(json['attributes']['format']).to        be_present
-          expect(json['attributes']['connectorUrl']).to be_present
+          expect(json['attributes']['connector_url']).to be_present
           expect(json['attributes']['tags']).to          eq(["tag1", "tag2"])
         end
       end

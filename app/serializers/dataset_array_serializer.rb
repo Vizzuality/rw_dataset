@@ -1,4 +1,4 @@
-class DatasetArraySerializer < ActiveModel::Serializer
+class DatasetArraySerializer < ApplicationSerializer
   attributes :id, :provider, :format, :name, :status, :application, :layers
 
   def status
