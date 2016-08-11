@@ -24,8 +24,9 @@ class ConnectorService
                     end
 
       url  = service_url
-      url += "/#{options['dataset_id']}"   if options['to_delete'].present? || options['to_update'].present? || options['data_to_update'].present?
+      url += "/#{options['dataset_id']}"   if options['to_delete'].present? || options['to_update'].present? || options['data_to_update'].present? || options['overwrite'].present?
       url += "/data/#{options['data_id']}" if options['data_to_update'].present?
+      url += '/data-overwrite'             if options['overwrite'].present?
       url  = URI.decode(url)
 
       method = options['to_delete'].present? ? 'delete' : 'post'
