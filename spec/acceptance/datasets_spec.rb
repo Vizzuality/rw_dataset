@@ -3,8 +3,8 @@ require 'acceptance_helper'
 module V1
   describe 'Datasets', type: :request do
     fixtures :rest_connectors
-    fixtures :datasets
     fixtures :json_connectors
+    fixtures :datasets
 
     context 'For datasets list' do
       it 'Allows to access datasets list without filtering' do

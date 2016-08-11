@@ -35,7 +35,7 @@ class DatasetSerializer < ApplicationSerializer
 
   def table_name
     return object.dateable.table_name if object.dateable.try(:table_name).present?
-    case object.dateable.connector_provider
+    case object.dateable.try(:connector_provider)
     when 'cartodb'
       Connector.cartodb_table_name_param(object.dateable.connector_url)
     when 'featureservice'
