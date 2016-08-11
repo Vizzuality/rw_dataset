@@ -16,6 +16,7 @@
 #  tags            :jsonb
 #  application     :jsonb
 #  layer_info      :jsonb
+#  data_overwrite  :boolean          default(FALSE)
 #
 
 class Dataset < ApplicationRecord

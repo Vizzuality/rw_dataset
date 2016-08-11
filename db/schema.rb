@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160811102851) do
+ActiveRecord::Schema.define(version: 20160811150255) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,11 +26,12 @@ ActiveRecord::Schema.define(version: 20160811102851) do
     t.string   "attributes_path"
     t.integer  "row_count"
     t.integer  "status",          default: 0
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
     t.jsonb    "tags",            default: []
     t.jsonb    "application",     default: []
     t.jsonb    "layer_info",      default: []
+    t.boolean  "data_overwrite",  default: false
     t.index ["application"], name: "index_datasets_on_application", using: :gin
     t.index ["dateable_id", "dateable_type"], name: "index_datasets_on_connector_and_connector_type", unique: true, using: :btree
     t.index ["layer_info"], name: "index_datasets_on_layer_info", using: :gin

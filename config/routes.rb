@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     resources :datasets, only: [:index, :show, :update, :create, :destroy]
     post   'datasets/:id/clone',           to: 'datasets#clone'
     post   'datasets/:id/data',            to: 'datasets#update_data'
+    post   'datasets/:id/data-overwrite',  to: 'datasets#overwrite_data'
     post   'datasets/:id/data/(:data_id)', to: 'datasets#update_data'
     delete 'datasets/:id/data/(:data_id)', to: 'datasets#delete_data'
     put    'datasets/:id/layer',           to: 'datasets#update_layer_info'

@@ -179,7 +179,7 @@ module V1
           put "/datasets/#{dataset_id}/layer", params: {"dataset": {"dataset_attributes": {"layer_info": {"application": "wrw", "default": true, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30l"}}}}
 
           expect(status).to eq(200)
-          expect(json_main['message']).to eq('Dataset layer info updated')
+          expect(json_main['message']).to eq('Dataset layer info update in progress')
           expect(Dataset.find(dataset_id).layer_info.size).to eq(2)
         end
 
@@ -187,7 +187,7 @@ module V1
           put "/datasets/#{dataset_id}/layer", params: {"dataset": {"dataset_attributes": {"layer_info": {"application": "wrw", "default": true, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30m"}}}}
 
           expect(status).to eq(200)
-          expect(json_main['message']).to eq('Dataset layer info updated')
+          expect(json_main['message']).to eq('Dataset layer info update in progress')
           expect(Dataset.find(dataset_id).layer_info.size).to eq(1)
           expect(Dataset.find(dataset_id).layer_info[0]['default']).to eq('true')
         end
@@ -213,10 +213,20 @@ module V1
           expect(json['attributes']['data_path']).to     be_present
           expect(json['attributes']['tags']).to          eq(["tag1", "tag2"])
         end
+
+        it 'Do not allow to overwrite not a json dataset' do
+          post "/datasets/#{dataset_id}/data-overwrite", params: {"dataset": {"data": [
+                                                                             {"cartodb_id": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
+                                                                             {"cartodb_id": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
+
+          expect(status).to eq(422)
+          expect(json_main['errors'][0]['title']).to eq("Not a fuction")
+        end
       end
 
       context 'Json dataset' do
-        let!(:dataset_id) { Dataset.find_by(name: 'Json test set').id }
+        let!(:dataset_id)        { Dataset.find_by(name: 'Json test set').id   }
+        let!(:locked_dataset_id) { Dataset.find_by(name: 'Json test set 2').id }
 
         it 'Allows to update dataset' do
           put "/datasets/#{dataset_id}", params: {"dataset": {"dataset_attributes": {"name": "Json test api update"},
@@ -273,7 +283,25 @@ module V1
                                                        {"cartodb_id": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
 
           expect(status).to eq(200)
-          expect(json_main['message']).to eq('Dataset data updated')
+          expect(json_main['message']).to eq('Dataset data update in progress')
+        end
+
+        it 'Allows to overwrite json dataset data' do
+          post "/datasets/#{dataset_id}/data-overwrite", params: {"dataset": {"data": [
+                                                                                {"cartodb_id": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
+                                                                                {"cartodb_id": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
+
+          expect(status).to eq(200)
+          expect(json_main['message']).to eq('Dataset data update in progress')
+        end
+
+        it 'Do not allow to overwrite locked json dataset data' do
+          post "/datasets/#{locked_dataset_id}/data-overwrite", params: {"dataset": {"data": [
+                                                                                       {"cartodb_id": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
+                                                                                       {"cartodb_id": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
+
+          expect(status).to eq(422)
+          expect(json_main['errors'][0]['title']).to eq("Dataset data is locked and can't be updated")
         end
 
         it 'Allows to delete dataset data' do
