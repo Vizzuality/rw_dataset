@@ -98,3 +98,14 @@ json_data_2:
   created_at: '2016-03-04 20:00:00.050118'
   updated_at: '2016-03-04 20:00:00.050118'
   data_overwrite: false
+
+wms_data_2:
+  dateable_id: 'c547146d-de0c-47ff-a406-5125667fd5c1'
+  dateable_type: 'WmsConnector'
+  name: 'Wms test set 1'
+  format: 0
+  data_path: 'data'
+  attributes_path: 'data_attributes'
+  created_at: '2016-03-01 20:00:00.050118'
+  updated_at: '2016-03-01 20:00:00.050118'
+  status: 1
