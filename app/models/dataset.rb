@@ -42,6 +42,7 @@ class Dataset < ApplicationRecord
   scope :filter_rest, -> { where(dateable_type: 'RestConnector').includes(:dateable) }
   scope :filter_json, -> { where(dateable_type: 'JsonConnector').includes(:dateable) }
   scope :filter_doc,  -> { where(dateable_type: 'DocConnector').includes(:dateable)  }
+  scope :filter_wms,  -> { where(dateable_type: 'WmsConnector').includes(:dateable)  }
 
   scope :filter_apps, -> (app) { where('application ?| array[:keys]', keys: ["#{app}"]) }
 
