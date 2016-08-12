@@ -4,6 +4,7 @@ module V1
   describe 'Datasets', type: :request do
     fixtures :rest_connectors
     fixtures :json_connectors
+    fixtures :wms_connectors
     fixtures :datasets
 
     context 'For datasets list' do
@@ -13,7 +14,7 @@ module V1
         dataset_json = json[0]
         dataset_rest = json[3]
         expect(status).to eq(200)
-        expect(json.length).to eq(4)
+        expect(json.length).to eq(5)
         expect(dataset_json['attributes']['provider']).to eq('rwjson')
         expect(dataset_rest['attributes']['provider']).to eq('cartodb')
       end
@@ -36,11 +37,20 @@ module V1
         expect(dataset['provider']).to eq('rwjson')
       end
 
+      it 'Allows to access datasets list filtering by type wms' do
+        get '/datasets?connector_type=wms'
+
+        dataset = json[0]['attributes']
+        expect(status).to eq(200)
+        expect(json.length).to eq(1)
+        expect(dataset['provider']).to eq('wms')
+      end
+
       it 'Show list of all datasets using status filter all' do
         get '/datasets?status=all'
 
         expect(status).to eq(200)
-        expect(json.size).to eq(6)
+        expect(json.size).to eq(7)
       end
 
       it 'Show list of datasets with pending status' do
@@ -54,7 +64,7 @@ module V1
         get '/datasets?status=active'
 
         expect(status).to eq(200)
-        expect(json.size).to eq(4)
+        expect(json.size).to eq(5)
       end
 
       it 'Show list of datasets with disabled status' do
@@ -91,7 +101,7 @@ module V1
         get '/datasets?app=all'
 
         expect(status).to eq(200)
-        expect(json.size).to eq(4)
+        expect(json.size).to eq(5)
       end
     end
 
@@ -325,6 +335,22 @@ module V1
           expect(json['attributes']['format']).to        be_present
           expect(json['attributes']['connector_url']).to be_present
           expect(json['attributes']['tags']).to          eq(["tag1", "tag2"])
+        end
+      end
+
+      context 'Wms dataset' do
+        it 'Allows to create wms dataset with tags' do
+          post '/datasets', params: {"dataset": {"connector_type": "wms", "dataset_attributes": {"name": "Wms test api",
+                                                  "tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
+
+          expect(status).to eq(201)
+          expect(json['attributes']['name']).not_to          be_nil
+          expect(json['attributes']['provider']).to          eq('wms')
+          expect(json['attributes']['format']).to            be_present
+          expect(json['attributes']['connector_url']).not_to be_present
+          expect(json['attributes']['data_path']).not_to     be_present
+          expect(json['attributes']['table_name']).not_to    be_present
+          expect(json['attributes']['tags']).to              eq(["tag1", "tag2"])
         end
       end
     end

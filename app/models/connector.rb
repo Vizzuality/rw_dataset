@@ -11,6 +11,7 @@ class Connector
                  when 'rest' then datasets.filter_rest.recent
                  when 'json' then datasets.filter_json.recent
                  when 'doc'  then datasets.filter_doc.recent
+                 when 'wms'  then datasets.filter_wms.recent
                  else
                    datasets
                  end
@@ -62,6 +63,8 @@ class Connector
         JsonConnector.new(options)
       when 'document'
         DocConnector.new(options)
+      when 'wms'
+        WmsConnector.new(options)
       else
         if options['connector_provider'].include?('cartodb') && options['table_name'].blank?
           options['table_name'] = cartodb_table_name_param(options['connector_url'])
@@ -70,7 +73,6 @@ class Connector
         else
           options
         end
-
         RestConnector.new(options)
       end
     end
