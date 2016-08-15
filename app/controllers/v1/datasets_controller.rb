@@ -9,7 +9,7 @@ module V1
 
     def show
       render json: @dataset, serializer: DatasetSerializer, root: false, meta: { status: @dataset.try(:status_txt),
-                                                                                 locked: @dataset.try(:data_overwrite),
+                                                                                 overwrite: @dataset.try(:data_overwrite),
                                                                                  updated_at: @dataset.try(:updated_at),
                                                                                  created_at: @dataset.try(:created_at) }
     end
