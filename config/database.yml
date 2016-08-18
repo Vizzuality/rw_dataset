@@ -55,10 +55,10 @@ test:
 
 staging:
   <<: *default
-  database: rw_dataset_production
+  database: rw_dataset
   password: <%= ENV['POSTGRES_PASS'] %>
 
 production:
   <<: *default
-  database: rw_dataset
+  database: rw_dataset_production
   password: <%= ENV['POSTGRES_PASS'] %>
