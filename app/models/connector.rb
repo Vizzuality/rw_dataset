@@ -1,6 +1,6 @@
 class Connector
   class << self
-    def fetch_all(options)
+    def fetch_all(options, complete)
       connector_type = options['connector_type'].downcase if options['connector_type'].present?
       status         = options['status'].downcase         if options['status'].present?
       app            = options['app'].downcase            if options['app'].present?
@@ -18,11 +18,18 @@ class Connector
 
       datasets = app_filter(datasets, app) if app
 
+
       if status
-        status_filter(datasets, status)
+        datasets = status_filter(datasets, status)
       else
-        datasets.available
+        datasets = datasets.available
       end
+
+      if complete and !datasets.empty?
+        datasets = MetadataService.populate_dataset(datasets, app)
+      end
+
+      return datasets
     end
 
     def status_filter(scope, status)

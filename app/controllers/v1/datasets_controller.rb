@@ -3,7 +3,8 @@ module V1
     before_action :set_dataset, except: [:index, :create, :info]
 
     def index
-      @datasets = Connector.fetch_all(connector_type_filter)
+      @complete = request.query_parameters['complete'].present? ? true : false
+      @datasets = Connector.fetch_all(connector_type_filter, @complete)
       render json: @datasets, each_serializer: DatasetSerializer, root: false
     end
 
@@ -65,7 +66,8 @@ module V1
     end
 
     def create
-      @dateable = Connector.new(dataset_params)
+      @data = dataset_params
+      @dateable = Connector.new(@data)
       if @dateable.save
         @dateable.connect_to_service(dataset_params)
         render json: @dateable.dataset, status: 201, serializer: DatasetSerializer, root: false
