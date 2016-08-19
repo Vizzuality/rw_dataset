@@ -6,6 +6,7 @@
 #  dateable_id     :uuid
 #  dateable_type   :string
 #  name            :string
+#  subtitle        :string
 #  format          :integer          default(0)
 #  data_path       :string
 #  attributes_path :string
@@ -24,6 +25,8 @@ class Dataset < ApplicationRecord
 
   FORMAT = %w(JSON).freeze
   STATUS = %w(pending saved failed deleted).freeze
+
+  attr_accessor :metadata
 
   belongs_to :dateable, polymorphic: true
 

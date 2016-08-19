@@ -1,5 +1,5 @@
 class DatasetArraySerializer < ApplicationSerializer
-  attributes :id, :provider, :format, :name, :status, :application, :layers
+  attributes :id, :provider, :format, :name, :subtitle, :status, :application, :layers, :metadata
 
   def status
     object.status_txt

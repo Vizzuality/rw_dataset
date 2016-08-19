@@ -20,7 +20,7 @@
 #
 
 class DatasetSerializer < ApplicationSerializer
-  attributes :id, :application, :name, :data_path, :attributes_path, :provider, :format, :layers, :connector_url, :table_name, :tags, :cloned_host
+  attributes :id, :application, :name, :subtitle, :metadata, :data_path, :attributes_path, :provider, :format, :layers, :connector_url, :table_name, :tags, :cloned_host
 
   def provider
     object.dateable.try(:provider_txt)
@@ -44,6 +44,10 @@ class DatasetSerializer < ApplicationSerializer
     when 'rwjson'
       Connector.json_table_name_param
     end
+  end
+
+  def metadata
+    return object.metadata
   end
 
   def layers
