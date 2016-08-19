@@ -27,6 +27,10 @@ class WmsConnector < ApplicationRecord
   end
 
   def connect_to_service(options)
-    dataset.update_attributes(status: 1)
+    if options.include?('delete')
+      dataset.update_attributes(status: 3)
+    else
+      dataset.update_attributes(status: 1)
+    end
   end
 end

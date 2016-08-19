@@ -339,6 +339,8 @@ module V1
       end
 
       context 'Wms dataset' do
+        let!(:dataset_id) { Dataset.find_by(name: 'Wms test set 1').id }
+
         it 'Allows to create wms dataset with tags' do
           post '/datasets', params: {"dataset": {"connector_type": "wms", "dataset_attributes": {"name": "Wms test api",
                                                   "tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
@@ -351,6 +353,13 @@ module V1
           expect(json['data_path']).not_to     be_present
           expect(json['table_name']).not_to    be_present
           expect(json['tags']).to              eq(["tag1", "tag2"])
+        end
+
+        it 'Allows to delete wms dataset' do
+          delete "/datasets/#{dataset_id}"
+
+          expect(status).to eq(200)
+          expect(json_main['message']).to eq('Dataset would be deleted!')
         end
       end
     end
