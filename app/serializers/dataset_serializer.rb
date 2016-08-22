@@ -20,7 +20,7 @@
 #
 
 class DatasetSerializer < ApplicationSerializer
-  attributes :id, :application, :name, :subtitle, :metadata, :data_path, :attributes_path, :provider, :format, :layers, :connector_url, :table_name, :tags, :cloned_host, :meta
+  attributes :id, :application, :name, :subtitle, :metadata, :data_path, :attributes_path, :provider, :format, :layers, :connector_url, :table_name, :tags, :cloned_host, :meta, :data_overwrite
 
   def provider
     object.dateable.try(:provider_txt)
