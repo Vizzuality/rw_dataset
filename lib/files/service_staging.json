@@ -137,6 +137,13 @@
                 "description": "ID of dataset to fetch",
                 "required": true,
                 "type": "string"
+              },
+              {
+                "name": "includes",
+                "in": "query",
+                "description": "Populate resources of dataset (supported metadata)",
+                "required": false,
+                "type": "string"
               }
             ],
             "responses": {
@@ -296,6 +303,13 @@
                 "name": "app",
                 "in": "query",
                 "description": "Filter datasets on application (prep, gfw, etc..)",
+                "type": "string"
+              },
+              {
+                "name": "includes",
+                "in": "query",
+                "description": "Populate resources of dataset (supported metadata)",
+                "required": false,
                 "type": "string"
               }
             ],

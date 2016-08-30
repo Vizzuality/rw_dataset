@@ -3,18 +3,26 @@ require 'uri'
 class MetadataService
   class << self
 
-    def populate_dataset(datasets, app)
+    def populate_datasets(datasets, app)
       options = {}
 
       datasets.each do |dataset|
-        options['id_dataset'] = dataset[:id]
-        options['app'] = app
-        data = get_metadata(options)
-        dataset.metadata = data
-
+       dataset.metadata = populate_dataset(dataset[:id], app)
       end
 
       return datasets
+
+    end
+
+    def populate_dataset(id, app)
+      options = {}
+      options['id_dataset'] = id
+      if app
+        options['app'] = app
+      end
+      data = get_metadata(options)
+
+      return data
 
     end
 
