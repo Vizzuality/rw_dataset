@@ -1,9 +1,11 @@
 class Connector
   class << self
-    def fetch_all(options, complete)
-      connector_type = options['connector_type'].downcase if options['connector_type'].present?
-      status         = options['status'].downcase         if options['status'].present?
-      app            = options['app'].downcase            if options['app'].present?
+    def fetch_all(options, options_includes)
+      connector_type = options['connector_type'].downcase          if options['connector_type'].present?
+      status         = options['status'].downcase                  if options['status'].present?
+      app            = options['app'].downcase                     if options['app'].present?
+      includes       = options_includes['includes'].split(',')     if options_includes['includes'].present?
+
 
       datasets = Dataset.includes(:dateable).recent
 
@@ -25,8 +27,10 @@ class Connector
         datasets = datasets.available
       end
 
-      if complete and !datasets.empty?
-        datasets = MetadataService.populate_dataset(datasets, app)
+      if includes && !datasets.empty?
+        datasets.each do |dataset|
+          dataset.populate(includes, app)
+        end
       end
 
       return datasets

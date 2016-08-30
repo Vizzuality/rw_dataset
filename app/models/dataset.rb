@@ -65,6 +65,15 @@ class Dataset < ApplicationRecord
     status_txt == 'saved'
   end
 
+  def populate(includes, app)
+    includes.each do |include|
+      case include
+        when 'metadata'
+          self.metadata = MetadataService.populate_dataset(self[:id], app)
+      end
+    end
+  end
+
   def update_layer_info(options)
     data      = options['dataset']['dataset_attributes']['layer_info']
     layer_obj = self.layer_info.find { |l| l['layer_id'] == data['layer_id'] && l['application'] == data['application'] }

@@ -3,8 +3,7 @@ module V1
     before_action :set_dataset, except: [:index, :create, :info]
 
     def index
-      @complete = request.query_parameters['complete'].present? ? true : false
-      @datasets = Connector.fetch_all(connector_type_filter, @complete)
+      @datasets = Connector.fetch_all(connector_type_filter, include_params)
       render json: @datasets, each_serializer: DatasetSerializer, root: false
     end
 
@@ -133,8 +132,16 @@ module V1
         params.permit(:connector_type, :status, :dataset, :app)
       end
 
+      def include_params
+        params.permit(:app, :complete, :includes)
+      end
+
       def set_dataset
         @dataset         = Dataset.find(params[:id])
+        if request.query_parameters['includes'].present?
+          includes = request.query_parameters['includes'].split(",")
+          @dataset.populate(includes, include_params['app'])
+        end
         @dateable        = @dataset.dateable
         @json_connector = @dateable.class.name.include?('JsonConnector')
       end
