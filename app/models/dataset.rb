@@ -6,6 +6,7 @@
 #  dateable_id     :uuid
 #  dateable_type   :string
 #  name            :string
+#  subtitle        :string
 #  format          :integer          default(0)
 #  data_path       :string
 #  attributes_path :string
@@ -24,6 +25,8 @@ class Dataset < ApplicationRecord
 
   FORMAT = %w(JSON).freeze
   STATUS = %w(pending saved failed deleted).freeze
+
+  attr_accessor :metadata
 
   belongs_to :dateable, polymorphic: true
 
@@ -60,6 +63,17 @@ class Dataset < ApplicationRecord
 
   def saved?
     status_txt == 'saved'
+  end
+
+  def populate(includes_meta, app)
+    includes_meta = includes_meta.split(',') if includes_meta.present?
+
+    includes_meta.each do |include|
+      case include
+      when 'metadata'
+        self.metadata = MetadataService.populate_dataset(self.id, app)
+      end
+    end
   end
 
   def update_layer_info(options)

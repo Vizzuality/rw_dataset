@@ -1,9 +1,10 @@
 module V1
   class DatasetsController < ApplicationController
-    before_action :set_dataset, except: [:index, :create, :info]
+    before_action :set_dataset,      except: [:index, :create, :info]
+    before_action :populate_dataset, only: :show, if: :params_includes_present?
 
     def index
-      @datasets = Connector.fetch_all(connector_type_filter)
+      @datasets = Connector.fetch_all(options_filter)
       render json: @datasets, each_serializer: DatasetSerializer, root: false
     end
 
@@ -48,7 +49,7 @@ module V1
 
     def update_layer_info
       begin
-        @dataset.update_layer_info(params)
+        @dataset.update_layer_info(params.to_unsafe_hash)
         render json: { success: true, message: 'Dataset layer info update in progress' }, status: 200
       rescue
         render json: { success: false, message: 'Error updating dataset data' }, status: 422
@@ -127,18 +128,26 @@ module V1
         dataset_params['dataset_url'].include?('http://') ? dataset_params['dataset_url'] : "#{ServiceSetting.gateway_url}#{dataset_params['dataset_url']}"
       end
 
-      def connector_type_filter
-        params.permit(:connector_type, :status, :dataset, :app)
+      def options_filter
+        params.permit(:connector_type, :status, :dataset, :app, :includes, dataset: {})
       end
 
       def set_dataset
-        @dataset         = Dataset.find(params[:id])
-        @dateable        = @dataset.dateable
+        @dataset        = Dataset.find(params[:id])
+        @dateable       = @dataset.dateable
         @json_connector = @dateable.class.name.include?('JsonConnector')
+      end
+
+      def populate_dataset
+        @dataset.populate(options_filter['includes'], options_filter['app'])
       end
 
       def dataset_params
         params.require(:dataset).permit!
+      end
+
+      def params_includes_present?
+        params[:includes].present?
       end
 
       def dataset_params_for_update

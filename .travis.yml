@@ -39,7 +39,3 @@ notifications:
       - sebastian.schkudlara@vizzuality.com
     on_failure: change
     on_success: never
-
-addons:
-  code_climate:
-    repo_token: cfc8b18f46c795f26485c055758b5d8b2d8bcacad80f14a30a2fb0e59fdad187
