@@ -1,61 +1,41 @@
+require 'typhoeus'
 require 'uri'
 
 class MetadataService
   class << self
-
-    def populate_datasets(datasets, app)
+    def populate_dataset(dataset_id, app)
       options = {}
+      options['dataset_id'] = dataset_id
+      options['app']        = app if app.present?
 
-      datasets.each do |dataset|
-       dataset.metadata = populate_dataset(dataset[:id], app)
-      end
-
-      return datasets
-
+      get_metadata(options)
     end
-
-    def populate_dataset(id, app)
-      options = {}
-      options['id_dataset'] = id
-      if app
-        options['app'] = app
-      end
-      data = get_metadata(options)
-
-      return data
-
-    end
-
 
     def get_metadata(options)
       headers = {}
       headers['Accept']         = 'application/json'
       headers['authentication'] = ServiceSetting.auth_token if ServiceSetting.auth_token.present?
 
-      service_url = "#{ServiceSetting.gateway_url}/metadata/#{options['id_dataset']}"
-      if options.has_key?('app')
-        service_url = "#{service_url}/#{options['app']}"
+      service_url = "#{ServiceSetting.gateway_url}/metadata/#{options['dataset_id']}"
+      service_url = "#{service_url}/#{options['app']}" if options['app'].present?
+
+      url = URI.decode(service_url)
+
+      @request = ::Typhoeus::Request.new(URI.escape(url), method: 'get', headers: headers)
+
+      @request.on_complete do |response|
+        if response.success?
+          @data = Oj.load(response.body.force_encoding(Encoding::UTF_8))['data'].map { |d| d['attributes'] }
+        elsif response.timed_out?
+          @data = 'Meta data not reachable'
+        elsif response.code.zero?
+          @data = response.return_message
+        else
+          @data = []
+        end
       end
-
-      url  = service_url
-      url  = URI.decode(url)
-
-      method = 'get'
-
-      data = ConcernConnection.establish_connection(url, method, headers)
-      if data.response_code == 200
-        return decode_jsonapi(ActiveSupport::JSON.decode(data.response_body))
-      end
-      return []
-    end
-
-    def decode_jsonapi(result)
-      metadatas = []
-
-      result['data'].each do |metadata|
-        metadatas.push(metadata['attributes'])
-      end
-      return metadatas
+      @request.run
+      @data
     end
   end
 end
