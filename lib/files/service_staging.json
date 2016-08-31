@@ -144,6 +144,11 @@
                 "description": "Populate resources of dataset (supported metadata)",
                 "required": false,
                 "type": "string"
+              },
+              {
+                "name": "app",
+                "in": "query",
+                "description": "Filter dataset's metadata on application (prep, gfw, etc..)"
               }
             ],
             "responses": {
