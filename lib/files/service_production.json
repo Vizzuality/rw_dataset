@@ -293,7 +293,7 @@
               {
                 "name": "connector_type",
                 "in": "query",
-                "description": "Filter datasets on type (rest, json)",
+                "description": "Filter datasets on type (rest, json, wms, doc)",
                 "type": "string"
               },
               {
@@ -469,6 +469,52 @@
               },
               "404": {
                 "description": "Dataset/Query not found",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              },
+              "500": {
+                "description": "Unexpected error",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              },
+              "default": {
+                "description": "unexpected error",
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              }
+            }
+          }
+        },
+        "/fields/{id}": {
+          "get": {
+            "description": "Get available fileds for dataset's data",
+            "produces": [
+              "application/json"
+            ],
+            "tags": [
+              "Fields"
+            ],
+            "parameters": [
+              {
+                "name": "id",
+                "in": "path",
+                "description": "ID of dataset",
+                "required": true,
+                "type": "string"
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Results obtained",
+                "schema": {
+                  "$ref": "#/definitions/FieldsResponse"
+                }
+              },
+              "404": {
+                "description": "Dataset/Fields not found",
                 "schema": {
                   "$ref": "#/definitions/Error"
                 }
@@ -827,6 +873,10 @@
                   "type": "string",
                   "description": "Status"
                 },
+                "overwrite": {
+                  "type": "boolean",
+                  "description": "if overwrite is set to true data can be replaced"
+                },
                 "updated_at": {
                   "type": "string",
                   "description": "Date"
@@ -846,9 +896,9 @@
         "QueryResponse": {
           "type": "object",
           "properties": {
-            "fields": {
+            "clone_url": {
               "type": "object",
-              "description": "Object with key (name of column) and type (type of data)"
+              "description": "Url for cloning dataset and body params"
             },
             "data": {
               "type": "array",
@@ -857,6 +907,15 @@
                 "type": "object",
                 "description": "Objects with the columns of the query"
               }
+            }
+          }
+        },
+        "FieldsResponse": {
+          "type": "object",
+          "properties": {
+            "fields": {
+              "type": "object",
+              "description": "Object with key (name of column) and type (type of data)"
             }
           }
         },
