@@ -20,7 +20,8 @@
 #
 
 class DatasetSerializer < ApplicationSerializer
-  attributes :id, :application, :name, :subtitle, :metadata, :data_path, :attributes_path, :provider, :format, :layers, :connector_url, :table_name, :tags, :cloned_host, :meta, :data_overwrite
+  attributes :id, :application, :name, :subtitle, :data_path, :attributes_path, :provider, :format,
+             :connector_url, :table_name, :layers, :tags, :metadata, :cloned_host, :meta
 
   def provider
     object.dateable.try(:provider_txt)
@@ -47,7 +48,7 @@ class DatasetSerializer < ApplicationSerializer
   end
 
   def metadata
-    return object.metadata
+    object.try(:metadata)
   end
 
   def layers
@@ -67,6 +68,7 @@ class DatasetSerializer < ApplicationSerializer
   def meta
     data = {}
     data['status']     = object.try(:status_txt)
+    data['overwrite']  = object.try(:data_overwrite)
     data['updated_at'] = object.try(:updated_at)
     data['created_at'] = object.try(:created_at)
     data['rows']       = object.try(:row_count)

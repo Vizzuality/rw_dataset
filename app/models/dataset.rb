@@ -65,11 +65,13 @@ class Dataset < ApplicationRecord
     status_txt == 'saved'
   end
 
-  def populate(includes, app)
-    includes.each do |include|
+  def populate(includes_meta, app)
+    includes_meta = includes_meta.split(',') if includes_meta.present?
+
+    includes_meta.each do |include|
       case include
-        when 'metadata'
-          self.metadata = MetadataService.populate_dataset(self[:id], app)
+      when 'metadata'
+        self.metadata = MetadataService.populate_dataset(self.id, app)
       end
     end
   end

@@ -43,6 +43,7 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
+    addressable (2.4.0)
     annotate (2.7.0)
       activerecord (>= 3.2, < 6.0)
       rake (~> 10.4)
@@ -68,6 +69,8 @@ GEM
     coderay (1.1.1)
     concurrent-ruby (1.0.2)
     connection_pool (2.2.0)
+    crack (0.4.3)
+      safe_yaml (~> 1.0.0)
     database_cleaner (1.5.3)
     diff-lcs (1.2.5)
     docile (1.1.5)
@@ -85,6 +88,7 @@ GEM
       activesupport (>= 4.1.0)
     haml (4.0.7)
       tilt
+    hashdiff (0.3.0)
     highline (1.7.8)
     i18n (0.7.0)
     json (1.8.3)
@@ -232,6 +236,10 @@ GEM
       tzinfo (>= 1.0.0)
     unicode-display_width (1.0.5)
     uniform_notifier (1.9.0)
+    webmock (2.1.0)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff
     websocket-driver (0.6.4)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
@@ -270,6 +278,7 @@ DEPENDENCIES
   timecop
   typhoeus
   tzinfo-data
+  webmock
 
 RUBY VERSION
    ruby 2.3.0p0

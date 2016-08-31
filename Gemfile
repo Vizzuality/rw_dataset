@@ -13,6 +13,7 @@ gem 'typhoeus', require: false
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.5.1'
+  gem 'webmock'
   gem 'byebug'
   gem 'faker'
   gem 'rubocop', require: false
@@ -25,7 +26,6 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'pry-rails'
-  # gem 'mina' - App now on docker!
   gem 'brakeman', require: false
   gem 'annotate'
 end

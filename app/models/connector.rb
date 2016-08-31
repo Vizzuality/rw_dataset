@@ -1,11 +1,10 @@
 class Connector
   class << self
-    def fetch_all(options, options_includes)
-      connector_type = options['connector_type'].downcase          if options['connector_type'].present?
-      status         = options['status'].downcase                  if options['status'].present?
-      app            = options['app'].downcase                     if options['app'].present?
-      includes       = options_includes['includes'].split(',')     if options_includes['includes'].present?
-
+    def fetch_all(options)
+      connector_type = options['connector_type'].downcase if options['connector_type'].present?
+      status         = options['status'].downcase         if options['status'].present?
+      app            = options['app'].downcase            if options['app'].present?
+      includes_meta  = options['includes']                if options['includes'].present?
 
       datasets = Dataset.includes(:dateable).recent
 
@@ -18,22 +17,17 @@ class Connector
                    datasets
                  end
 
-      datasets = app_filter(datasets, app) if app
+      datasets = app_filter(datasets, app) if app.present?
 
+      datasets = if status.present?
+                   status_filter(datasets, status)
+                 else
+                   datasets.available
+                 end
 
-      if status
-        datasets = status_filter(datasets, status)
-      else
-        datasets = datasets.available
-      end
+      datasets = includes_filter(datasets, includes_meta, app) if includes_meta.present? && datasets.any?
 
-      if includes && !datasets.empty?
-        datasets.each do |dataset|
-          dataset.populate(includes, app)
-        end
-      end
-
-      return datasets
+      datasets
     end
 
     def status_filter(scope, status)
@@ -51,6 +45,13 @@ class Connector
       datasets
     end
 
+    def includes_filter(scope, includes_meta, app)
+      datasets = scope
+      datasets.each do |dataset|
+        dataset.populate(includes_meta, app)
+      end
+    end
+
     def app_filter(scope, app)
       datasets = scope
       datasets = if app.present? && !app.include?('all')
@@ -65,6 +66,7 @@ class Connector
     def new(options)
       connector_type = options['connector_type']          if options['connector_type'].present?
       options        = options['connector_type'].present? ? options.except(:connector_type) : options
+
       case connector_type
       when 'json'
         options = options['data'].present?            ? options.except(:data)            : options
