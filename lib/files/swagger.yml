@@ -385,6 +385,48 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
+  /datasets/{id}/data-overwrite:
+    post:
+      summary: Overwrite the dataset's data
+      description: Replacing a whole dataset's data if the option data_overwrite is set tu true
+      produces:
+        - application/json
+      tags:
+        - Dataset
+      parameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: ID of dataset
+        - name: dataset
+          in: body
+          description: Dataset data to save
+          required: true
+          schema:
+            $ref: '#/definitions/DatasetSpecificData'
+      responses:
+        200:
+          description: The object updated
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Dataset data updated
+        400:
+          description: Validate error
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
 definitions:
   Data:
     type: object
