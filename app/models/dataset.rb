@@ -6,7 +6,6 @@
 #  dateable_id     :uuid
 #  dateable_type   :string
 #  name            :string
-#  subtitle        :string
 #  format          :integer          default(0)
 #  data_path       :string
 #  attributes_path :string
@@ -18,6 +17,8 @@
 #  application     :jsonb
 #  layer_info      :jsonb
 #  data_overwrite  :boolean          default(FALSE)
+#  subtitle        :string
+#  topics          :jsonb
 #
 
 class Dataset < ApplicationRecord
@@ -31,8 +32,9 @@ class Dataset < ApplicationRecord
   belongs_to :dateable, polymorphic: true
 
   before_save  :merge_tags,        if: "tags_changed?"
+  before_save  :merge_topics,      if: "topics_changed?"
   before_save  :merge_apps,        if: "application_changed?"
-  after_save   :call_tags_service, if: "tags_changed?"
+  after_save   :call_tags_service, if: "tags_changed? || topics_changed?"
   after_create :update_data_path,  if: "dateable_type.include?('JsonConnector')"
 
   scope :recent,             -> { order('updated_at DESC') }
@@ -99,6 +101,10 @@ class Dataset < ApplicationRecord
       self.tags = self.tags.each { |t| t.downcase! }.uniq
     end
 
+    def merge_topics
+      self.topics = self.topics.each { |t| t.downcase! }.uniq
+    end
+
     def merge_apps
       self.application = self.application.each { |a| a.downcase! }.uniq
     end
@@ -108,12 +114,18 @@ class Dataset < ApplicationRecord
     end
 
     def call_tags_service
-      params_for_adapter = {}
-      params_for_adapter['taggable_id']   = self.id
-      params_for_adapter['taggable_type'] = self.class.name
-      params_for_adapter['taggable_slug'] = self.try(:slug)
-      params_for_adapter['tags_list']     = tags
+      params_for_tags = {}
+      params_for_tags['taggable_id']    = self.id
+      params_for_tags['taggable_type']  = self.class.name
+      params_for_tags['taggable_slug']  = self.try(:slug)
+      params_for_tags['tags_list']      = tags
 
-      TagServiceJob.perform_later('Dataset', params_for_adapter)
+      params_for_topics = {}
+      params_for_topics['topicable_id']   = params_for_tags['taggable_id']
+      params_for_topics['topicable_type'] = params_for_tags['taggable_type']
+      params_for_topics['topicable_slug'] = params_for_tags['taggable_slug']
+      params_for_topics['topics_list']    = topics
+
+      TagServiceJob.perform_later('Dataset', params_for_tags, params_for_topics)
     end
 end

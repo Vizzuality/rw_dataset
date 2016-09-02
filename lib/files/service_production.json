@@ -4,6 +4,15 @@
     "tags": ["rw"],
     "urls": [
       {
+        "url": "/ping",
+        "method": "GET",
+        "endpoints": [{
+            "method": "GET",
+            "baseUrl": "http://localhost:3000",
+            "path": "/ping"
+        }]
+      },
+      {
         "url": "/datasets",
         "method": "GET",
         "endpoints": [{
@@ -104,909 +113,917 @@
       }
     ],
     "swagger": {
-      "swagger": "2.0",
-      "info": {
-        "title": "RW Dataset API",
-        "description": "Resource Watch - Dataset API",
-        "version": "1.0.0"
-      },
-      "host": "api.resourcewatch.org:81",
-      "schemes": [
-        "http"
-      ],
-      "produces": [
-        "application/json"
-      ],
-      "paths": {
-        "/datasets/{id}": {
-          "get": {
-            "description": "Returns dataset based on a single ID, if the geostore not exist return 404",
-            "produces": [
-              "application/json"
-            ],
-            "tags": [
-              "Dataset"
-            ],
-            "parameters": [
-              {
-                "name": "id",
-                "in": "path",
-                "description": "ID of dataset to fetch",
-                "required": true,
-                "type": "string"
-              },
-              {
-                "name": "includes",
-                "in": "query",
-                "description": "Populate resources of dataset (supported metadata)",
-                "required": false,
-                "type": "string"
-              },
-              {
-                "name": "app",
-                "in": "query",
-                "description": "Filter dataset's metadata on application (prep, gfw, etc..)"
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "Dataset obtained",
-                "schema": {
-                  "$ref": "#/definitions/Dataset"
-                }
-              },
-              "404": {
-                "description": "Dataset not found",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "500": {
-                "description": "Unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "default": {
-                "description": "unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              }
+  "swagger": "2.0",
+  "info": {
+    "title": "RW Dataset API",
+    "description": "Resource Watch - Dataset API",
+    "version": "1.0.0"
+  },
+  "host": "api.resourcewatch.org:81",
+  "schemes": [
+    "http"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/datasets/{id}": {
+      "get": {
+        "description": "Returns dataset based on a single ID, if the geostore not exist return 404",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Dataset"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of dataset to fetch",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "includes",
+            "in": "query",
+            "description": "Populate resources of dataset (supported metadata)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "app",
+            "in": "query",
+            "description": "Filter dataset's metadata on application (prep, gfw, etc..)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dataset obtained",
+            "schema": {
+              "$ref": "#/definitions/Dataset"
             }
           },
-          "put": {
-            "description": "Update dataset based on a single ID, if the geostore not exist return 404",
-            "produces": [
-              "application/json"
-            ],
-            "tags": [
-              "Dataset"
-            ],
-            "parameters": [
-              {
-                "name": "id",
-                "in": "path",
-                "description": "ID of dataset to update",
-                "required": true,
-                "type": "string"
-              },
-              {
-                "name": "dataset",
-                "in": "body",
-                "description": "New data of the dataset",
-                "required": true,
-                "schema": {
-                  "$ref": "#/definitions/DatasetCreate"
-                }
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "Dataset updated",
-                "schema": {
-                  "$ref": "#/definitions/Dataset"
-                }
-              },
-              "404": {
-                "description": "Dataset not found",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "500": {
-                "description": "Unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "default": {
-                "description": "unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              }
+          "404": {
+            "description": "Dataset not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
             }
           },
-          "delete": {
-            "description": "Delete dataset based on a single ID, if the geostore not exist return 404",
-            "produces": [
-              "application/json"
-            ],
-            "tags": [
-              "Dataset"
-            ],
-            "parameters": [
-              {
-                "name": "id",
-                "in": "path",
-                "description": "ID of dataset to delete",
-                "required": true,
-                "type": "string"
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "Dataset deleted",
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "Dataset would be deleted!"
-                    }
-                  }
-                }
-              },
-              "404": {
-                "description": "Dataset not found",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "500": {
-                "description": "Unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "default": {
-                "description": "unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              }
-            }
-          }
-        },
-        "/datasets": {
-          "get": {
-            "description": "Returns all datasets",
-            "produces": [
-              "application/json"
-            ],
-            "tags": [
-              "Dataset"
-            ],
-            "parameters": [
-              {
-                "name": "status",
-                "in": "query",
-                "description": "Filter datasets on status (pending, active, failed, disabled, all)",
-                "type": "string"
-              },
-              {
-                "name": "connector_type",
-                "in": "query",
-                "description": "Filter datasets on type (rest, json, wms, doc)",
-                "type": "string"
-              },
-              {
-                "name": "app",
-                "in": "query",
-                "description": "Filter datasets on application (prep, gfw, etc..)",
-                "type": "string"
-              },
-              {
-                "name": "includes",
-                "in": "query",
-                "description": "Populate resources of dataset (supported metadata)",
-                "required": false,
-                "type": "string"
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "Datasets obtained",
-                "schema": {
-                  "$ref": "#/definitions/Datasets"
-                }
-              },
-              "500": {
-                "description": "Unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "default": {
-                "description": "unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              }
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
             }
           },
-          "post": {
-            "summary": "Create rest or json dataset (depends on connector_type - json or rest)",
-            "description": "Create dataset",
-            "produces": [
-              "application/json"
-            ],
-            "tags": [
-              "Dataset"
-            ],
-            "parameters": [
-              {
-                "name": "dataset",
-                "in": "body",
-                "description": "Dataset to save",
-                "required": true,
-                "schema": {
-                  "$ref": "#/definitions/DatasetCreate"
-                }
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "The object created",
-                "schema": {
-                  "$ref": "#/definitions/Dataset"
-                }
-              },
-              "400": {
-                "description": "Validate error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "500": {
-                "description": "Unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "default": {
-                "description": "Unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              }
-            }
-          }
-        },
-        "/query/{id}": {
-          "get": {
-            "description": "Do query to dataset using SQL or Featureservice (EXAMPLE SQL - http://api.resourcewatch.org:81/query/db6ea452-a89b-43e3-923e-10b5db4f6cb9?sql=select country_iso,sum(loss) as loss,avg(emiss) as emiss from data where country_iso in ('BRA','PER') group by country_iso order by country_iso DESC)",
-            "produces": [
-              "application/json"
-            ],
-            "tags": [
-              "Query"
-            ],
-            "parameters": [
-              {
-                "name": "id",
-                "in": "path",
-                "description": "ID of dataset to do query",
-                "required": true,
-                "type": "string"
-              },
-              {
-                "name": "sql",
-                "in": "query",
-                "description": "SQL query - Only support SELECT, WHERE, ORDER BY, GROUP BY, LIMIT, AS, aggregate functions (count, sum, min, max, avg, stddev, var)",
-                "required": false,
-                "type": "string"
-              },
-              {
-                "name": "tableName",
-                "in": "query",
-                "description": "Name of the table",
-                "required": false,
-                "type": "string"
-              },
-              {
-                "name": "outFields",
-                "in": "query",
-                "description": "Select param of the feature service (example 'COL1,COL2 AS COL')",
-                "required": false,
-                "type": "string"
-              },
-              {
-                "name": "where",
-                "in": "query",
-                "description": "Where param of the feature service (example 'COL1 = \\'juan\\' and COL2=2')",
-                "required": false,
-                "type": "string"
-              },
-              {
-                "name": "outStatistics",
-                "in": "query",
-                "description": "outStatistics param of the feature service (example '[{\"statisticType\":\"count\",\"onStatisticField\":\"FIELD\",\"outStatisticFieldName\":\"OUTFIELD\"}]')",
-                "required": false,
-                "type": "string"
-              },
-              {
-                "name": "groupByFieldsForStatistics",
-                "in": "query",
-                "description": "groupByFieldsForStatistics param of the feature service (example 'COL2')",
-                "required": false,
-                "type": "string"
-              },
-              {
-                "name": "resultRecordCount",
-                "in": "query",
-                "description": "resultRecordCount param of the feature service (example 10)",
-                "required": false,
-                "type": "number"
-              },
-              {
-                "name": "orderByFields",
-                "in": "query",
-                "description": "orderByFields param of the feature service (example 'COL1 ASC,COL2 DESC')",
-                "required": false,
-                "type": "string"
-              },
-              {
-                "name": "limit",
-                "in": "query",
-                "description": "limit results list (example 10)",
-                "required": false,
-                "type": "integer"
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "Results obtained",
-                "schema": {
-                  "$ref": "#/definitions/QueryResponse"
-                }
-              },
-              "404": {
-                "description": "Dataset/Query not found",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "500": {
-                "description": "Unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "default": {
-                "description": "unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              }
-            }
-          }
-        },
-        "/fields/{id}": {
-          "get": {
-            "description": "Get available fileds for dataset's data",
-            "produces": [
-              "application/json"
-            ],
-            "tags": [
-              "Fields"
-            ],
-            "parameters": [
-              {
-                "name": "id",
-                "in": "path",
-                "description": "ID of dataset",
-                "required": true,
-                "type": "string"
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "Results obtained",
-                "schema": {
-                  "$ref": "#/definitions/FieldsResponse"
-                }
-              },
-              "404": {
-                "description": "Dataset/Fields not found",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "500": {
-                "description": "Unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "default": {
-                "description": "unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              }
-            }
-          }
-        },
-        "/datasets/{id}/data": {
-          "post": {
-            "summary": "Update dataset data (Insert new data for json dataset)",
-            "description": "Update dataset data",
-            "produces": [
-              "application/json"
-            ],
-            "tags": [
-              "Dataset"
-            ],
-            "parameters": [
-              {
-                "name": "id",
-                "in": "path",
-                "type": "string",
-                "required": true,
-                "description": "ID of dataset"
-              },
-              {
-                "name": "dataset",
-                "in": "body",
-                "description": "Dataset data to save",
-                "required": true,
-                "schema": {
-                  "$ref": "#/definitions/DatasetData"
-                }
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "The object updated",
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "Dataset data updated"
-                    }
-                  }
-                }
-              },
-              "400": {
-                "description": "Validate error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "500": {
-                "description": "Unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "default": {
-                "description": "Unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              }
-            }
-          }
-        },
-        "/datasets/{id}/data/{data_id}": {
-          "post": {
-            "summary": "Update a specific data object",
-            "description": "Update dataset data - specific data object",
-            "produces": [
-              "application/json"
-            ],
-            "tags": [
-              "Dataset"
-            ],
-            "parameters": [
-              {
-                "name": "id",
-                "in": "path",
-                "type": "string",
-                "required": true,
-                "description": "ID of dataset"
-              },
-              {
-                "name": "data_id",
-                "in": "path",
-                "type": "string",
-                "required": true,
-                "description": "ID of dataset's data object"
-              },
-              {
-                "name": "dataset",
-                "in": "body",
-                "description": "Dataset data value to save",
-                "required": true,
-                "schema": {
-                  "$ref": "#/definitions/DatasetSpecificData"
-                }
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "The object updated",
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "Dataset data updated"
-                    }
-                  }
-                }
-              },
-              "400": {
-                "description": "Validate error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "500": {
-                "description": "Unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "default": {
-                "description": "Unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              }
-            }
-          }
-        },
-        "/datasets/{id}/data-overwrite": {
-          "post": {
-            "summary": "Overwrite the dataset's data",
-            "description": "Replacing a whole dataset's data if the option data_overwrite is set tu true",
-            "produces": [
-              "application/json"
-            ],
-            "tags": [
-              "Dataset"
-            ],
-            "parameters": [
-              {
-                "name": "id",
-                "in": "path",
-                "type": "string",
-                "required": true,
-                "description": "ID of dataset"
-              },
-              {
-                "name": "dataset",
-                "in": "body",
-                "description": "Dataset data to save",
-                "required": true,
-                "schema": {
-                  "$ref": "#/definitions/DatasetSpecificData"
-                }
-              }
-            ],
-            "responses": {
-              "200": {
-                "description": "The object updated",
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "Dataset data updated"
-                    }
-                  }
-                }
-              },
-              "400": {
-                "description": "Validate error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "500": {
-                "description": "Unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              },
-              "default": {
-                "description": "Unexpected error",
-                "schema": {
-                  "$ref": "#/definitions/Error"
-                }
-              }
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
             }
           }
         }
       },
-      "definitions": {
-        "Data": {
-          "type": "object"
-        },
-        "DatasetCreate": {
-          "type": "object",
-          "properties": {
-            "dataset": {
+      "put": {
+        "description": "Update dataset based on a single ID, if the geostore not exist return 404",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Dataset"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of dataset to update",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "dataset",
+            "in": "body",
+            "description": "New data of the dataset",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DatasetCreate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dataset updated",
+            "schema": {
+              "$ref": "#/definitions/Dataset"
+            }
+          },
+          "404": {
+            "description": "Dataset not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete dataset based on a single ID, if the geostore not exist return 404",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Dataset"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of dataset to delete",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dataset deleted",
+            "schema": {
               "type": "object",
               "properties": {
-                "connector_type": {
+                "message": {
                   "type": "string",
-                  "description": "Dataset type (rest - for cartodb or arcgis , json - JSON)"
-                },
-                "connector_url": {
-                  "type": "string",
-                  "description": "Url of dataset (for rest dataset example - for cartodb https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map, for arcgis https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga_County/FeatureServer/0?f=json)"
-                },
-                "connector_provider": {
-                  "type": "string",
-                  "description": "Id of the provider (cartodb, featureservice for rest connector and csv for document connector)"
-                },
-                "data_attributes": {
-                  "type": "object",
-                  "description": "Data attributes (for json dataset)"
-                },
-                "data": {
-                  "type": "array",
-                  "description": "Data (for json dataset)",
-                  "items": {
-                    "$ref": "#/definitions/Data"
-                  }
-                },
-                "dataset_attributes": {
-                  "type": "object",
-                  "description": "Attributes of dataset",
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "description": "Name of the dataset"
-                    }
-                  }
-                },
-                "application": {
-                  "type": "object",
-                  "description": "Array of applications name"
+                  "description": "Dataset would be deleted!"
                 }
               }
             }
+          },
+          "404": {
+            "description": "Dataset not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
-        },
-        "DatasetData": {
-          "type": "object",
-          "properties": {
-            "dataset": {
+        }
+      }
+    },
+    "/datasets": {
+      "get": {
+        "description": "Returns all datasets",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Dataset"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter datasets on status (pending, active, failed, disabled, all)",
+            "type": "string"
+          },
+          {
+            "name": "connector_type",
+            "in": "query",
+            "description": "Filter datasets on type (rest, json, wms, doc)",
+            "type": "string"
+          },
+          {
+            "name": "app",
+            "in": "query",
+            "description": "Filter datasets on application (prep, gfw, etc..)",
+            "type": "string"
+          },
+          {
+            "name": "includes",
+            "in": "query",
+            "description": "Populate resources of dataset (supported metadata)",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Datasets obtained",
+            "schema": {
+              "$ref": "#/definitions/Datasets"
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create rest or json dataset (depends on connector_type - json or rest)",
+        "description": "Create dataset",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Dataset"
+        ],
+        "parameters": [
+          {
+            "name": "dataset",
+            "in": "body",
+            "description": "Dataset to save",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DatasetCreate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The object created",
+            "schema": {
+              "$ref": "#/definitions/Dataset"
+            }
+          },
+          "400": {
+            "description": "Validate error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/query/{id}": {
+      "get": {
+        "description": "Do query to dataset using SQL or Featureservice (EXAMPLE SQL - http://api.resourcewatch.org:81/query/db6ea452-a89b-43e3-923e-10b5db4f6cb9?sql=select country_iso,sum(loss) as loss,avg(emiss) as emiss from data where country_iso in ('BRA','PER') group by country_iso order by country_iso DESC)",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Query"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of dataset to do query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sql",
+            "in": "query",
+            "description": "SQL query - Only support SELECT, WHERE, ORDER BY, GROUP BY, LIMIT, AS, aggregate functions (count, sum, min, max, avg, stddev, var)",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tableName",
+            "in": "query",
+            "description": "Name of the table",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "outFields",
+            "in": "query",
+            "description": "Select param of the feature service (example 'COL1,COL2 AS COL')",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "where",
+            "in": "query",
+            "description": "Where param of the feature service (example 'COL1 = \\'juan\\' and COL2=2')",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "outStatistics",
+            "in": "query",
+            "description": "outStatistics param of the feature service (example '[{\"statisticType\":\"count\",\"onStatisticField\":\"FIELD\",\"outStatisticFieldName\":\"OUTFIELD\"}]')",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "groupByFieldsForStatistics",
+            "in": "query",
+            "description": "groupByFieldsForStatistics param of the feature service (example 'COL2')",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "resultRecordCount",
+            "in": "query",
+            "description": "resultRecordCount param of the feature service (example 10)",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "orderByFields",
+            "in": "query",
+            "description": "orderByFields param of the feature service (example 'COL1 ASC,COL2 DESC')",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "limit results list (example 10)",
+            "required": false,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Results obtained",
+            "schema": {
+              "$ref": "#/definitions/QueryResponse"
+            }
+          },
+          "404": {
+            "description": "Dataset/Query not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/fields/{id}": {
+      "get": {
+        "description": "Get available fileds for dataset's data",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Fields"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of dataset",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Results obtained",
+            "schema": {
+              "$ref": "#/definitions/FieldsResponse"
+            }
+          },
+          "404": {
+            "description": "Dataset/Fields not found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/datasets/{id}/data": {
+      "post": {
+        "summary": "Update dataset data (Insert new data for json dataset)",
+        "description": "Update dataset data",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Dataset"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true,
+            "description": "ID of dataset"
+          },
+          {
+            "name": "dataset",
+            "in": "body",
+            "description": "Dataset data to save",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DatasetData"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The object updated",
+            "schema": {
               "type": "object",
               "properties": {
-                "connector_url": {
+                "message": {
                   "type": "string",
-                  "description": "Url of dataset json data - get json data from external url"
-                },
-                "data_path": {
-                  "type": "string",
-                  "description": "Path to access data"
-                },
-                "data": {
-                  "type": "array",
-                  "description": "Data (for json dataset)",
-                  "items": {
-                    "$ref": "#/definitions/Data"
-                  }
+                  "description": "Dataset data updated"
                 }
               }
             }
+          },
+          "400": {
+            "description": "Validate error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
-        },
-        "DatasetSpecificData": {
-          "type": "object",
-          "properties": {
-            "dataset": {
+        }
+      }
+    },
+    "/datasets/{id}/data/{data_id}": {
+      "post": {
+        "summary": "Update a specific data object",
+        "description": "Update dataset data - specific data object",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Dataset"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true,
+            "description": "ID of dataset"
+          },
+          {
+            "name": "data_id",
+            "in": "path",
+            "type": "string",
+            "required": true,
+            "description": "ID of dataset's data object"
+          },
+          {
+            "name": "dataset",
+            "in": "body",
+            "description": "Dataset data value to save",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DatasetSpecificData"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The object updated",
+            "schema": {
               "type": "object",
               "properties": {
-                "data": {
-                  "type": "object",
-                  "description": "Data values (sample - {\"dataset\" => { \"data\" => { \"key1\" => \"new value\", \"key2\" => \"new value\"... } } })"
+                "message": {
+                  "type": "string",
+                  "description": "Dataset data updated"
                 }
               }
             }
-          }
-        },
-        "Datasets": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/DatasetArray"
-          }
-        },
-        "DatasetArray": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "integer",
-              "format": "int64",
-              "description": "Dataset id"
-            },
-            "name": {
-              "type": "string",
-              "description": "Name of the dataset"
-            },
-            "provider": {
-              "type": "string",
-              "description": "Name of the provider"
-            },
-            "format": {
-              "type": "string",
-              "description": "Dataset format"
-            },
-            "application": {
-              "type": "object",
-              "description": "Array of applications name"
-            },
-            "layer": {
-              "type": "object",
-              "properties": {
-                "layer_id": {
-                  "type": "string",
-                  "description": "ID of layer"
-                },
-                "default": {
-                  "type": "boolean",
-                  "description": "true or false for default layer"
-                },
-                "application": {
-                  "type": "string",
-                  "description": "App name"
-                }
-              }
-            },
-            "status": {
-              "type": "string",
-              "description": "Status"
+          },
+          "400": {
+            "description": "Validate error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
             }
           }
-        },
-        "Dataset": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "integer",
-              "format": "int64",
-              "description": "Dataset id"
-            },
-            "name": {
-              "type": "string",
-              "description": "Name of the dataset"
-            },
-            "data_path": {
-              "type": "string",
-              "description": "Path for data"
-            },
-            "attributes_path": {
-              "type": "string",
-              "description": "Path for data attributes"
-            },
-            "provider": {
-              "type": "string",
-              "description": "Name of the provider"
-            },
-            "format": {
-              "type": "string",
-              "description": "Dataset format"
-            },
-            "connector_url": {
-              "type": "string",
-              "description": "Url of connector"
-            },
-            "table_name": {
-              "type": "string",
-              "description": "Name of the table of the dataset"
-            },
-            "application": {
-              "type": "object",
-              "description": "Array of applications name"
-            },
-            "layer": {
+        }
+      }
+    },
+    "/datasets/{id}/data-overwrite": {
+      "post": {
+        "summary": "Overwrite the dataset's data",
+        "description": "Replacing a whole dataset's data if the option data_overwrite is set tu true",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Dataset"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true,
+            "description": "ID of dataset"
+          },
+          {
+            "name": "dataset",
+            "in": "body",
+            "description": "Dataset data to save",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DatasetSpecificData"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The object updated",
+            "schema": {
               "type": "object",
               "properties": {
-                "layer_id": {
+                "message": {
                   "type": "string",
-                  "description": "ID of layer"
-                },
-                "default": {
-                  "type": "boolean",
-                  "description": "true or false for default layer"
-                },
-                "application": {
-                  "type": "string",
-                  "description": "App name"
-                }
-              }
-            },
-            "meta": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "description": "Status"
-                },
-                "overwrite": {
-                  "type": "boolean",
-                  "description": "if overwrite is set to true data can be replaced"
-                },
-                "updated_at": {
-                  "type": "string",
-                  "description": "Date"
-                },
-                "created_at": {
-                  "type": "string",
-                  "description": "Date"
-                },
-                "rows": {
-                  "type": "number",
-                  "description": "Number of data rows"
+                  "description": "Dataset data updated"
                 }
               }
             }
-          }
-        },
-        "QueryResponse": {
-          "type": "object",
-          "properties": {
-            "clone_url": {
-              "type": "object",
-              "description": "Url for cloning dataset and body params"
-            },
-            "data": {
-              "type": "array",
-              "description": "Result objects returned by the query.",
-              "items": {
-                "type": "object",
-                "description": "Objects with the columns of the query"
-              }
+          },
+          "400": {
+            "description": "Validate error",
+            "schema": {
+              "$ref": "#/definitions/Error"
             }
-          }
-        },
-        "FieldsResponse": {
-          "type": "object",
-          "properties": {
-            "fields": {
-              "type": "object",
-              "description": "Object with key (name of column) and type (type of data)"
+          },
+          "500": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
             }
-          }
-        },
-        "Error": {
-          "type": "object",
-          "properties": {
-            "status": {
-              "type": "string",
-              "description": "The HTTP status code applicable to this problem, expressed as a string value"
-            },
-            "error": {
-              "type": "string",
-              "description": "An application-specific error code, expressed as a string value"
-            },
-            "exception": {
-              "type": "string",
-              "description": "A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization."
-            },
-            "traces": {
-              "type": "string",
-              "description": "A human-readable explanation specific to this occurrence of the problem. Like title, this field's value can be localized"
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
             }
           }
         }
       }
     }
+  },
+  "definitions": {
+    "Data": {
+      "type": "object"
+    },
+    "DatasetCreate": {
+      "type": "object",
+      "properties": {
+        "dataset": {
+          "type": "object",
+          "properties": {
+            "connector_type": {
+              "type": "string",
+              "description": "Dataset type (rest - for cartodb or arcgis , json - JSON)"
+            },
+            "connector_url": {
+              "type": "string",
+              "description": "Url of dataset (for rest dataset example - for cartodb https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map, for arcgis https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga_County/FeatureServer/0?f=json)"
+            },
+            "connector_provider": {
+              "type": "string",
+              "description": "Id of the provider (cartodb, featureservice for rest connector and csv for document connector)"
+            },
+            "data_attributes": {
+              "type": "object",
+              "description": "Data attributes (for json dataset)"
+            },
+            "data": {
+              "type": "array",
+              "description": "Data (for json dataset)",
+              "items": {
+                "$ref": "#/definitions/Data"
+              }
+            },
+            "dataset_attributes": {
+              "type": "object",
+              "description": "Attributes of dataset",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name of the dataset"
+                },
+                "tags": {
+                  "type": "array",
+                  "description": "array of tags ['tag one', tag two]"
+                },
+                "topics": {
+                  "type": "array",
+                  "description": "array of topics ['tag one', tag two]"
+                }
+              }
+            },
+            "application": {
+              "type": "object",
+              "description": "Array of applications name"
+            }
+          }
+        }
+      }
+    },
+    "DatasetData": {
+      "type": "object",
+      "properties": {
+        "dataset": {
+          "type": "object",
+          "properties": {
+            "connector_url": {
+              "type": "string",
+              "description": "Url of dataset json data - get json data from external url"
+            },
+            "data_path": {
+              "type": "string",
+              "description": "Path to access data"
+            },
+            "data": {
+              "type": "array",
+              "description": "Data (for json dataset)",
+              "items": {
+                "$ref": "#/definitions/Data"
+              }
+            }
+          }
+        }
+      }
+    },
+    "DatasetSpecificData": {
+      "type": "object",
+      "properties": {
+        "dataset": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "object",
+              "description": "Data values (sample - {\"dataset\" => { \"data\" => { \"key1\" => \"new value\", \"key2\" => \"new value\"... } } })"
+            }
+          }
+        }
+      }
+    },
+    "Datasets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/DatasetArray"
+      }
+    },
+    "DatasetArray": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Dataset id"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the dataset"
+        },
+        "provider": {
+          "type": "string",
+          "description": "Name of the provider"
+        },
+        "format": {
+          "type": "string",
+          "description": "Dataset format"
+        },
+        "application": {
+          "type": "object",
+          "description": "Array of applications name"
+        },
+        "layer": {
+          "type": "object",
+          "properties": {
+            "layer_id": {
+              "type": "string",
+              "description": "ID of layer"
+            },
+            "default": {
+              "type": "boolean",
+              "description": "true or false for default layer"
+            },
+            "application": {
+              "type": "string",
+              "description": "App name"
+            }
+          }
+        },
+        "status": {
+          "type": "string",
+          "description": "Status"
+        }
+      }
+    },
+    "Dataset": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Dataset id"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the dataset"
+        },
+        "data_path": {
+          "type": "string",
+          "description": "Path for data"
+        },
+        "attributes_path": {
+          "type": "string",
+          "description": "Path for data attributes"
+        },
+        "provider": {
+          "type": "string",
+          "description": "Name of the provider"
+        },
+        "format": {
+          "type": "string",
+          "description": "Dataset format"
+        },
+        "connector_url": {
+          "type": "string",
+          "description": "Url of connector"
+        },
+        "table_name": {
+          "type": "string",
+          "description": "Name of the table of the dataset"
+        },
+        "application": {
+          "type": "object",
+          "description": "Array of applications name"
+        },
+        "layer": {
+          "type": "object",
+          "properties": {
+            "layer_id": {
+              "type": "string",
+              "description": "ID of layer"
+            },
+            "default": {
+              "type": "boolean",
+              "description": "true or false for default layer"
+            },
+            "application": {
+              "type": "string",
+              "description": "App name"
+            }
+          }
+        },
+        "meta": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "description": "Status"
+            },
+            "overwrite": {
+              "type": "boolean",
+              "description": "if overwrite is set to true data can be replaced"
+            },
+            "updated_at": {
+              "type": "string",
+              "description": "Date"
+            },
+            "created_at": {
+              "type": "string",
+              "description": "Date"
+            },
+            "rows": {
+              "type": "number",
+              "description": "Number of data rows"
+            }
+          }
+        }
+      }
+    },
+    "QueryResponse": {
+      "type": "object",
+      "properties": {
+        "clone_url": {
+          "type": "object",
+          "description": "Url for cloning dataset and body params"
+        },
+        "data": {
+          "type": "array",
+          "description": "Result objects returned by the query.",
+          "items": {
+            "type": "object",
+            "description": "Objects with the columns of the query"
+          }
+        }
+      }
+    },
+    "FieldsResponse": {
+      "type": "object",
+      "properties": {
+        "fields": {
+          "type": "object",
+          "description": "Object with key (name of column) and type (type of data)"
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "The HTTP status code applicable to this problem, expressed as a string value"
+        },
+        "error": {
+          "type": "string",
+          "description": "An application-specific error code, expressed as a string value"
+        },
+        "exception": {
+          "type": "string",
+          "description": "A short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem, except for purposes of localization."
+        },
+        "traces": {
+          "type": "string",
+          "description": "A human-readable explanation specific to this occurrence of the problem. Like title, this field's value can be localized"
+        }
+      }
+    }
+  }
+}
 }

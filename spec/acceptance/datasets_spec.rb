@@ -136,11 +136,11 @@ module V1
           expect(json['tags']).to          be_empty
         end
 
-        it 'Allows to create rest dataset with tags' do
+        it 'Allows to create rest dataset with tags and topics' do
           post '/datasets', params: {"dataset": {"connector_provider": "cartodb", "table_name": "public.carts_test_endoint",
                                                  "connector_url": "https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint",
                                                  "dataset_attributes": {"name": "Carto test api", "format": 0, "data_path": "rows", "attributes_path": "fields",
-                                                  "tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
+                                                  "tags": ["tag1", "tag1", "Tag1", "tag2"], "topics": ["topic1", "topic1", "Topic1", "topic2"]}}}
 
           expect(status).to eq(201)
           expect(json['name']).not_to      be_nil
@@ -150,6 +150,7 @@ module V1
           expect(json['data_path']).to     be_present
           expect(json['table_name']).to    be_present
           expect(json['tags']).to          eq(["tag1", "tag2"])
+          expect(json['topics']).to        eq(["topic1", "topic2"])
         end
 
         it 'Allows to create rest dataset without tags and only required attributes' do
