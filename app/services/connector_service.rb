@@ -1,6 +1,6 @@
 require 'uri'
 
-class ConnectorService
+module ConnectorService
   class << self
     def connect_to_service(object_class, options)
       body = {}
@@ -15,15 +15,14 @@ class ConnectorService
 
       headers = {}
       headers['Accept']         = 'application/json'
-      headers['authentication'] = ServiceSetting.auth_token if ServiceSetting.auth_token.present?
+      headers['authentication'] = Service::SERVICE_TOKEN
 
-      service_url = case object_class
-                    when 'JsonConnector' then "#{ServiceSetting.gateway_url}/json-datasets"
-                    when 'RestConnector' then "#{ServiceSetting.gateway_url}/rest-datasets/#{options['provider']}"
-                    when 'DocConnector'  then "#{ServiceSetting.gateway_url}/doc-datasets/#{options['provider']}"
-                    end
+      url = case object_class
+            when 'JsonConnector' then "#{Service::SERVICE_URL}/json-datasets"
+            when 'RestConnector' then "#{Service::SERVICE_URL}/rest-datasets/#{options['provider']}"
+            when 'DocConnector'  then "#{Service::SERVICE_URL}/doc-datasets/#{options['provider']}"
+            end
 
-      url  = service_url
       url += "/#{options['dataset_id']}"   if options['to_delete'].present? || options['to_update'].present? || options['data_to_update'].present? || options['overwrite'].present?
       url += "/data/#{options['data_id']}" if options['data_to_update'].present?
       url += '/data-overwrite'             if options['overwrite'].present?
@@ -31,7 +30,7 @@ class ConnectorService
 
       method = options['to_delete'].present? ? 'delete' : 'post'
 
-      ConcernConnection.establish_connection(url, method, headers, { connector: body })
+      Connection.establish_connection(url, method, headers, { connector: body })
     end
   end
 end

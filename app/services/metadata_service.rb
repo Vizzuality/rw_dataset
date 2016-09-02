@@ -1,7 +1,7 @@
 require 'typhoeus'
 require 'uri'
 
-class MetadataService
+module MetadataService
   class << self
     def populate_dataset(dataset_id, app)
       options = {}
@@ -14,12 +14,11 @@ class MetadataService
     def get_metadata(options)
       headers = {}
       headers['Accept']         = 'application/json'
-      headers['authentication'] = ServiceSetting.auth_token if ServiceSetting.auth_token.present?
+      headers['authentication'] = Service::SERVICE_TOKEN
 
-      service_url = "#{ServiceSetting.gateway_url}/metadata/#{options['dataset_id']}"
-      service_url = "#{service_url}/#{options['app']}" if options['app'].present?
-
-      url = URI.decode(service_url)
+      url = "#{Service::SERVICE_URL}/metadata/#{options['dataset_id']}"
+      url = "#{url}/#{options['app']}" if options['app'].present?
+      url = URI.decode(url)
 
       @request = ::Typhoeus::Request.new(URI.escape(url), method: 'get', headers: headers)
 
