@@ -17,11 +17,13 @@
 #  application     :jsonb
 #  layer_info      :jsonb
 #  data_overwrite  :boolean          default(FALSE)
+#  subtitle        :string
+#  topics          :jsonb
 #
 
 class DatasetSerializer < ApplicationSerializer
   attributes :id, :application, :name, :subtitle, :data_path, :attributes_path, :provider, :format,
-             :connector_url, :table_name, :layers, :tags, :metadata, :cloned_host, :meta
+             :connector_url, :table_name, :layers, :topics, :tags, :metadata, :cloned_host, :meta
 
   def provider
     object.dateable.try(:provider_txt)

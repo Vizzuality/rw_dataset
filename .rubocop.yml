@@ -153,9 +153,9 @@ Style/ConstantName:
 Style/DefWithParentheses:
   Enabled: false
 
-# Checks for use of deprecated Hash methods.
-Style/DeprecatedHashMethods:
-  Enabled: false
+# Checks for use of deprecated Hash methods. Unrecognized cop!!!
+# Style/DeprecatedHashMethods:
+#   Enabled: false
 
 # Document classes and non-namespace modules.
 Style/Documentation:
