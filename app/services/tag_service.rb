@@ -1,22 +1,20 @@
 require 'uri'
 
-class TagService
+module TagService
   class << self
     def connect_to_service(object_class, options)
       body = options
 
       headers = {}
       headers['Accept']         = 'application/json'
-      headers['authentication'] = ServiceSetting.auth_token if ServiceSetting.auth_token.present?
+      headers['authentication'] = Service::SERVICE_TOKEN
 
-      service_url = "#{ServiceSetting.gateway_url}/tags"
-
-      url  = service_url
-      url  = URI.decode(url)
+      url = "#{Service::SERVICE_URL}/tags"
+      url = URI.decode(url)
 
       method = 'post'
 
-      ConcernConnection.establish_connection(url, method, headers, { tag: body })
+      Connection.establish_connection(url, method, headers, { tag: body })
     end
   end
 end
