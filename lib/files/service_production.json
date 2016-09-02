@@ -4,6 +4,15 @@
     "tags": ["rw"],
     "urls": [
       {
+        "url": "/ping",
+        "method": "GET",
+        "endpoints": [{
+            "method": "GET",
+            "baseUrl": "http://localhost:3000",
+            "path": "/ping"
+        }]
+      },
+      {
         "url": "/datasets",
         "method": "GET",
         "endpoints": [{

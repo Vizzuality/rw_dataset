@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     delete 'datasets/:id/data/(:data_id)', to: 'datasets#delete_data'
     put    'datasets/:id/layer',           to: 'datasets#update_layer_info'
 
-    get 'info', to: 'datasets#info'
+    get 'info', to: 'info#info'
+    get 'ping', to: 'info#ping'
   end
 end
