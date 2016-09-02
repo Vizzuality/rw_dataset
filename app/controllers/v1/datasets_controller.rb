@@ -133,7 +133,7 @@ module V1
       end
 
       def set_dataset
-        @dataset        = Dataset.find(params[:id])
+        @dataset        = Dataset.includes(:dateable).find(params[:id])
         @dateable       = @dataset.dateable
         @json_connector = @dateable.class.name.include?('JsonConnector')
       end

@@ -461,6 +461,12 @@ definitions:
               name:
                 type: string
                 description: Name of the dataset
+              tags:
+                type: array
+                description: array of tags ['tag one', tag two]
+              topics:
+                type: array
+                description: array of topics ['tag one', tag two]
           application:
             type: object
             description: Array of applications name
