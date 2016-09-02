@@ -1,7 +1,7 @@
 require 'typhoeus'
 require 'uri'
 
-class ConcernConnection
+module Connection
   class << self
     def establish_connection(url, method, headers={}, body={})
       @request = ::Typhoeus::Request.new(URI.escape(url), method: method, headers: headers, body: body)
