@@ -3,15 +3,6 @@
     "name": "RW Dataset v1",
     "urls": [
       {
-        "url": "/datasets",
-        "method": "GET",
-        "endpoints": [{
-            "method": "GET",
-            "baseUrl": "http://192.168.99.100:3000",
-            "path": "/datasets"
-        }]
-      },
-      {
         "url": "/datasets/:id",
         "method": "GET",
         "endpoints": [{
