@@ -4,15 +4,6 @@
     "tags": ["rw", "gfw"],
     "urls": [
       {
-        "url": "/datasets",
-        "method": "GET",
-        "endpoints": [{
-            "method": "GET",
-            "baseUrl": "http://localhost:3000",
-            "path": "/datasets"
-        }]
-      },
-      {
         "url": "/datasets/:id",
         "method": "GET",
         "endpoints": [{
