@@ -3,15 +3,6 @@
     "name": "RW Dataset v1",
     "urls": [
       {
-        "url": "/ping",
-        "method": "GET",
-        "endpoints": [{
-            "method": "GET",
-            "baseUrl": "http://192.168.99.100:3000",
-            "path": "/ping"
-        }]
-      },
-      {
         "url": "/datasets",
         "method": "GET",
         "endpoints": [{
