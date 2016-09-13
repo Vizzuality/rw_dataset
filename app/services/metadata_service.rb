@@ -3,10 +3,11 @@ require 'uri'
 
 module MetadataService
   class << self
-    def populate_dataset(dataset_id, app)
+    def populate_dataset(ids, app)
       options = {}
-      options['dataset_id'] = dataset_id
-      options['app']        = app if app.present?
+      options['dataset_id'] = ids unless ids.is_a?(Array)
+      options['ids']        = ids if     ids.is_a?(Array)
+      options['app']        = app if     app.present?
 
       get_metadata(options)
     end
@@ -16,11 +17,20 @@ module MetadataService
       headers['Accept']         = 'application/json'
       headers['authentication'] = Service::SERVICE_TOKEN
 
-      url = "#{Service::SERVICE_URL}/metadata/#{options['dataset_id']}"
-      url = "#{url}/#{options['app']}" if options['app'].present?
-      url = URI.decode(url)
+      url  = "#{Service::SERVICE_URL}/metadata"
+      url += if options['ids'].present?
+               "/find-by-ids"
+             else
+               "/#{options['dataset_id']}"
+             end
 
-      @request = ::Typhoeus::Request.new(URI.escape(url), method: 'get', headers: headers)
+      url += "/#{options['app']}" if options['app'].present? && options['ids'].blank?
+      url  = URI.decode(url)
+
+      method = options['ids'].present? ? 'post' : 'get'
+      body   = { ids: Oj.dump(options['ids']), app: options['app'] } if options['ids'].present?
+
+      @request = ::Typhoeus::Request.new(URI.escape(url), method: method, headers: headers, body: body)
 
       @request.on_complete do |response|
         if response.success?
