@@ -22,7 +22,7 @@
 #
 
 class DatasetSerializer < ApplicationSerializer
-  attributes :id, :application, :name, :subtitle, :data_path, :attributes_path, :provider, :format,
+  attributes :id, :application, :name, :subtitle, :data_path, :attributes_path, :connector_type, :provider, :format,
              :connector_url, :table_name, :layers, :topics, :tags, :metadata, :cloned_host, :meta
 
   def provider
@@ -35,6 +35,10 @@ class DatasetSerializer < ApplicationSerializer
 
   def connector_url
     object.dateable.try(:connector_url)
+  end
+
+  def connector_type
+    object.try(:dateable_type)
   end
 
   def table_name
