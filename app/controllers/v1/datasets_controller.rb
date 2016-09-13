@@ -124,8 +124,9 @@ module V1
 
       def set_dataset
         @dataset        = Dataset.includes(:dateable).find(params[:id])
-        @dateable       = @dataset.dateable
-        @json_connector = @dateable.class.name.include?('JsonConnector')
+        @dateable       = @dataset.dateable                              if @dataset.present?
+        @json_connector = @dateable.class.name.include?('JsonConnector') if @dateable.present?
+        record_not_found                                                 if @dataset.blank?
       end
 
       def populate_dataset

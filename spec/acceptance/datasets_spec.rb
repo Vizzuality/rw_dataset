@@ -14,7 +14,7 @@ module V1
         dataset_json = json[0]
         dataset_rest = json[3]
         expect(status).to eq(200)
-        expect(json.length).to eq(5)
+        expect(json.length).to              eq(5)
         expect(dataset_json['provider']).to eq('rwjson')
         expect(dataset_rest['provider']).to eq('cartodb')
       end
@@ -24,8 +24,9 @@ module V1
 
         dataset = json[0]
         expect(status).to eq(200)
-        expect(json.length).to eq(2)
-        expect(dataset['provider']).to eq('cartodb')
+        expect(json.length).to               eq(2)
+        expect(dataset['provider']).to       eq('cartodb')
+        expect(dataset['connector_type']).to eq('RestConnector')
       end
 
       it 'Allows to access datasets list filtering by type json' do
@@ -33,8 +34,9 @@ module V1
 
         dataset = json[0]
         expect(status).to eq(200)
-        expect(json.length).to eq(2)
-        expect(dataset['provider']).to eq('rwjson')
+        expect(json.length).to               eq(2)
+        expect(dataset['provider']).to       eq('rwjson')
+        expect(dataset['connector_type']).to eq('JsonConnector')
       end
 
       it 'Allows to access datasets list filtering by type wms' do
@@ -42,8 +44,9 @@ module V1
 
         dataset = json[0]
         expect(status).to eq(200)
-        expect(json.length).to eq(1)
-        expect(dataset['provider']).to eq('wms')
+        expect(json.length).to               eq(1)
+        expect(dataset['provider']).to       eq('wms')
+        expect(dataset['connector_type']).to eq('WmsConnector')
       end
 
       it 'Show list of all datasets using status filter all' do
