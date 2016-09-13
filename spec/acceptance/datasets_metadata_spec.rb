@@ -15,6 +15,19 @@ module V1
                            }]
                          }}
 
+    let!(:dataset_metas) {{
+                           "data": [{"id": "57bc054f4f30010f00bbec71", "type": "metadata", "attributes": { "dataset": "baca8364-3aa8-5d74-8100-44ef25885e9a",
+                                                                                                           "application": "prep",
+                                                                                                           "attributes": { "organization": "University of Washington/Joe Casola" }
+                                                                                                         }
+                           },
+                           {"id": "57bc054f4f30010f00bbec72", "type": "metadata", "attributes": { "dataset": "gaca8364-3aa8-5d74-8100-44ef25885e9a",
+                                                                                                           "application": "prep",
+                                                                                                           "attributes": { "organization": "University of Washington/Joe Casola" }
+                                                                                                         }
+                           }]
+                         }}
+
     context 'Populate datasets with metadata' do
       before(:each) do
         ServiceSetting.create(name: 'api-gateway', listener: true, token: '3123123der324eewr434ewr4324', url: 'http://192.168.99.100:8000')
@@ -22,6 +35,11 @@ module V1
         stub_request(:get, /192.168.99.100:8000/).
         with(:headers => {'Accept'=>'application/json', 'Authentication'=>'3123123der324eewr434ewr4324', 'User-Agent'=>'Typhoeus - https://github.com/typhoeus/typhoeus'}).
         to_return(:status => 200, :body => Oj.dump(metadata_data), :headers => {})
+
+        stub_request(:post, "http://192.168.99.100:8000/metadata/find-by-ids").
+        with(:body => "app&ids=%5B%22baca8364-3aa8-5d74-8100-44ef25885e9a%22%5D",
+             :headers => {'Accept'=>'application/json', 'Authentication'=>'3123123der324eewr434ewr4324', 'User-Agent'=>'Typhoeus - https://github.com/typhoeus/typhoeus'}).
+        to_return(:status => 200, :body => Oj.dump(dataset_metas), :headers => {})
       end
 
       it 'Show metadata for datasets' do
