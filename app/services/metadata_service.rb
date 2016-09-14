@@ -1,4 +1,6 @@
+require 'curb'
 require 'uri'
+require 'oj'
 
 module MetadataService
   class << self
