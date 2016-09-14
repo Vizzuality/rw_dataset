@@ -39,7 +39,7 @@ module V1
         stub_request(:post, "http://192.168.99.100:8000/metadata/find-by-ids").
         with(:body => "app&ids=%5B%22baca8364-3aa8-5d74-8100-44ef25885e9a%22%5D",
              :headers => {'Accept'=>'application/json', 'Authentication'=>'3123123der324eewr434ewr4324', 'User-Agent'=>'Typhoeus - https://github.com/typhoeus/typhoeus'}).
-        to_return(:status => 200, :body => Oj.dump(dataset_metas), :headers => {})
+        to_return(:status => 200, :body => Oj.dump(metadata_data), :headers => {})
       end
 
       it 'Show metadata for datasets' do

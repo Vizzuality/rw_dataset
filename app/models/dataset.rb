@@ -27,6 +27,7 @@ class Dataset < ApplicationRecord
   FORMAT = %w(JSON).freeze
   STATUS = %w(pending saved failed deleted).freeze
 
+  include ActiveModel::AttributeAssignment
   attr_accessor :metadata
 
   belongs_to :dateable, polymorphic: true
@@ -38,6 +39,7 @@ class Dataset < ApplicationRecord
   after_create :update_data_path,  if: "dateable_type.include?('JsonConnector')"
 
   scope :recent,             -> { order('updated_at DESC') }
+  scope :including_dateable, -> { includes(:dateable)      }
   scope :filter_pending,     -> { where(status: 0)         }
   scope :filter_saved,       -> { where(status: 1)         }
   scope :filter_failed,      -> { where(status: 2)         }
