@@ -48,15 +48,15 @@ class Connector
       datasets      = scope
       dataset_ids   = datasets.to_a.pluck(:id)
       includes_meta = includes_meta.split(',') if includes_meta.present?
+      app           = app                      if app.present? && !app.include?('all')
 
       includes_meta.each do |include|
         case include
         when 'metadata'
-          dataset_metas = MetadataService.populate_dataset(dataset_ids, app)
-          datasets      = datasets.each do |dataset|
-                            dataset_meta = dataset_metas.select { |d| d['dataset'] == dataset.id } if dataset_metas.is_a?(Array)
-                            dataset.assign_attributes(metadata: dataset_meta)
-                          end
+          Metadata.data ||= MetadataService.populate_dataset(dataset_ids, app)
+          datasets = datasets.each do |dataset|
+                       dataset.metadata = Metadata.where(dataset: dataset.id)
+                     end
         end
       end
 
