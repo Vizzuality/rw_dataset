@@ -3,7 +3,7 @@ require 'uri'
 
 module MetadataService
   class << self
-    def populate_dataset(ids, app)
+    def populate_dataset(ids, app=nil)
       options = {}
       options['dataset_id'] = ids unless ids.is_a?(Array)
       options['ids']        = ids if     ids.is_a?(Array)
@@ -18,6 +18,7 @@ module MetadataService
       headers['authentication'] = Service::SERVICE_TOKEN
 
       url  = "#{Service::SERVICE_URL}/metadata"
+      # url = "http://api.resourcewatch.org/metadata"
       url += if options['ids'].present?
                "/find-by-ids"
              else
@@ -28,7 +29,9 @@ module MetadataService
       url  = URI.decode(url)
 
       method = options['ids'].present? ? 'post' : 'get'
-      body   = { ids: Oj.dump(options['ids']), app: options['app'] } if options['ids'].present?
+      body = {}
+      body['ids'] = options['ids'] if options['ids'].present?
+      body['app'] = options['app'] if options['ids'].present? && options['app'].present?
 
       @request = ::Typhoeus::Request.new(URI.escape(url), method: method, headers: headers, body: body)
 
