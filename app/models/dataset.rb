@@ -27,10 +27,12 @@ class Dataset < ApplicationRecord
   FORMAT = %w(JSON).freeze
   STATUS = %w(pending saved failed deleted).freeze
 
-  include ActiveModel::AttributeAssignment
   attr_accessor :metadata
 
   belongs_to :dateable, polymorphic: true
+
+  extend ActiveHash::Associations::ActiveRecordExtensions
+  has_many :metadata
 
   before_save  :merge_tags,        if: "tags_changed?"
   before_save  :merge_topics,      if: "topics_changed?"
@@ -75,7 +77,8 @@ class Dataset < ApplicationRecord
     includes_meta.each do |include|
       case include
       when 'metadata'
-        self.assign_attributes(metadata: MetadataService.populate_dataset(self.id, app))
+        Metadata.data ||= MetadataService.populate_dataset(self.id, app)
+        self.metadata = Metadata.where(dataset: self.id)
       end
     end
   end
