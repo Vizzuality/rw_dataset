@@ -6,7 +6,7 @@ class Connector
       app            = options['app'].downcase            if options['app'].present?
       includes_meta  = options['includes']                if options['includes'].present?
 
-      datasets = Dataset.including_dateable.recent
+      datasets = Dataset.includes(:dateable).recent
       datasets = case connector_type
                  when 'rest' then datasets.filter_rest.recent
                  when 'json' then datasets.filter_json.recent
@@ -45,10 +45,22 @@ class Connector
     end
 
     def includes_filter(scope, includes_meta, app)
-      datasets = scope
-      datasets.each do |dataset|
-        dataset.populate(includes_meta, app)
+      datasets      = scope
+      dataset_ids   = datasets.to_a.pluck(:id)
+      includes_meta = includes_meta.split(',') if includes_meta.present?
+
+      includes_meta.each do |include|
+        case include
+        when 'metadata'
+          dataset_metas = MetadataService.populate_dataset(dataset_ids, app)
+          datasets      = datasets.each do |dataset|
+                            dataset_meta = dataset_metas.select { |d| d['dataset'] == dataset.id } if dataset_metas.is_a?(Array)
+                            dataset.assign_attributes(metadata: dataset_meta)
+                          end
+        end
       end
+
+      datasets
     end
 
     def app_filter(scope, app)
