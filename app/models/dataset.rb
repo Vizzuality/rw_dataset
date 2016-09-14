@@ -75,7 +75,7 @@ class Dataset < ApplicationRecord
     includes_meta.each do |include|
       case include
       when 'metadata'
-        self.metadata = MetadataService.populate_dataset(self.id, app)
+        self.assign_attributes(metadata: MetadataService.populate_dataset(self.id, app))
       end
     end
   end
