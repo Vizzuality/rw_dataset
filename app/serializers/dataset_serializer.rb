@@ -23,7 +23,9 @@
 
 class DatasetSerializer < ApplicationSerializer
   attributes :id, :application, :name, :subtitle, :data_path, :attributes_path, :connector_type, :provider, :format,
-             :connector_url, :table_name, :layers, :topics, :tags, :metadata, :cloned_host, :meta
+             :connector_url, :table_name, :layers, :topics, :tags, :cloned_host, :meta
+
+  has_many :metadata, serializer: MetadataSerializer
 
   def provider
     object.dateable.try(:provider_txt)

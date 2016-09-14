@@ -11,6 +11,7 @@ gem 'oj_mimic_json'
 gem 'active_model_serializers', '~> 0.10.2'
 gem 'typhoeus', require: false
 gem 'curb',     require: false
+gem 'active_hash'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.5.1'
