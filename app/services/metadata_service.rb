@@ -1,4 +1,3 @@
-require 'typhoeus'
 require 'uri'
 
 module MetadataService
@@ -15,10 +14,16 @@ module MetadataService
     def get_metadata(options)
       headers = {}
       headers['Accept']         = 'application/json'
+      headers['Content-Type']   = 'application/json'
       headers['authentication'] = Service::SERVICE_TOKEN
 
+      body = {}
+      body['ids'] = options['ids'] if options['ids'].present?
+      body['app'] = options['app'] if options['ids'].present? && options['app'].present?
+
+      method = options['ids'].present? ? 'post' : 'get'
+
       url  = "#{Service::SERVICE_URL}/metadata"
-      # url = "http://api.resourcewatch.org/metadata"
       url += if options['ids'].present?
                "/find-by-ids"
              else
@@ -28,26 +33,31 @@ module MetadataService
       url += "/#{options['app']}" if options['app'].present? && options['ids'].blank?
       url  = URI.decode(url)
 
-      method = options['ids'].present? ? 'post' : 'get'
-      body = {}
-      body['ids'] = options['ids'] if options['ids'].present?
-      body['app'] = options['app'] if options['ids'].present? && options['app'].present?
-
-      @request = ::Typhoeus::Request.new(URI.escape(url), method: method, headers: headers, body: body)
-
-      @request.on_complete do |response|
-        if response.success?
-          @data = Oj.load(response.body.force_encoding(Encoding::UTF_8))['data'].map { |d| d['attributes'] }
-        elsif response.timed_out?
-          @data = 'Meta data not reachable'
-        elsif response.code.zero?
-          @data = response.return_message
+      begin
+        if method.include?('post')
+          @c = Curl::Easy.http_post(URI.escape(url), Oj.dump(body)) do |curl|
+            each_curl(curl, headers)
+          end
         else
-          @data = []
+          @c = Curl::Easy.http_get(URI.escape(url)) do |curl|
+            each_curl(curl, headers)
+          end
         end
+        @c.perform
+        @data
+      rescue Curl::Err::TimeoutError
+        []
       end
-      @request.run
-      @data
+    end
+
+    def each_curl(curl, headers)
+      curl.headers = headers
+      curl.follow_location = true
+      curl.timeout_ms = 3000
+      curl.on_complete do |response|
+        response.on_success { @data = Oj.load(curl.body_str.force_encoding(Encoding::UTF_8))['data'].map { |d| d['attributes'] } }
+        response.on_failure { @data = [] }
+      end
     end
   end
 end
