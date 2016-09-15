@@ -1,16 +1,20 @@
 prod:
   image: vizzuality/rw_dataset:1.0.0${STAGING}
-  command: start
-  ports:
-    - '3000'
-  links:
-    - redis
   env_file: prod.env
 
-  log_driver: 'gelf'
+  command: start
   restart: always
+  ports:
+    - '3000'
+
+  dns: ${DNS_SERVER}
+
+  log_driver: 'gelf'
   log_opt:
     gelf-address: ${GELF_ADDRESS}
+
+  links:
+    - redis
 
 redis:
   image: redis
