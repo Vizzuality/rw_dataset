@@ -77,7 +77,7 @@ class Dataset < ApplicationRecord
     includes_meta.each do |include|
       case include
       when 'metadata'
-        Metadata.data ||= MetadataService.populate_dataset(self.id, app)
+        Metadata.data = MetadataService.populate_dataset(self.id, app)
         self.metadata = Metadata.where(dataset: self.id)
       end
     end

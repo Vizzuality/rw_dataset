@@ -53,7 +53,7 @@ class Connector
       includes_meta.each do |include|
         case include
         when 'metadata'
-          Metadata.data ||= MetadataService.populate_dataset(dataset_ids, app)
+          Metadata.data = MetadataService.populate_dataset(dataset_ids, app)
           datasets = datasets.each do |dataset|
                        dataset.metadata = Metadata.where(dataset: dataset.id)
                      end
