@@ -45,6 +45,7 @@ RSpec.configure do |config|
   end
 
   config.include(RSpec::ActiveJob)
+  config.include(RSpec::RedisHelper, redis: true)
 
   # clean out the queue after each spec
   config.after(:each) do

@@ -38,6 +38,7 @@ class Dataset < ApplicationRecord
   before_save  :merge_topics,      if: "topics_changed?"
   before_save  :merge_apps,        if: "application_changed?"
   after_save   :call_tags_service, if: "tags_changed? || topics_changed?"
+  after_save   :clear_cache
   after_create :update_data_path,  if: "dateable_type.include?('JsonConnector')"
 
   scope :recent,             -> { order('updated_at DESC') }
@@ -116,6 +117,10 @@ class Dataset < ApplicationRecord
 
     def update_data_path
       self.update_attributes(data_path: 'data')
+    end
+
+    def clear_cache
+      Rails.cache.delete_matched('*datasets_*')
     end
 
     def call_tags_service
