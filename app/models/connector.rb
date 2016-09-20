@@ -4,28 +4,39 @@ class Connector
       connector_type = options['connector_type'].downcase if options['connector_type'].present?
       status         = options['status'].downcase         if options['status'].present?
       app            = options['app'].downcase            if options['app'].present?
-      includes_meta  = options['includes']                if options['includes'].present?
+      including      = options['includes']                if options['includes'].present?
 
-      datasets = Dataset.includes(:dateable).recent
-      datasets = case connector_type
-                 when 'rest' then datasets.filter_rest.recent
-                 when 'json' then datasets.filter_json.recent
-                 when 'doc'  then datasets.filter_doc.recent
-                 when 'wms'  then datasets.filter_wms.recent
-                 else
-                   datasets
-                 end
+      cache_options   = ''
+      cache_options  += "_#{connector_type}"     if connector_type.present?
+      cache_options  += "_status:#{status}"      if status.present?
+      cache_options  += "_app:#{app}"            if app.present?
+      cache_options  += "_includes:#{including}" if including.present?
 
-      datasets = app_filter(datasets, app) if app.present?
+      if datasets = Rails.cache.read(cache_key(cache_options))
+        datasets
+      else
+        datasets = Dataset.includes(:dateable).recent
+        datasets = case connector_type
+                   when 'rest' then datasets.filter_rest.recent
+                   when 'json' then datasets.filter_json.recent
+                   when 'doc'  then datasets.filter_doc.recent
+                   when 'wms'  then datasets.filter_wms.recent
+                   else
+                     datasets
+                   end
 
-      datasets = if status.present?
-                   status_filter(datasets, status)
-                 else
-                   datasets.available
-                 end
+        datasets = app_filter(datasets, app) if app.present?
 
-      datasets = includes_filter(datasets, includes_meta, app) if includes_meta.present? && datasets.any?
+        datasets = if status.present?
+                     status_filter(datasets, status)
+                   else
+                     datasets.available
+                   end
 
+        datasets = includes_filter(datasets, including, app) if including.present? && datasets.any?
+
+        Rails.cache.write(cache_key(cache_options), datasets.to_a)
+      end
       datasets
     end
 
@@ -44,13 +55,13 @@ class Connector
       datasets
     end
 
-    def includes_filter(scope, includes_meta, app)
-      datasets      = scope
-      dataset_ids   = datasets.to_a.pluck(:id)
-      includes_meta = includes_meta.split(',') if includes_meta.present?
-      app           = app                      if app.present? && !app.include?('all')
+    def includes_filter(scope, including, app)
+      datasets    = scope
+      dataset_ids = datasets.to_a.pluck(:id)
+      including   = including.split(',') if including.present?
+      app         = app                  if app.present? && !app.include?('all')
 
-      includes_meta.each do |include|
+      including.each do |include|
         case include
         when 'metadata'
           Metadata.data = MetadataService.populate_dataset(dataset_ids, app)
@@ -115,6 +126,10 @@ class Connector
 
     def json_table_name_param
       'data'
+    end
+
+    def cache_key(cache_options)
+      "datasets_#{ cache_options }"
     end
   end
 end

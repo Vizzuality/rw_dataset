@@ -34,7 +34,7 @@ module V1
       ServiceSetting.create(name: 'api-gateway', listener: true, token: '3123123der324eewr434ewr4324', url: 'http://192.168.99.100:8000')
     end
 
-    context 'Populate datasets with metadata' do
+    context 'Populate datasets with metadata', redis: true do
       context 'datasets list' do
         before(:each) do
           stub_request(:post, "http://192.168.99.100:8000/metadata/find-by-ids").
