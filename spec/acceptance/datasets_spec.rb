@@ -7,7 +7,7 @@ module V1
     fixtures :wms_connectors
     fixtures :datasets
 
-    context 'For datasets list' do
+    context 'For datasets list', redis: true do
       it 'Allows to access datasets list without filtering' do
         get '/datasets'
 
