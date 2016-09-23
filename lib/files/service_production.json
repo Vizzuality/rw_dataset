@@ -24,6 +24,8 @@
       {
         "url": "/datasets",
         "method": "POST",
+        "authenticated": true,
+        "authenticated": true,
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://localhost:3000",
@@ -33,6 +35,7 @@
       {
         "url": "/datasets/:id/clone",
         "method": "POST",
+        "authenticated": true,
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://localhost:3000",
@@ -42,6 +45,7 @@
       {
         "url": "/datasets/:id",
         "method": "PUT",
+        "authenticated": true,
         "endpoints": [{
             "method": "PUT",
             "baseUrl": "http://localhost:3000",
@@ -51,6 +55,7 @@
       {
         "url": "/datasets/:id/layer",
         "method": "PUT",
+        "authenticated": true,
         "endpoints": [{
             "method": "PUT",
             "baseUrl": "http://localhost:3000",
@@ -60,6 +65,7 @@
       {
         "url": "/datasets/:id/data",
         "method": "POST",
+        "authenticated": true,
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://localhost:3000",
@@ -69,6 +75,7 @@
       {
         "url": "/datasets/:id/data-overwrite",
         "method": "POST",
+        "authenticated": true,
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://localhost:3000",
@@ -78,6 +85,7 @@
       {
         "url": "/datasets/:id/data/:data_id",
         "method": "POST",
+        "authenticated": true,
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://localhost:3000",
@@ -87,6 +95,7 @@
       {
         "url": "/datasets/:id/data/:data_id",
         "method": "DELETE",
+        "authenticated": true,
         "endpoints": [{
             "method": "DELETE",
             "baseUrl": "http://localhost:3000",
@@ -96,6 +105,7 @@
       {
         "url": "/datasets/:id",
         "method": "DELETE",
+        "authenticated": true,
         "endpoints": [{
             "method": "DELETE",
             "baseUrl": "http://localhost:3000",
