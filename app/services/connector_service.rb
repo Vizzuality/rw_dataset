@@ -12,6 +12,8 @@ module ConnectorService
       body['data']            = options['data']            if options['data'].present?
       body['data_path']       = options['data_path']       if options['data_path'].present?
       body['table_name']      = options['table_name']      if options['table_name'].present?
+      body['polygon']         = options['polygon']         if options['polygon'].present?
+      body['point']           = options['point']           if options['point'].present?
 
       headers = {}
       headers['Accept']         = 'application/json'
