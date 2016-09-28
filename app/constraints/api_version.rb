@@ -13,6 +13,6 @@ class APIVersion
 
     def check_headers(headers)
       accept = headers['Accept']
-      accept && accept.include?("application/rw_dataset-v#{@version}+json")
+      accept&.include?("application/rw_dataset-v#{@version}+json")
     end
 end

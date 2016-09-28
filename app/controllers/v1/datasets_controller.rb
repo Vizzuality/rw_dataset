@@ -78,7 +78,7 @@ module V1
 
     def clone
       @dataset = clone_dataset.dataset
-      if @dataset && @dataset.save
+      if @dataset&.save
         @dataset.dateable.connect_to_service(dataset_params)
         render json: @dataset, status: 201, serializer: DatasetSerializer, root: false
       else
