@@ -11,8 +11,8 @@ module V1
       it 'Allows to access datasets list without filtering' do
         get '/datasets'
 
-        dataset_json = json[0]
-        dataset_rest = json[3]
+        dataset_json = json[0]['attributes']
+        dataset_rest = json[3]['attributes']
         expect(status).to eq(200)
         expect(json.length).to              eq(5)
         expect(dataset_json['provider']).to eq('rwjson')
@@ -22,7 +22,7 @@ module V1
       it 'Allows to access datasets list filtering by type rest' do
         get '/datasets?connector_type=rest'
 
-        dataset = json[0]
+        dataset = json[0]['attributes']
         expect(status).to eq(200)
         expect(json.length).to               eq(2)
         expect(dataset['provider']).to       eq('cartodb')
@@ -32,7 +32,7 @@ module V1
       it 'Allows to access datasets list filtering by type json' do
         get '/datasets?connector_type=json'
 
-        dataset = json[0]
+        dataset = json[0]['attributes']
         expect(status).to eq(200)
         expect(json.length).to               eq(2)
         expect(dataset['provider']).to       eq('rwjson')
@@ -42,7 +42,7 @@ module V1
       it 'Allows to access datasets list filtering by type wms' do
         get '/datasets?connector_type=wms'
 
-        dataset = json[0]
+        dataset = json[0]['attributes']
         expect(status).to eq(200)
         expect(json.length).to               eq(1)
         expect(dataset['provider']).to       eq('wms')
@@ -82,15 +82,15 @@ module V1
 
         expect(status).to eq(200)
         expect(json.size).to                           eq(2)
-        expect(json[0]['layers'][0]['application']).to eq('gfw')
-        expect(json[0]['application'][0]).to           eq('gfw')
+        expect(json[0]['attributes']['layers'][0]['application']).to eq('gfw')
+        expect(json[0]['attributes']['application'][0]).to           eq('gfw')
       end
 
       it 'Show list of datasets for app WRW' do
         get '/datasets?app=wrw'
 
         expect(status).to eq(200)
-        expect(json_main.size).to eq(1)
+        expect(json.size).to eq(1)
       end
 
       it 'Show blank list of datasets for not existing app' do
@@ -116,12 +116,12 @@ module V1
           get "/datasets/#{dataset_id}"
 
           expect(status).to eq(200)
-          expect(json['name']).to          eq('cartodb test set')
-          expect(json['provider']).to      eq('cartodb')
-          expect(json['format']).to        eq('JSON')
-          expect(json['connector_url']).to be_present
-          expect(json['data_path']).to     be_present
-          expect(json['table_name']).to    be_present
+          expect(json_attr['name']).to          eq('cartodb test set')
+          expect(json_attr['provider']).to      eq('cartodb')
+          expect(json_attr['format']).to        eq('JSON')
+          expect(json_attr['connector_url']).to be_present
+          expect(json_attr['data_path']).to     be_present
+          expect(json_attr['table_name']).to    be_present
         end
 
         it 'Allows to create rest dataset without tags' do
@@ -130,13 +130,13 @@ module V1
                                                  "dataset_attributes": {"name": "Carto test api", "format": 0, "data_path": "rows", "attributes_path": "fields"}}}
 
           expect(status).to eq(201)
-          expect(json['name']).not_to      be_nil
-          expect(json['provider']).to      eq('cartodb')
-          expect(json['format']).to        be_present
-          expect(json['connector_url']).to be_present
-          expect(json['data_path']).to     be_present
-          expect(json['table_name']).to    be_present
-          expect(json['tags']).to          be_empty
+          expect(json_attr['name']).not_to      be_nil
+          expect(json_attr['provider']).to      eq('cartodb')
+          expect(json_attr['format']).to        be_present
+          expect(json_attr['connector_url']).to be_present
+          expect(json_attr['data_path']).to     be_present
+          expect(json_attr['table_name']).to    be_present
+          expect(json_attr['tags']).to          be_empty
         end
 
         it 'Allows to create rest dataset with tags and topics' do
@@ -146,14 +146,14 @@ module V1
                                                   "tags": ["tag1", "tag1", "Tag1", "tag2"], "topics": ["topic1", "topic1", "Topic1", "topic2"]}}}
 
           expect(status).to eq(201)
-          expect(json['name']).not_to      be_nil
-          expect(json['provider']).to      eq('cartodb')
-          expect(json['format']).to        be_present
-          expect(json['connector_url']).to be_present
-          expect(json['data_path']).to     be_present
-          expect(json['table_name']).to    be_present
-          expect(json['tags']).to          eq(["tag1", "tag2"])
-          expect(json['topics']).to        eq(["topic1", "topic2"])
+          expect(json_attr['name']).not_to      be_nil
+          expect(json_attr['provider']).to      eq('cartodb')
+          expect(json_attr['format']).to        be_present
+          expect(json_attr['connector_url']).to be_present
+          expect(json_attr['data_path']).to     be_present
+          expect(json_attr['table_name']).to    be_present
+          expect(json_attr['tags']).to          eq(["tag1", "tag2"])
+          expect(json_attr['topics']).to        eq(["topic1", "topic2"])
         end
 
         it 'Allows to create rest dataset without tags and only required attributes' do
@@ -162,12 +162,12 @@ module V1
                                                  "dataset_attributes": {"name": "Carto test api"}}}
 
           expect(status).to eq(201)
-          expect(json['name']).not_to       be_nil
-          expect(json['provider']).to       eq('cartodb')
-          expect(json['format']).to         be_present
-          expect(json['connector_url']).to  be_present
-          expect(json['data_path']).not_to  be_present
-          expect(json['table_name']).to     eq('cait_2_0_country_ghg_emissions_filtered')
+          expect(json_attr['name']).not_to       be_nil
+          expect(json_attr['provider']).to       eq('cartodb')
+          expect(json_attr['format']).to         be_present
+          expect(json_attr['connector_url']).to  be_present
+          expect(json_attr['data_path']).not_to  be_present
+          expect(json_attr['table_name']).to     eq('cait_2_0_country_ghg_emissions_filtered')
         end
 
         it 'Allows to update dataset' do
@@ -176,17 +176,17 @@ module V1
                                                            {"cartodb_id": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
 
           expect(status).to eq(200)
-          expect(json['name']).to         eq('Carto test api update')
-          expect(json['provider']).not_to be_nil
-          expect(json['format']).to       be_present
-          expect(json['tags']).to         eq(["tag1", "tag3", "tag2"])
+          expect(json_attr['name']).to         eq('Carto test api update')
+          expect(json_attr['provider']).not_to be_nil
+          expect(json_attr['format']).to       be_present
+          expect(json_attr['tags']).to         eq(["tag1", "tag3", "tag2"])
         end
 
         it 'Allows to add tags to existing dataset' do
           put "/datasets/#{dataset_id}", params: {"dataset": {"dataset_attributes": {"tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
 
           expect(status).to eq(200)
-          expect(json['tags']).to eq(["tag1", "tag2"])
+          expect(json_attr['tags']).to eq(["tag1", "tag2"])
         end
 
         it 'Allows to add layers to existing dataset' do
@@ -220,12 +220,12 @@ module V1
                                                   "tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
 
           expect(status).to eq(201)
-          expect(json['name']).not_to      be_nil
-          expect(json['provider']).to      eq('featureservice')
-          expect(json['format']).to        be_present
-          expect(json['connector_url']).to be_present
-          expect(json['data_path']).to     be_present
-          expect(json['tags']).to          eq(["tag1", "tag2"])
+          expect(json_attr['name']).not_to      be_nil
+          expect(json_attr['provider']).to      eq('featureservice')
+          expect(json_attr['format']).to        be_present
+          expect(json_attr['connector_url']).to be_present
+          expect(json_attr['data_path']).to     be_present
+          expect(json_attr['tags']).to          eq(["tag1", "tag2"])
         end
 
         it 'Do not allow to overwrite not a json dataset' do
@@ -249,7 +249,7 @@ module V1
                                                            {"cartodb_id": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
 
           expect(status).to eq(200)
-          expect(json['name']).to eq('Json test api update')
+          expect(json_attr['name']).to eq('Json test api update')
         end
 
         it 'Allows to create json dataset with tags' do
@@ -266,10 +266,10 @@ module V1
                                     }}
 
           expect(status).to eq(201)
-          expect(json['name']).to     eq('Json test api')
-          expect(json['provider']).to eq('rwjson')
-          expect(json['format']).to   be_present
-          expect(json['tags']).to     eq(["tag1", "tag2"])
+          expect(json_attr['name']).to     eq('Json test api')
+          expect(json_attr['provider']).to eq('rwjson')
+          expect(json_attr['format']).to   be_present
+          expect(json_attr['tags']).to     eq(["tag1", "tag2"])
         end
 
         it 'Allows to create json dataset from json url' do
@@ -280,8 +280,8 @@ module V1
                                     }}
 
           expect(status).to eq(201)
-          expect(json['name']).to     eq('Json external data test api')
-          expect(json['provider']).to eq('rwjson')
+          expect(json_attr['name']).to     eq('Json external data test api')
+          expect(json_attr['provider']).to eq('rwjson')
         end
 
         it 'Allows to delete dataset' do
@@ -334,11 +334,11 @@ module V1
                                                  "dataset_attributes": {"name": "csv file", "tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
 
           expect(status).to eq(201)
-          expect(json['name']).not_to      be_nil
-          expect(json['provider']).to      eq('csv')
-          expect(json['format']).to        be_present
-          expect(json['connector_url']).to be_present
-          expect(json['tags']).to          eq(["tag1", "tag2"])
+          expect(json_attr['name']).not_to      be_nil
+          expect(json_attr['provider']).to      eq('csv')
+          expect(json_attr['format']).to        be_present
+          expect(json_attr['connector_url']).to be_present
+          expect(json_attr['tags']).to          eq(["tag1", "tag2"])
         end
       end
 
@@ -350,13 +350,13 @@ module V1
                                                   "tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
 
           expect(status).to eq(201)
-          expect(json['name']).not_to          be_nil
-          expect(json['provider']).to          eq('wms')
-          expect(json['format']).to            be_present
-          expect(json['connector_url']).not_to be_present
-          expect(json['data_path']).not_to     be_present
-          expect(json['table_name']).not_to    be_present
-          expect(json['tags']).to              eq(["tag1", "tag2"])
+          expect(json_attr['name']).not_to          be_nil
+          expect(json_attr['provider']).to          eq('wms')
+          expect(json_attr['format']).to            be_present
+          expect(json_attr['connector_url']).not_to be_present
+          expect(json_attr['data_path']).not_to     be_present
+          expect(json_attr['table_name']).not_to    be_present
+          expect(json_attr['tags']).to              eq(["tag1", "tag2"])
         end
 
         it 'Allows to delete wms dataset' do

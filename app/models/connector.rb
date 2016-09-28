@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Connector
   class << self
     def fetch_all(options)

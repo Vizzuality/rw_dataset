@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class APIVersion
   def initialize(options)
     @version = options[:version]

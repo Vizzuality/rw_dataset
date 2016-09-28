@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ConnectorServiceJob < ApplicationJob
   queue_as :connector_data
 

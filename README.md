@@ -8,7 +8,7 @@ TODO: Write a project description
 
 Requirements:
 
-* Ruby 2.3.0 [How to install](https://gorails.com/setup/osx/10.10-yosemite)
+* Ruby 2.3.1 [How to install](https://gorails.com/setup/osx/10.10-yosemite)
 * PostgreSQL 9.4+ [How to install](http://exponential.io/blog/2015/02/21/install-postgresql-on-mac-os-x-via-brew/)
 
 Install global dependencies:

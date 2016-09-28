@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # == Schema Information
 #
 # Table name: datasets
@@ -30,9 +31,6 @@ class Dataset < ApplicationRecord
   attr_accessor :metadata
 
   belongs_to :dateable, polymorphic: true
-
-  extend ActiveHash::Associations::ActiveRecordExtensions
-  has_many :metadata
 
   before_save  :merge_tags,        if: "tags_changed?"
   before_save  :merge_topics,      if: "topics_changed?"
@@ -79,7 +77,7 @@ class Dataset < ApplicationRecord
       case include
       when 'metadata'
         Metadata.data = MetadataService.populate_dataset(self.id, app)
-        self.metadata = Metadata.where(dataset: self.id)
+        @metadata     = Metadata.where(dataset: self.id)
       end
     end
   end

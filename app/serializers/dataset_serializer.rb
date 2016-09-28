@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # == Schema Information
 #
 # Table name: datasets
@@ -23,9 +24,7 @@
 
 class DatasetSerializer < ApplicationSerializer
   attributes :id, :application, :name, :subtitle, :data_path, :attributes_path, :connector_type, :provider, :format,
-             :connector_url, :table_name, :layers, :topics, :tags, :cloned_host, :meta
-
-  has_many :metadata, serializer: MetadataSerializer
+             :connector_url, :table_name, :layers, :topics, :tags, :cloned_host, :metadata
 
   def provider
     object.dateable.try(:provider_txt)
@@ -56,7 +55,9 @@ class DatasetSerializer < ApplicationSerializer
   end
 
   def metadata
-    object.try(:metadata)
+    object.try(:metadata).tap do |meta|
+      MetadataSerializer.new(meta)
+    end
   end
 
   def layers
@@ -70,16 +71,6 @@ class DatasetSerializer < ApplicationSerializer
     data['host_id']       = object.dateable.try(:parent_connector_id)
     data['host_type']     = object.dateable.try(:parent_connector_type)
     data['host_path']     = object.dateable.try(:parent_connector_data_path)
-    data
-  end
-
-  def meta
-    data = {}
-    data['status']     = object.try(:status_txt)
-    data['overwrite']  = object.try(:data_overwrite)
-    data['updated_at'] = object.try(:updated_at)
-    data['created_at'] = object.try(:created_at)
-    data['rows']       = object.try(:row_count)
     data
   end
 end

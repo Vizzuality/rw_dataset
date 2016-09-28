@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module V1
   class DatasetsController < ApplicationController
     before_action :set_dataset,      except: [:index, :create, :info]
@@ -5,14 +6,14 @@ module V1
 
     def index
       @datasets = Connector.fetch_all(options_filter)
-      render json: @datasets, each_serializer: DatasetSerializer, root: false
+      render json: @datasets, each_serializer: DatasetSerializer, include: params[:includes], meta: { datasets_count: @datasets.count }
     end
 
     def show
-      render json: @dataset, serializer: DatasetSerializer, root: false, meta: { status: @dataset.try(:status_txt),
-                                                                                 overwrite: @dataset.try(:data_overwrite),
-                                                                                 updated_at: @dataset.try(:updated_at),
-                                                                                 created_at: @dataset.try(:created_at) }
+      render json: @dataset, serializer: DatasetSerializer, include: params[:includes], meta: { status: @dataset.try(:status_txt),
+                                                                                                overwrite: @dataset.try(:data_overwrite),
+                                                                                                updated_at: @dataset.try(:updated_at),
+                                                                                                created_at: @dataset.try(:created_at) }
     end
 
     def update
@@ -115,7 +116,7 @@ module V1
       end
 
       def dataset_url_fixer
-        dataset_params['dataset_url'].include?('http://') ? dataset_params['dataset_url'] : "#{ServiceSetting.gateway_url}#{dataset_params['dataset_url']}"
+        dataset_params['dataset_url'].include?('http://') ? dataset_params['dataset_url'] : "#{Service::SERVICE_URL}#{dataset_params['dataset_url']}"
       end
 
       def options_filter

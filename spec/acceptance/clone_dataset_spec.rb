@@ -14,10 +14,10 @@ module V1
           post "/datasets/#{dataset_id}/clone", params: {"dataset": {"dataset_url": "http://ec2-52-23-163-254.compute-1.amazonaws.com/query/4?select[]=iso,population&filter=(iso=='ESP','AUS')&aggr_by[]=iso&aggr_func=sum&order[]=-iso"} }
 
           expect(status).to eq(201)
-          expect(json['name']).to                         match('_copy')
-          expect(json['provider']).to                     eq('rwjson')
-          expect(json['cloned_host']['host_type']).to     eq('RestConnector')
-          expect(json['cloned_host']['host_provider']).to eq('cartodb')
+          expect(json_attr['name']).to                         match('_copy')
+          expect(json_attr['provider']).to                     eq('rwjson')
+          expect(json_attr['cloned_host']['host_type']).to     eq('RestConnector')
+          expect(json_attr['cloned_host']['host_provider']).to eq('cartodb')
         end
       end
 
@@ -29,11 +29,11 @@ module V1
           post "/datasets/#{dataset_id}/clone", params: {"dataset": {"dataset_url": "/query/4?select[]=iso,population&filter=(iso=='ESP','AUS')&aggr_by[]=iso&aggr_func=sum&order[]=-iso"} }
 
           expect(status).to eq(201)
-          expect(json['name']).to                         match('_copy')
-          expect(json['provider']).to                     eq('rwjson')
-          expect(json['cloned_host']['host_type']).to     eq('JsonConnector')
-          expect(json['cloned_host']['host_provider']).to eq('rwjson')
-          expect(json['cloned_host']['host_url']).to      eq("http://192.168.99.100:8000/query/4?select[]=iso,population&filter=(iso=='ESP','AUS')&aggr_by[]=iso&aggr_func=sum&order[]=-iso")
+          expect(json_attr['name']).to                         match('_copy')
+          expect(json_attr['provider']).to                     eq('rwjson')
+          expect(json_attr['cloned_host']['host_type']).to     eq('JsonConnector')
+          expect(json_attr['cloned_host']['host_provider']).to eq('rwjson')
+          expect(json_attr['cloned_host']['host_url']).to      eq("http://192.168.99.100:8000/query/4?select[]=iso,population&filter=(iso=='ESP','AUS')&aggr_by[]=iso&aggr_func=sum&order[]=-iso")
         end
       end
     end
