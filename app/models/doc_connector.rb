@@ -35,6 +35,10 @@ class DocConnector < ApplicationRecord
     params_for_adapter['connector_url'] = connector_url
     params_for_adapter['provider']      = 'csv'
     params_for_adapter['table_name']    = table_name
+    params_for_adapter['polygon']       = options['polygon'] if options['polygon'].present?
+    params_for_adapter['point']         = {} if options['point'].present?
+    params_for_adapter['point']['lat']  = options['point']['lat']  if params_for_adapter['point'] && options['point']['lat'].present?
+    params_for_adapter['point']['long'] = options['point']['long'] if params_for_adapter['point'] && options['point']['long'].present?
     params_for_adapter['to_delete']     = true if options.include?('delete')
     params_for_adapter['to_update']     = true if options['to_update'].present?
 
