@@ -331,6 +331,8 @@ module V1
           post '/datasets', params: {"dataset": {"connector_type": "document",
                                                  "connector_url": "https://test-csv.csv",
                                                  "table_name": "my_table",
+                                                 "polygon": "Madrid alcobendas",
+                                                 "point": { "lat": "23233233", "long": "66565676" },
                                                  "dataset_attributes": {"name": "csv file", "tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
 
           expect(status).to eq(201)

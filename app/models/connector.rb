@@ -98,6 +98,8 @@ class Connector
         options['table_name'] = json_table_name_param if options['table_name'].blank?
         JsonConnector.new(options)
       when 'document'
+        options = options['polygon'].present? ? options.except(:polygon) : options
+        options = options['point'].present?   ? options.except(:point)   : options
         DocConnector.new(options)
       when 'wms'
         WmsConnector.new(options)
