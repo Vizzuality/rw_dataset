@@ -1,5 +1,5 @@
 prod:
-  image: vizzuality/rw_dataset:1.0.0${STAGING}
+  image: vizzuality/rw_dataset:2.0.0${STAGING}
   env_file: prod.env
 
   command: start

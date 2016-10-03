@@ -16,8 +16,8 @@ module V1
           expect(status).to eq(201)
           expect(json_attr['name']).to                         match('_copy')
           expect(json_attr['provider']).to                     eq('rwjson')
-          expect(json_attr['cloned_host']['host_type']).to     eq('RestConnector')
-          expect(json_attr['cloned_host']['host_provider']).to eq('cartodb')
+          expect(json_attr['clonedHost']['hostType']).to     eq('RestConnector')
+          expect(json_attr['clonedHost']['hostProvider']).to eq('cartodb')
         end
       end
 
@@ -31,9 +31,9 @@ module V1
           expect(status).to eq(201)
           expect(json_attr['name']).to                         match('_copy')
           expect(json_attr['provider']).to                     eq('rwjson')
-          expect(json_attr['cloned_host']['host_type']).to     eq('JsonConnector')
-          expect(json_attr['cloned_host']['host_provider']).to eq('rwjson')
-          expect(json_attr['cloned_host']['host_url']).to      eq("http://192.168.99.100:8000/query/4?select[]=iso,population&filter=(iso=='ESP','AUS')&aggr_by[]=iso&aggr_func=sum&order[]=-iso")
+          expect(json_attr['clonedHost']['hostType']).to     eq('JsonConnector')
+          expect(json_attr['clonedHost']['hostProvider']).to eq('rwjson')
+          expect(json_attr['clonedHost']['hostUrl']).to      eq("http://192.168.99.100:8000/query/4?select[]=iso,population&filter=(iso=='ESP','AUS')&aggr_by[]=iso&aggr_func=sum&order[]=-iso")
         end
       end
     end

@@ -26,7 +26,7 @@ module V1
         expect(status).to eq(200)
         expect(json.length).to               eq(2)
         expect(dataset['provider']).to       eq('cartodb')
-        expect(dataset['connector_type']).to eq('RestConnector')
+        expect(dataset['connectorType']).to eq('RestConnector')
       end
 
       it 'Allows to access datasets list filtering by type json' do
@@ -36,7 +36,7 @@ module V1
         expect(status).to eq(200)
         expect(json.length).to               eq(2)
         expect(dataset['provider']).to       eq('rwjson')
-        expect(dataset['connector_type']).to eq('JsonConnector')
+        expect(dataset['connectorType']).to eq('JsonConnector')
       end
 
       it 'Allows to access datasets list filtering by type wms' do
@@ -46,7 +46,7 @@ module V1
         expect(status).to eq(200)
         expect(json.length).to               eq(1)
         expect(dataset['provider']).to       eq('wms')
-        expect(dataset['connector_type']).to eq('WmsConnector')
+        expect(dataset['connectorType']).to eq('WmsConnector')
       end
 
       it 'Show list of all datasets using status filter all' do
@@ -119,9 +119,9 @@ module V1
           expect(json_attr['name']).to          eq('cartodb test set')
           expect(json_attr['provider']).to      eq('cartodb')
           expect(json_attr['format']).to        eq('JSON')
-          expect(json_attr['connector_url']).to be_present
-          expect(json_attr['data_path']).to     be_present
-          expect(json_attr['table_name']).to    be_present
+          expect(json_attr['connectorUrl']).to be_present
+          expect(json_attr['dataPath']).to     be_present
+          expect(json_attr['tableName']).to    be_present
         end
 
         it 'Allows to create rest dataset without tags' do
@@ -133,9 +133,9 @@ module V1
           expect(json_attr['name']).not_to      be_nil
           expect(json_attr['provider']).to      eq('cartodb')
           expect(json_attr['format']).to        be_present
-          expect(json_attr['connector_url']).to be_present
-          expect(json_attr['data_path']).to     be_present
-          expect(json_attr['table_name']).to    be_present
+          expect(json_attr['connectorUrl']).to be_present
+          expect(json_attr['dataPath']).to     be_present
+          expect(json_attr['tableName']).to    be_present
           expect(json_attr['tags']).to          be_empty
         end
 
@@ -149,9 +149,9 @@ module V1
           expect(json_attr['name']).not_to      be_nil
           expect(json_attr['provider']).to      eq('cartodb')
           expect(json_attr['format']).to        be_present
-          expect(json_attr['connector_url']).to be_present
-          expect(json_attr['data_path']).to     be_present
-          expect(json_attr['table_name']).to    be_present
+          expect(json_attr['connectorUrl']).to be_present
+          expect(json_attr['dataPath']).to     be_present
+          expect(json_attr['tableName']).to    be_present
           expect(json_attr['tags']).to          eq(["tag1", "tag2"])
           expect(json_attr['topics']).to        eq(["topic1", "topic2"])
         end
@@ -165,9 +165,9 @@ module V1
           expect(json_attr['name']).not_to       be_nil
           expect(json_attr['provider']).to       eq('cartodb')
           expect(json_attr['format']).to         be_present
-          expect(json_attr['connector_url']).to  be_present
-          expect(json_attr['data_path']).not_to  be_present
-          expect(json_attr['table_name']).to     eq('cait_2_0_country_ghg_emissions_filtered')
+          expect(json_attr['connectorUrl']).to  be_present
+          expect(json_attr['dataPath']).not_to  be_present
+          expect(json_attr['tableName']).to     eq('cait_2_0_country_ghg_emissions_filtered')
         end
 
         it 'Allows to update dataset' do
@@ -223,8 +223,8 @@ module V1
           expect(json_attr['name']).not_to      be_nil
           expect(json_attr['provider']).to      eq('featureservice')
           expect(json_attr['format']).to        be_present
-          expect(json_attr['connector_url']).to be_present
-          expect(json_attr['data_path']).to     be_present
+          expect(json_attr['connectorUrl']).to be_present
+          expect(json_attr['dataPath']).to     be_present
           expect(json_attr['tags']).to          eq(["tag1", "tag2"])
         end
 
@@ -339,7 +339,7 @@ module V1
           expect(json_attr['name']).not_to      be_nil
           expect(json_attr['provider']).to      eq('csv')
           expect(json_attr['format']).to        be_present
-          expect(json_attr['connector_url']).to be_present
+          expect(json_attr['connectorUrl']).to be_present
           expect(json_attr['tags']).to          eq(["tag1", "tag2"])
         end
       end
@@ -355,9 +355,9 @@ module V1
           expect(json_attr['name']).not_to          be_nil
           expect(json_attr['provider']).to          eq('wms')
           expect(json_attr['format']).to            be_present
-          expect(json_attr['connector_url']).not_to be_present
-          expect(json_attr['data_path']).not_to     be_present
-          expect(json_attr['table_name']).not_to    be_present
+          expect(json_attr['connectorUrl']).not_to be_present
+          expect(json_attr['dataPath']).not_to     be_present
+          expect(json_attr['tableName']).not_to    be_present
           expect(json_attr['tags']).to              eq(["tag1", "tag2"])
         end
 
