@@ -26,7 +26,7 @@ module V1
         let!(:settings)   { ServiceSetting.create(name: 'api-gateway', listener: true, token: '3123123der324eewr434ewr4324', url: 'http://192.168.99.100:8000') }
 
         it 'Allows to clone json dataset' do
-          post "/datasets/#{dataset_id}/clone", params: {"dataset": {"datasetUrl": "/query/4?select[]=iso,population&filter=(iso=='ESP','AUS')&aggrBy[]=iso&aggrFunc=sum&order[]=-iso"} }
+          post "/datasets/#{dataset_id}/clone", params: {"dataset": {"datasetUrl": "http://192.168.99.100:8000/query/4?select[]=iso,population&filter=(iso=='ESP','AUS')&aggrBy[]=iso&aggrFunc=sum&order[]=-iso"} }
 
           expect(status).to eq(201)
           expect(json_attr['name']).to                       match('_copy')

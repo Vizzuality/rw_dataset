@@ -4,6 +4,8 @@ module V1
     before_action :set_dataset,      except: [:index, :create, :info]
     before_action :populate_dataset, only: :show, if: :params_includes_present?
 
+    include ParamsHandler
+
     def index
       @datasets = Connector.fetch_all(options_filter)
       render json: @datasets, each_serializer: DatasetSerializer, include: params[:includes], meta: { datasets_count: @datasets.count }
@@ -134,19 +136,19 @@ module V1
         @dataset.populate(options_filter['includes'], options_filter['app'])
       end
 
-      def dataset_params
-        params.require(:dataset).permit!
-      end
-
       def params_includes_present?
         params[:includes].present?
       end
 
+      def dataset_params
+        dataset_params_sanitizer
+      end
+
       def dataset_params_for_update
         if @json_connector
-          params.require(:dataset).except(:data, :data_attributes, :connector_url).permit!
+          dataset_params_sanitizer.except(:data, :data_attributes, :connector_url)
         else
-          params.require(:dataset).except(:data, :data_attributes).permit!
+          dataset_params_sanitizer.except(:data, :data_attributes)
         end
       end
 

@@ -44,8 +44,8 @@ class JsonConnector < ApplicationRecord
     params_for_adapter = {}
     params_for_adapter['dataset_id']      = dataset.id
     params_for_adapter['data_id']         = options['data_id'] if options['data_id'].present?
-    params_for_adapter['data_path']       = if options['dataset_attributes'].present? && options['dataset_attributes']['data_path'].present?
-                                              options['dataset_attributes']['data_path']
+    params_for_adapter['data_path']       = if options['data_path'].present?
+                                              options['data_path']
                                             elsif self.try(:parent_connector_data_path).present?
                                               self.try(:parent_connector_data_path)
                                             else

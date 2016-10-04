@@ -26,7 +26,7 @@ module V1
         expect(status).to eq(200)
         expect(json.length).to              eq(2)
         expect(dataset['provider']).to      eq('cartodb')
-        expect(dataset['connectorType']).to eq('RestConnector')
+        expect(dataset['connectorType']).to eq('rest')
       end
 
       it 'Allows to access datasets list filtering by type json' do
@@ -36,7 +36,7 @@ module V1
         expect(status).to eq(200)
         expect(json.length).to              eq(2)
         expect(dataset['provider']).to      eq('rwjson')
-        expect(dataset['connectorType']).to eq('JsonConnector')
+        expect(dataset['connectorType']).to eq('json')
       end
 
       it 'Allows to access datasets list filtering by type wms' do
@@ -46,7 +46,7 @@ module V1
         expect(status).to eq(200)
         expect(json.length).to              eq(1)
         expect(dataset['provider']).to      eq('wms')
-        expect(dataset['connectorType']).to eq('WmsConnector')
+        expect(dataset['connectorType']).to eq('wms')
       end
 
       it 'Show list of all datasets using status filter all' do
@@ -82,8 +82,8 @@ module V1
 
         expect(status).to eq(200)
         expect(json.size).to eq(2)
-        expect(json[0]['attributes']['layers'][0]['application']).to eq('gfw')
-        expect(json[0]['attributes']['application'][0]).to           eq('gfw')
+        expect(json[0]['attributes']['layerInfo'][0]['application']).to eq('gfw')
+        expect(json[0]['attributes']['application'][0]).to              eq('gfw')
       end
 
       it 'Show list of datasets for app WRW' do
@@ -125,9 +125,9 @@ module V1
         end
 
         it 'Allows to create rest dataset without tags' do
-          post '/datasets', params: {"dataset": {"connectorProvider": "cartodb", "tableName": "public.carts_test_endoint",
+          post '/datasets', params: {"dataset": {"provider": "cartodb", "tableName": "public.carts_test_endoint",
                                                  "connectorUrl": "https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint",
-                                                 "datasetAttributes": {"name": "Carto test api", "format": 0, "data_path": "rows", "attributesPath": "fields"}}}
+                                                 "name": "Carto test api", "format": 0, "data_path": "rows", "attributesPath": "fields"}}
 
           expect(status).to eq(201)
           expect(json_attr['name']).not_to     be_nil
@@ -140,10 +140,10 @@ module V1
         end
 
         it 'Allows to create rest dataset with tags and topics' do
-          post '/datasets', params: {"dataset": {"connectorProvider": "cartodb", "tableName": "public.carts_test_endoint",
+          post '/datasets', params: {"dataset": {"provider": "cartodb", "tableName": "public.carts_test_endoint",
                                                  "connectorUrl": "https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint",
-                                                 "datasetAttributes": {"name": "Carto test api", "format": 0, "data_path": "rows", "attributesPath": "fields",
-                                                  "tags": ["tag1", "tag1", "Tag1", "tag2"], "topics": ["topic1", "topic1", "Topic1", "topic2"]}}}
+                                                 "name": "Carto test api", "format": 0, "data_path": "rows", "attributesPath": "fields",
+                                                  "tags": ["tag1", "tag1", "Tag1", "tag2"], "topics": ["topic1", "topic1", "Topic1", "topic2"]}}
 
           expect(status).to eq(201)
           expect(json_attr['name']).not_to     be_nil
@@ -157,21 +157,21 @@ module V1
         end
 
         it 'Allows to create rest dataset without tags and only required attributes' do
-          post '/datasets', params: {"dataset": {"connectorProvider": "cartodb",
+          post '/datasets', params: {"dataset": {"provider": "cartodb",
                                                  "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
-                                                 "datasetAttributes": {"name": "Carto test api"}}}
+                                                 "name": "Carto test api"}}
 
           expect(status).to eq(201)
-          expect(json_attr['name']).not_to      be_nil
-          expect(json_attr['provider']).to      eq('cartodb')
-          expect(json_attr['format']).to        be_present
-          expect(json_attr['connectorUrl']).to  be_present
-          expect(json_attr['dataPath']).not_to  be_present
-          expect(json_attr['tableName']).to     eq('cait_2_0_country_ghg_emissions_filtered')
+          expect(json_attr['name']).not_to     be_nil
+          expect(json_attr['provider']).to     eq('cartodb')
+          expect(json_attr['format']).to       be_present
+          expect(json_attr['connectorUrl']).to be_present
+          expect(json_attr['dataPath']).not_to be_present
+          expect(json_attr['tableName']).to    eq('cait_2_0_country_ghg_emissions_filtered')
         end
 
         it 'Allows to update dataset' do
-          put "/datasets/#{dataset_id}", params: {"dataset": {"datasetAttributes": {"name": "Carto test api update"},
+          put "/datasets/#{dataset_id}", params: {"dataset": {"name": "Carto test api update",
                                                   "data": [{"cartodbId": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
                                                            {"cartodbId": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
 
@@ -183,14 +183,14 @@ module V1
         end
 
         it 'Allows to add tags to existing dataset' do
-          put "/datasets/#{dataset_id}", params: {"dataset": {"datasetAttributes": {"tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
+          put "/datasets/#{dataset_id}", params: {"dataset": {"tags": ["tag1", "tag1", "Tag1", "tag2"]}}
 
           expect(status).to eq(200)
           expect(json_attr['tags']).to eq(["tag1", "tag2"])
         end
 
         it 'Allows to add layers to existing dataset' do
-          put "/datasets/#{dataset_id}/layer", params: {"dataset": {"datasetAttributes": {"layer_info": {"application": "wrw", "default": true, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30l"}}}}
+          put "/datasets/#{dataset_id}/layer", params: {"dataset": {"layer_info": {"application": "wrw", "default": true, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30l"}}}
 
           expect(status).to eq(200)
           expect(json_main['message']).to eq('Dataset layer info update in progress')
@@ -198,7 +198,7 @@ module V1
         end
 
         it 'Allows to add layers to existing dataset' do
-          put "/datasets/#{dataset_id}/layer", params: {"dataset": {"datasetAttributes": {"layer_info": {"application": "wrw", "default": true, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30m"}}}}
+          put "/datasets/#{dataset_id}/layer", params: {"dataset": {"layer_info": {"application": "wrw", "default": true, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30m"}}}
 
           expect(status).to eq(200)
           expect(json_main['message']).to eq('Dataset layer info update in progress')
@@ -214,10 +214,10 @@ module V1
         end
 
         it 'Allows to create rest dataset for arcgis with tags' do
-          post '/datasets', params: {"dataset": {"connectorProvider": "featureservice",
+          post '/datasets', params: {"dataset": {"provider": "featureservice",
                                                  "connectorUrl": "https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga_County/FeatureServer/0?f=json",
-                                                 "datasetAttributes": {"name": "arcgis test api", "format": 0, "data_path": "features", "attributesPath": "fields",
-                                                  "tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
+                                                 "name": "arcgis test api", "format": 0, "data_path": "features", "attributesPath": "fields",
+                                                  "tags": ["tag1", "tag1", "Tag1", "tag2"]}}
 
           expect(status).to eq(201)
           expect(json_attr['name']).not_to     be_nil
@@ -243,10 +243,10 @@ module V1
         let!(:locked_dataset_id) { Dataset.find_by(name: 'Json test set 2').id }
 
         it 'Allows to update dataset' do
-          put "/datasets/#{dataset_id}", params: {"dataset": {"datasetAttributes": {"name": "Json test api update"},
+          put "/datasets/#{dataset_id}", params: {"dataset": {"name": "Json test api update"},
                                                   "connectorUrl": "http://test.qwerty",
                                                   "data": [{"cartodbId": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
-                                                           {"cartodbId": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
+                                                           {"cartodbId": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}
 
           expect(status).to eq(200)
           expect(json_attr['name']).to eq('Json test api update')
@@ -255,8 +255,8 @@ module V1
         it 'Allows to create json dataset with tags' do
           post '/datasets', params: {"dataset": {
                                       "connectorType": "json",
-                                      "connectorProvider": "rwjson",
-                                      "datasetAttributes": {"name": "Json test api", "format": 0, "tags": ["tag1", "tag1", "Tag1", "tag2"]},
+                                      "provider": "rwjson",
+                                      "name": "Json test api", "format": 0, "tags": ["tag1", "tag1", "Tag1", "tag2"],
                                       "data": [
                                         {"cartodbId": 1,"iso": "BRA","name": "Brazil","year": "2012","population": 218613196},
                                         {"cartodbId": 5,"iso": "BRA","name": "Brazil","year": "2015","population": 198739269},
@@ -275,7 +275,7 @@ module V1
         it 'Allows to create json dataset from json url' do
           post '/datasets', params: {"dataset": {
                                       "connectorType": "json",
-                                      "datasetAttributes": {"name": "Json external data test api", "data_path": "data"},
+                                      "name": "Json external data test api", "dataPath": "data",
                                       "connectorUrl": "http://api.resourcewatch.org:81/query/3db3a4cd-f654-41bd-b26b-8c865f02f933?limit=10"
                                     }}
 
@@ -333,7 +333,7 @@ module V1
                                                  "tableName": "my_table",
                                                  "polygon": "Madrid alcobendas",
                                                  "point": { "lat": "23233233", "long": "66565676" },
-                                                 "datasetAttributes": {"name": "csv file", "tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
+                                                 "name": "csv file", "tags": ["tag1", "tag1", "Tag1", "tag2"]}}
 
           expect(status).to eq(201)
           expect(json_attr['name']).not_to     be_nil
@@ -348,8 +348,8 @@ module V1
         let!(:dataset_id) { Dataset.find_by(name: 'Wms test set 1').id }
 
         it 'Allows to create wms dataset with tags' do
-          post '/datasets', params: {"dataset": {"connectorType": "wms", "datasetAttributes": {"name": "Wms test api",
-                                                  "tags": ["tag1", "tag1", "Tag1", "tag2"]}}}
+          post '/datasets', params: {"dataset": {"connectorType": "wms", "name": "Wms test api",
+                                                 "tags": ["tag1", "tag1", "Tag1", "tag2"]}}
 
           expect(status).to eq(201)
           expect(json_attr['name']).not_to         be_nil
