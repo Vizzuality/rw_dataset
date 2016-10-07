@@ -1,18 +1,21 @@
+# frozen_string_literal: true
 module V1
   class DatasetsController < ApplicationController
     before_action :set_dataset,      except: [:index, :create, :info]
     before_action :populate_dataset, only: :show, if: :params_includes_present?
 
+    include ParamsHandler
+
     def index
       @datasets = Connector.fetch_all(options_filter)
-      render json: @datasets, each_serializer: DatasetSerializer, root: false
+      render json: @datasets, each_serializer: DatasetSerializer, include: params[:includes], meta: { datasets_count: @datasets.count }
     end
 
     def show
-      render json: @dataset, serializer: DatasetSerializer, root: false, meta: { status: @dataset.try(:status_txt),
-                                                                                 overwrite: @dataset.try(:data_overwrite),
-                                                                                 updated_at: @dataset.try(:updated_at),
-                                                                                 created_at: @dataset.try(:created_at) }
+      render json: @dataset, serializer: DatasetSerializer, include: params[:includes], meta: { status: @dataset.try(:status_txt),
+                                                                                                overwrite: @dataset.try(:data_overwrite),
+                                                                                                updated_at: @dataset.try(:updated_at),
+                                                                                                created_at: @dataset.try(:created_at) }
     end
 
     def update
@@ -77,7 +80,7 @@ module V1
 
     def clone
       @dataset = clone_dataset.dataset
-      if @dataset && @dataset.save
+      if @dataset&.save
         @dataset.dateable.connect_to_service(dataset_params)
         render json: @dataset, status: 201, serializer: DatasetSerializer, root: false
       else
@@ -115,7 +118,7 @@ module V1
       end
 
       def dataset_url_fixer
-        dataset_params['dataset_url'].include?('http://') ? dataset_params['dataset_url'] : "#{ServiceSetting.gateway_url}#{dataset_params['dataset_url']}"
+        dataset_params['dataset_url'].include?('http://') ? dataset_params['dataset_url'] : "#{Service::SERVICE_URL}#{dataset_params['dataset_url']}"
       end
 
       def options_filter
@@ -133,19 +136,19 @@ module V1
         @dataset.populate(options_filter['includes'], options_filter['app'])
       end
 
-      def dataset_params
-        params.require(:dataset).permit!
-      end
-
       def params_includes_present?
         params[:includes].present?
       end
 
+      def dataset_params
+        dataset_params_sanitizer
+      end
+
       def dataset_params_for_update
         if @json_connector
-          params.require(:dataset).except(:data, :data_attributes, :connector_url).permit!
+          dataset_params_sanitizer.except(:data, :data_attributes, :connector_url)
         else
-          params.require(:dataset).except(:data, :data_attributes).permit!
+          dataset_params_sanitizer.except(:data, :data_attributes)
         end
       end
 

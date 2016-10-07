@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # == Schema Information
 #
 # Table name: datasets
@@ -31,15 +32,12 @@ class Dataset < ApplicationRecord
 
   belongs_to :dateable, polymorphic: true
 
-  extend ActiveHash::Associations::ActiveRecordExtensions
-  has_many :metadata
-
-  before_save  :merge_tags,        if: "tags_changed?"
-  before_save  :merge_topics,      if: "topics_changed?"
-  before_save  :merge_apps,        if: "application_changed?"
+  before_save  :merge_tags,        if: "tags.present? && tags_changed?"
+  before_save  :merge_topics,      if: "topics.present? && topics_changed?"
+  before_save  :merge_apps,        if: "application.present? && application_changed?"
   after_save   :call_tags_service, if: "tags_changed? || topics_changed?"
   after_save   :clear_cache
-  after_create :update_data_path,  if: "dateable_type.include?('JsonConnector')"
+  after_create :update_data_path,  if: "data_path.blank? && dateable_type.include?('JsonConnector')"
 
   scope :recent,             -> { order('updated_at DESC') }
   scope :including_dateable, -> { includes(:dateable)      }
@@ -58,6 +56,16 @@ class Dataset < ApplicationRecord
 
   def format_txt
     FORMAT[format - 0]
+  end
+
+  def dateable_type_txt
+    case dateable_type
+    when 'JsonConnector' then 'json'
+    when 'DocConnector'  then 'document'
+    when 'WmsConnector'  then 'wms'
+    else
+      'rest'
+    end
   end
 
   def status_txt
@@ -79,13 +87,13 @@ class Dataset < ApplicationRecord
       case include
       when 'metadata'
         Metadata.data = MetadataService.populate_dataset(self.id, app)
-        self.metadata = Metadata.where(dataset: self.id)
+        @metadata     = Metadata.where(dataset: self.id)
       end
     end
   end
 
   def update_layer_info(options)
-    data      = options['dataset']['dataset_attributes']['layer_info']
+    data      = options['dataset']['layer_info']
     layer_obj = self.layer_info.find { |l| l['layer_id'] == data['layer_id'] && l['application'] == data['application'] }
 
     layer_info_data = if layer_info.any? && layer_obj.present?

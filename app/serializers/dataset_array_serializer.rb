@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class DatasetArraySerializer < ApplicationSerializer
   attributes :id, :provider, :format, :name, :subtitle, :status, :application, :layers
 

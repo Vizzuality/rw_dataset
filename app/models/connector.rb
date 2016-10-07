@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Connector
   class << self
     def fetch_all(options)
@@ -17,10 +18,10 @@ class Connector
       else
         datasets = Dataset.includes(:dateable).recent
         datasets = case connector_type
-                   when 'rest' then datasets.filter_rest.recent
-                   when 'json' then datasets.filter_json.recent
-                   when 'doc'  then datasets.filter_doc.recent
-                   when 'wms'  then datasets.filter_wms.recent
+                   when 'rest'                 then datasets.filter_rest.recent
+                   when 'json'                 then datasets.filter_json.recent
+                   when ('doc' || 'document')  then datasets.filter_doc.recent
+                   when 'wms'                  then datasets.filter_wms.recent
                    else
                      datasets
                    end
