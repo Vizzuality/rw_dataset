@@ -25,7 +25,6 @@
         "url": "/datasets",
         "method": "POST",
         "authenticated": true,
-        "authenticated": true,
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://localhost:3000",

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class TagServiceJob < ApplicationJob
   queue_as :tags
 
