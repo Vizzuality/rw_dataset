@@ -4,111 +4,121 @@
     "tags": ["rw", "gfw"],
     "urls": [
       {
-        "url": "/datasets",
+        "url": "/dataset",
         "method": "GET",
         "endpoints": [{
             "method": "GET",
             "baseUrl": "http://localhost:3000",
-            "path": "/datasets"
+            "path": "/dataset"
         }]
       },
       {
-        "url": "/datasets/:id",
+        "url": "/dataset/:id",
         "method": "GET",
         "endpoints": [{
             "method": "GET",
             "baseUrl": "http://localhost:3000",
-            "path": "/datasets/:id"
+            "path": "/dataset/:id"
         }]
       },
       {
-        "url": "/datasets",
+        "url": "/dataset",
         "method": "POST",
         "authenticated": true,
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://localhost:3000",
-            "path": "/datasets"
+            "path": "/dataset"
         }]
       },
       {
-        "url": "/datasets/:id/clone",
+        "url": "/dataset/:id/clone",
         "method": "POST",
         "authenticated": true,
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://localhost:3000",
-            "path": "/datasets/:id/clone"
+            "path": "/dataset/:id/clone"
         }]
       },
       {
-        "url": "/datasets/:id",
+        "url": "/dataset/:id",
         "method": "PUT",
         "authenticated": true,
         "endpoints": [{
             "method": "PUT",
             "baseUrl": "http://localhost:3000",
-            "path": "/datasets/:id"
+            "path": "/dataset/:id"
         }]
       },
       {
-        "url": "/datasets/:id/layer",
+        "url": "/dataset/:id",
+        "method": "PATCH",
+        "authenticated": true,
+        "endpoints": [{
+            "method": "PATCH",
+            "baseUrl": "http://localhost:3000",
+            "path": "/dataset/:id"
+        }]
+      },
+      {
+        "url": "/dataset/:id/layer",
         "method": "PUT",
         "authenticated": true,
         "endpoints": [{
             "method": "PUT",
             "baseUrl": "http://localhost:3000",
-            "path": "/datasets/:id/layer"
+            "path": "/dataset/:id/layer"
         }]
       },
       {
-        "url": "/datasets/:id/data",
+        "url": "/dataset/:id/data",
         "method": "POST",
         "authenticated": true,
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://localhost:3000",
-            "path": "/datasets/:id/data"
+            "path": "/dataset/:id/data"
         }]
       },
       {
-        "url": "/datasets/:id/data-overwrite",
+        "url": "/dataset/:id/data-overwrite",
         "method": "POST",
         "authenticated": true,
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://localhost:3000",
-            "path": "/datasets/:id/data-overwrite"
+            "path": "/dataset/:id/data-overwrite"
         }]
       },
       {
-        "url": "/datasets/:id/data/:data_id",
+        "url": "/dataset/:id/data/:data_id",
         "method": "POST",
         "authenticated": true,
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://localhost:3000",
-            "path": "/datasets/:id/data/:data_id"
+            "path": "/dataset/:id/data/:data_id"
         }]
       },
       {
-        "url": "/datasets/:id/data/:data_id",
+        "url": "/dataset/:id/data/:data_id",
         "method": "DELETE",
         "authenticated": true,
         "endpoints": [{
             "method": "DELETE",
             "baseUrl": "http://localhost:3000",
-            "path": "/datasets/:id/data/:data_id"
+            "path": "/dataset/:id/data/:data_id"
         }]
       },
       {
-        "url": "/datasets/:id",
+        "url": "/dataset/:id",
         "method": "DELETE",
         "authenticated": true,
         "endpoints": [{
             "method": "DELETE",
             "baseUrl": "http://localhost:3000",
-            "path": "/datasets/:id"
+            "path": "/dataset/:id"
         }]
       }
     ],
@@ -127,7 +137,7 @@
     "application/json"
   ],
   "paths": {
-    "/datasets/{id}": {
+    "/dataset/{id}": {
       "get": {
         "description": "Returns dataset based on a single ID, if the geostore not exist return 404",
         "produces": [
@@ -288,7 +298,7 @@
         }
       }
     },
-    "/datasets": {
+    "/dataset": {
       "get": {
         "description": "Returns all datasets",
         "produces": [
@@ -548,7 +558,7 @@
         }
       }
     },
-    "/datasets/{id}/data": {
+    "/dataset/{id}/data": {
       "post": {
         "summary": "Update dataset data (Insert new data for json dataset)",
         "description": "Update dataset data",
@@ -610,7 +620,7 @@
         }
       }
     },
-    "/datasets/{id}/data/{data_id}": {
+    "/dataset/{id}/data/{data_id}": {
       "post": {
         "summary": "Update a specific data object",
         "description": "Update dataset data - specific data object",
@@ -679,7 +689,7 @@
         }
       }
     },
-    "/datasets/{id}/data-overwrite": {
+    "/dataset/{id}/data-overwrite": {
       "post": {
         "summary": "Overwrite the dataset's data",
         "description": "Replacing a whole dataset's data if the option data_overwrite is set tu true",
