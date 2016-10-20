@@ -9,7 +9,7 @@ module V1
 
     context 'For datasets list', redis: true do
       it 'Allows to access datasets list without filtering' do
-        get '/datasets'
+        get '/dataset'
 
         dataset_json = json[0]['attributes']
         dataset_rest = json[3]['attributes']
@@ -20,7 +20,7 @@ module V1
       end
 
       it 'Allows to access datasets list filtering by type rest' do
-        get '/datasets?connectorType=rest'
+        get '/dataset?connectorType=rest'
 
         dataset = json[0]['attributes']
         expect(status).to eq(200)
@@ -30,7 +30,7 @@ module V1
       end
 
       it 'Allows to access datasets list filtering by type json' do
-        get '/datasets?connectorType=json'
+        get '/dataset?connectorType=json'
 
         dataset = json[0]['attributes']
         expect(status).to eq(200)
@@ -40,7 +40,7 @@ module V1
       end
 
       it 'Allows to access datasets list filtering by type wms' do
-        get '/datasets?connectorType=wms'
+        get '/dataset?connectorType=wms'
 
         dataset = json[0]['attributes']
         expect(status).to eq(200)
@@ -50,35 +50,35 @@ module V1
       end
 
       it 'Show list of all datasets using status filter all' do
-        get '/datasets?status=all'
+        get '/dataset?status=all'
 
         expect(status).to eq(200)
         expect(json.size).to eq(7)
       end
 
       it 'Show list of datasets with pending status' do
-        get '/datasets?status=pending'
+        get '/dataset?status=pending'
 
         expect(status).to eq(200)
         expect(json.size).to eq(1)
       end
 
       it 'Show list of datasets with active status' do
-        get '/datasets?status=active'
+        get '/dataset?status=active'
 
         expect(status).to eq(200)
         expect(json.size).to eq(5)
       end
 
       it 'Show list of datasets with disabled status' do
-        get '/datasets?status=disabled'
+        get '/dataset?status=disabled'
 
         expect(status).to eq(200)
         expect(json.size).to eq(1)
       end
 
       it 'Show list of datasets for app GFW' do
-        get '/datasets?app=GFw'
+        get '/dataset?app=GFw'
 
         expect(status).to eq(200)
         expect(json.size).to eq(2)
@@ -87,21 +87,21 @@ module V1
       end
 
       it 'Show list of datasets for app WRW' do
-        get '/datasets?app=wrw'
+        get '/dataset?app=wrw'
 
         expect(status).to eq(200)
         expect(json.size).to eq(1)
       end
 
       it 'Show blank list of datasets for not existing app' do
-        get '/datasets?app=notexisting'
+        get '/dataset?app=notexisting'
 
         expect(status).to eq(200)
         expect(json.size).to eq(0)
       end
 
       it 'Show blank list of datasets for not existing app' do
-        get '/datasets?app=all'
+        get '/dataset?app=all'
 
         expect(status).to eq(200)
         expect(json.size).to eq(5)
@@ -113,7 +113,7 @@ module V1
         let!(:dataset_id) { Dataset.find_by(name: 'cartodb test set').id }
 
         it 'Allows to access dataset details' do
-          get "/datasets/#{dataset_id}"
+          get "/dataset/#{dataset_id}"
 
           expect(status).to eq(200)
           expect(json_attr['name']).to         eq('cartodb test set')
@@ -125,7 +125,7 @@ module V1
         end
 
         it 'Allows to create rest dataset without tags' do
-          post '/datasets', params: {"dataset": {"provider": "cartodb", "tableName": "public.carts_test_endoint",
+          post '/dataset', params: {"dataset": {"provider": "cartodb", "tableName": "public.carts_test_endoint",
                                                  "connectorUrl": "https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint",
                                                  "name": "Carto test api", "format": 0, "data_path": "rows", "attributesPath": "fields"}}
 
@@ -140,7 +140,7 @@ module V1
         end
 
         it 'Allows to create rest dataset with tags and topics' do
-          post '/datasets', params: {"dataset": {"provider": "cartodb", "tableName": "public.carts_test_endoint",
+          post '/dataset', params: {"dataset": {"provider": "cartodb", "tableName": "public.carts_test_endoint",
                                                  "connectorUrl": "https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint",
                                                  "name": "Carto test api", "format": 0, "data_path": "rows", "attributesPath": "fields",
                                                   "tags": ["tag1", "tag1", "Tag1", "tag2"], "topics": ["topic1", "topic1", "Topic1", "topic2"]}}
@@ -157,7 +157,7 @@ module V1
         end
 
         it 'Allows to create rest dataset without tags and only required attributes' do
-          post '/datasets', params: {"dataset": {"provider": "cartodb",
+          post '/dataset', params: {"dataset": {"provider": "cartodb",
                                                  "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
                                                  "name": "Carto test api"}}
 
@@ -171,7 +171,7 @@ module V1
         end
 
         it 'Allows to update dataset' do
-          put "/datasets/#{dataset_id}", params: {"dataset": {"name": "Carto test api update",
+          put "/dataset/#{dataset_id}", params: {"dataset": {"name": "Carto test api update",
                                                   "data": [{"cartodbId": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
                                                            {"cartodbId": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
 
@@ -183,14 +183,14 @@ module V1
         end
 
         it 'Allows to add tags to existing dataset' do
-          put "/datasets/#{dataset_id}", params: {"dataset": {"tags": ["tag1", "tag1", "Tag1", "tag2"]}}
+          put "/dataset/#{dataset_id}", params: {"dataset": {"tags": ["tag1", "tag1", "Tag1", "tag2"]}}
 
           expect(status).to eq(200)
           expect(json_attr['tags']).to eq(["tag1", "tag2"])
         end
 
         it 'Allows to add layers to existing dataset' do
-          put "/datasets/#{dataset_id}/layer", params: {"dataset": {"layer_info": {"application": "wrw", "default": true, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30l"}}}
+          put "/dataset/#{dataset_id}/layer", params: {"dataset": {"layer_info": {"application": "wrw", "default": true, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30l"}}}
 
           expect(status).to eq(200)
           expect(json_main['message']).to eq('Dataset layer info update in progress')
@@ -198,7 +198,7 @@ module V1
         end
 
         it 'Allows to add layers to existing dataset' do
-          put "/datasets/#{dataset_id}/layer", params: {"dataset": {"layer_info": {"application": "wrw", "default": true, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30m"}}}
+          put "/dataset/#{dataset_id}/layer", params: {"dataset": {"layer_info": {"application": "wrw", "default": true, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30m"}}}
 
           expect(status).to eq(200)
           expect(json_main['message']).to eq('Dataset layer info update in progress')
@@ -207,14 +207,14 @@ module V1
         end
 
         it 'Allows to delete dataset' do
-          delete "/datasets/#{dataset_id}"
+          delete "/dataset/#{dataset_id}"
 
           expect(status).to eq(200)
           expect(json_main['message']).to eq('Dataset would be deleted!')
         end
 
         it 'Allows to create rest dataset for arcgis with tags' do
-          post '/datasets', params: {"dataset": {"provider": "featureservice",
+          post '/dataset', params: {"dataset": {"provider": "featureservice",
                                                  "connectorUrl": "https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga_County/FeatureServer/0?f=json",
                                                  "name": "arcgis test api", "format": 0, "data_path": "features", "attributesPath": "fields",
                                                   "tags": ["tag1", "tag1", "Tag1", "tag2"]}}
@@ -229,7 +229,7 @@ module V1
         end
 
         it 'Do not allow to overwrite not a json dataset' do
-          post "/datasets/#{dataset_id}/data-overwrite", params: {"dataset": {"data": [
+          post "/dataset/#{dataset_id}/data-overwrite", params: {"dataset": {"data": [
                                                                              {"cartodbId": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
                                                                              {"cartodbId": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
 
@@ -243,17 +243,17 @@ module V1
         let!(:locked_dataset_id) { Dataset.find_by(name: 'Json test set 2').id }
 
         it 'Allows to update dataset' do
-          put "/datasets/#{dataset_id}", params: {"dataset": {"name": "Json test api update"},
+          patch "/dataset/#{dataset_id}", params: {"dataset": {"name": "Json test api update with patch"},
                                                   "connectorUrl": "http://test.qwerty",
                                                   "data": [{"cartodbId": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
                                                            {"cartodbId": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}
 
           expect(status).to eq(200)
-          expect(json_attr['name']).to eq('Json test api update')
+          expect(json_attr['name']).to eq('Json test api update with patch')
         end
 
         it 'Allows to create json dataset with tags' do
-          post '/datasets', params: {"dataset": {
+          post '/dataset', params: {"dataset": {
                                       "connectorType": "json",
                                       "provider": "rwjson",
                                       "name": "Json test api", "format": 0, "tags": ["tag1", "tag1", "Tag1", "tag2"],
@@ -273,7 +273,7 @@ module V1
         end
 
         it 'Allows to create json dataset from json url' do
-          post '/datasets', params: {"dataset": {
+          post '/dataset', params: {"dataset": {
                                       "connectorType": "json",
                                       "name": "Json external data test api", "dataPath": "data",
                                       "connectorUrl": "http://api.resourcewatch.org:81/query/3db3a4cd-f654-41bd-b26b-8c865f02f933?limit=10"
@@ -285,14 +285,14 @@ module V1
         end
 
         it 'Allows to delete dataset' do
-          delete "/datasets/#{dataset_id}"
+          delete "/dataset/#{dataset_id}"
 
           expect(status).to eq(200)
           expect(json_main['message']).to eq('Dataset would be deleted!')
         end
 
         it 'Allows to update dataset data' do
-          post "/datasets/#{dataset_id}/data", params: {"dataset": {"data": [
+          post "/dataset/#{dataset_id}/data", params: {"dataset": {"data": [
                                                        {"cartodbId": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
                                                        {"cartodbId": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
 
@@ -301,7 +301,7 @@ module V1
         end
 
         it 'Allows to overwrite json dataset data' do
-          post "/datasets/#{dataset_id}/data-overwrite", params: {"dataset": {"data": [
+          post "/dataset/#{dataset_id}/data-overwrite", params: {"dataset": {"data": [
                                                                                 {"cartodbId": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
                                                                                 {"cartodbId": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
 
@@ -310,7 +310,7 @@ module V1
         end
 
         it 'Do not allow to overwrite locked json dataset data' do
-          post "/datasets/#{locked_dataset_id}/data-overwrite", params: {"dataset": {"data": [
+          post "/dataset/#{locked_dataset_id}/data-overwrite", params: {"dataset": {"data": [
                                                                                        {"cartodbId": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
                                                                                        {"cartodbId": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
 
@@ -319,7 +319,7 @@ module V1
         end
 
         it 'Allows to delete dataset data' do
-          delete "/datasets/#{dataset_id}/data/e3b4acca-d34d-46b9-833f-08c3a14fe2f5"
+          delete "/dataset/#{dataset_id}/data/e3b4acca-d34d-46b9-833f-08c3a14fe2f5"
 
           expect(status).to eq(200)
           expect(json_main['message']).to eq('Dataset data deleted')
@@ -328,7 +328,7 @@ module V1
 
       context 'Doc dataset' do
         it 'Allows to create csv dataset with tags' do
-          post '/datasets', params: {"dataset": {"connectorType": "document",
+          post '/dataset', params: {"dataset": {"connectorType": "document",
                                                  "connectorUrl": "https://test-csv.csv",
                                                  "tableName": "my_table",
                                                  "polygon": "Madrid alcobendas",
@@ -348,7 +348,7 @@ module V1
         let!(:dataset_id) { Dataset.find_by(name: 'Wms test set 1').id }
 
         it 'Allows to create wms dataset with tags' do
-          post '/datasets', params: {"dataset": {"connectorType": "wms", "name": "Wms test api",
+          post '/dataset', params: {"dataset": {"connectorType": "wms", "name": "Wms test api",
                                                  "tags": ["tag1", "tag1", "Tag1", "tag2"]}}
 
           expect(status).to eq(201)
@@ -362,7 +362,7 @@ module V1
         end
 
         it 'Allows to delete wms dataset' do
-          delete "/datasets/#{dataset_id}"
+          delete "/dataset/#{dataset_id}"
 
           expect(status).to eq(200)
           expect(json_main['message']).to eq('Dataset would be deleted!')
