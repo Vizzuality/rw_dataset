@@ -3,102 +3,111 @@
     "name": "RW Dataset v1",
     "urls": [
       {
-        "url": "/datasets",
+        "url": "/dataset",
         "method": "GET",
         "endpoints": [{
             "method": "GET",
             "baseUrl": "http://192.168.99.100:3000",
-            "path": "/datasets"
+            "path": "/dataset"
         }]
       },
       {
-        "url": "/datasets/:id",
+        "url": "/dataset/:id",
         "method": "GET",
         "endpoints": [{
             "method": "GET",
             "baseUrl": "http://192.168.99.100:3000",
-            "path": "/datasets/:id"
+            "path": "/dataset/:id"
         }]
       },
       {
-        "url": "/datasets",
+        "url": "/dataset",
         "method": "POST",
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://192.168.99.100:3000",
-            "path": "/datasets"
+            "path": "/dataset"
         }]
       },
       {
-        "url": "/datasets/:id/clone",
+        "url": "/dataset/:id/clone",
         "method": "POST",
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://192.168.99.100:3000",
-            "path": "/datasets/:id/clone"
+            "path": "/dataset/:id/clone"
         }]
       },
       {
-        "url": "/datasets/:id",
+        "url": "/dataset/:id",
         "method": "PUT",
         "endpoints": [{
             "method": "PUT",
             "baseUrl": "http://192.168.99.100:3000",
-            "path": "/datasets/:id"
+            "path": "/dataset/:id"
         }]
       },
       {
-        "url": "/datasets/:id/layer",
+        "url": "/dataset/:id",
+        "method": "PATCH",
+        "endpoints": [{
+            "method": "PATCH",
+            "baseUrl": "http://192.168.99.100:3000",
+            "path": "/dataset/:id"
+        }]
+      },
+      {
+        "url": "/dataset/:id/layer",
         "method": "PUT",
         "endpoints": [{
             "method": "PUT",
             "baseUrl": "http://192.168.99.100:3000",
-            "path": "/datasets/:id/layer"
+            "path": "/dataset/:id/layer"
         }]
       },
       {
-        "url": "/datasets/:id/data",
+        "url": "/dataset/:id/data",
         "method": "POST",
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://192.168.99.100:3000",
-            "path": "/datasets/:id/data"
+            "path": "/dataset/:id/data"
         }]
       },
       {
-        "url": "/datasets/:id/data-overwrite",
+        "url": "/dataset/:id/data-overwrite",
         "method": "POST",
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://192.168.99.100:3000",
-            "path": "/datasets/:id/data-overwrite"
+            "path": "/dataset/:id/data-overwrite"
         }]
       },
       {
-        "url": "/datasets/:id/data/:data_id",
+        "url": "/dataset/:id/data/:data_id",
         "method": "POST",
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://192.168.99.100:3000",
-            "path": "/datasets/:id/data/:data_id"
+            "path": "/dataset/:id/data/:data_id"
         }]
       },
       {
-        "url": "/datasets/:id/data/:data_id",
+        "url": "/dataset/:id/data/:data_id",
         "method": "DELETE",
         "endpoints": [{
             "method": "DELETE",
             "baseUrl": "http://192.168.99.100:3000",
-            "path": "/datasets/:id/data/:data_id"
+            "path": "/dataset/:id/data/:data_id"
         }]
       },
       {
-        "url": "/datasets/:id",
+        "url": "/dataset/:id",
         "method": "DELETE",
         "endpoints": [{
             "method": "DELETE",
             "baseUrl": "http://192.168.99.100:3000",
-            "path": "/datasets/:id"
+            "path": "/dataset/:id"
         }]
       }
     ],

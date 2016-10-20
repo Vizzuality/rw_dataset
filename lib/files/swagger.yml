@@ -12,7 +12,7 @@ produces:
   - application/json
 
 paths:
-  /datasets/{id}:
+  /dataset/{id}:
     get:
       description: Returns dataset based on a single ID, if the geostore not exist return 404
       produces:
@@ -119,7 +119,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /datasets:
+  /dataset:
     get:
       description: Returns all datasets
       produces:
@@ -296,7 +296,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /datasets/{id}/data:
+  /dataset/{id}/data:
     post:
       summary: Update dataset data (Insert new data for json dataset)
       description: Update dataset data
@@ -338,7 +338,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /datasets/{id}/data/{data_id}:
+  /dataset/{id}/data/{data_id}:
     post:
       summary: Update a specific data object
       description: Update dataset data - specific data object
@@ -385,7 +385,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /datasets/{id}/data-overwrite:
+  /dataset/{id}/data-overwrite:
     post:
       summary: Overwrite the dataset's data
       description: Replacing a whole dataset's data if the option data_overwrite is set tu true
@@ -542,6 +542,23 @@ definitions:
   Dataset:
     type: object
     properties:
+      data:
+        type: object
+        properties:
+          type:
+            type: string
+            description: Dataset type
+          id:
+            type: string
+            description: Dataset id
+          attributes:
+            properties:
+              schema:
+                $ref: '#/definitions/DatasetAttributes'
+
+  DatasetAttributes:
+    type: object
+    properties:
       id:
         type: integer
         format: int64
@@ -597,9 +614,6 @@ definitions:
           created_at:
             type: string
             description: Date
-          rows:
-            type: number
-            description: Number of data rows
 
   QueryResponse:
     type: object
