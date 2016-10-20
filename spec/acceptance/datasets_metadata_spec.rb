@@ -44,7 +44,7 @@ module V1
         end
 
         it 'Show metadata for datasets' do
-          get "/datasets?connector_type=wms&includes=metadata"
+          get "/dataset?connector_type=wms&includes=metadata"
 
           dataset_json = json[0]['attributes']
 
@@ -62,21 +62,21 @@ module V1
         end
 
         it 'Show metadata for specific dataset' do
-          get "/datasets/#{dataset_id}?includes=metadata"
+          get "/dataset/#{dataset_id}?includes=metadata"
 
           expect(status).to eq(200)
           expect(json_attr['metadata']).to eq([{"attributes"=>{"dataset"=>"baca8364-3aa8-5d74-8100-44ef25885e9a", "application"=>"prep", "info"=>{"organization"=>"University of Washington/Joe Casola"}, "id"=>1}}])
         end
 
         it 'Show empty metadata for specific dataset' do
-          get "/datasets/#{dataset_id}?includes="
+          get "/dataset/#{dataset_id}?includes="
 
           expect(status).to eq(200)
           expect(json_attr['metadata']).to be_nil
         end
 
         it 'Show nil metadata for specific dataset if metadata not present' do
-          get "/datasets/#{dataset_id}"
+          get "/dataset/#{dataset_id}"
 
           expect(status).to eq(200)
           expect(json_attr['metadata']).to be_nil
@@ -91,7 +91,7 @@ module V1
         end
 
         it 'Show metadata for specific dataset and application' do
-          get "/datasets/#{dataset_id}?includes=metadata&app=prep"
+          get "/dataset/#{dataset_id}?includes=metadata&app=prep"
 
           expect(status).to eq(200)
           expect(json_attr['metadata']).to eq([{"attributes"=>{"dataset"=>"baca8364-3aa8-5d74-8100-44ef25885e9a", "application"=>"prep", "info"=>{"organization"=>"University of Washington/Joe Casola"}, "id"=>1}}])
@@ -108,7 +108,7 @@ module V1
       end
 
       it 'Show empty metadata for specific dataset if metadata not reachable' do
-        get "/datasets/#{dataset_id}?includes=metadata"
+        get "/dataset/#{dataset_id}?includes=metadata"
 
         expect(status).to eq(200)
         expect(json_attr['metadata']).to eq([])
