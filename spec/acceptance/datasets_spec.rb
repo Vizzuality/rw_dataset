@@ -118,7 +118,7 @@ module V1
           expect(status).to eq(200)
           expect(json_attr['name']).to         eq('cartodb test set')
           expect(json_attr['provider']).to     eq('cartodb')
-          expect(json_attr['format']).to       eq('JSON')
+          # expect(json_attr['format']).to       eq('JSON')
           expect(json_attr['connectorUrl']).to be_present
           expect(json_attr['dataPath']).to     be_present
           expect(json_attr['tableName']).to    be_present
@@ -132,7 +132,7 @@ module V1
           expect(status).to eq(201)
           expect(json_attr['name']).not_to     be_nil
           expect(json_attr['provider']).to     eq('cartodb')
-          expect(json_attr['format']).to       be_present
+          # expect(json_attr['format']).to       be_present
           expect(json_attr['connectorUrl']).to be_present
           expect(json_attr['dataPath']).to     be_present
           expect(json_attr['tableName']).to    be_present
@@ -148,7 +148,7 @@ module V1
           expect(status).to eq(201)
           expect(json_attr['name']).not_to     be_nil
           expect(json_attr['provider']).to     eq('cartodb')
-          expect(json_attr['format']).to       be_present
+          # expect(json_attr['format']).to       be_present
           expect(json_attr['connectorUrl']).to be_present
           expect(json_attr['dataPath']).to     be_present
           expect(json_attr['tableName']).to    be_present
@@ -164,7 +164,7 @@ module V1
           expect(status).to eq(201)
           expect(json_attr['name']).not_to     be_nil
           expect(json_attr['provider']).to     eq('cartodb')
-          expect(json_attr['format']).to       be_present
+          # expect(json_attr['format']).to       be_present
           expect(json_attr['connectorUrl']).to be_present
           expect(json_attr['dataPath']).not_to be_present
           expect(json_attr['tableName']).to    eq('cait_2_0_country_ghg_emissions_filtered')
@@ -178,7 +178,7 @@ module V1
           expect(status).to eq(200)
           expect(json_attr['name']).to         eq('Carto test api update')
           expect(json_attr['provider']).not_to be_nil
-          expect(json_attr['format']).to       be_present
+          # expect(json_attr['format']).to       be_present
           expect(json_attr['tags']).to         eq(["tag1", "tag3", "tag2"])
         end
 
@@ -222,7 +222,7 @@ module V1
           expect(status).to eq(201)
           expect(json_attr['name']).not_to     be_nil
           expect(json_attr['provider']).to     eq('featureservice')
-          expect(json_attr['format']).to       be_present
+          # expect(json_attr['format']).to       be_present
           expect(json_attr['connectorUrl']).to be_present
           expect(json_attr['dataPath']).to     be_present
           expect(json_attr['tags']).to         eq(["tag1", "tag2"])
@@ -268,7 +268,7 @@ module V1
           expect(status).to eq(201)
           expect(json_attr['name']).to     eq('Json test api')
           expect(json_attr['provider']).to eq('rwjson')
-          expect(json_attr['format']).to   be_present
+          # expect(json_attr['format']).to   be_present
           expect(json_attr['tags']).to     eq(["tag1", "tag2"])
         end
 
@@ -338,7 +338,7 @@ module V1
           expect(status).to eq(201)
           expect(json_attr['name']).not_to     be_nil
           expect(json_attr['provider']).to     eq('csv')
-          expect(json_attr['format']).to       be_present
+          # expect(json_attr['format']).to       be_present
           expect(json_attr['connectorUrl']).to be_present
           expect(json_attr['tags']).to         eq(["tag1", "tag2"])
         end
@@ -354,7 +354,7 @@ module V1
           expect(status).to eq(201)
           expect(json_attr['name']).not_to         be_nil
           expect(json_attr['provider']).to         eq('wms')
-          expect(json_attr['format']).to           be_present
+          # expect(json_attr['format']).to           be_present
           expect(json_attr['connectorUrl']).not_to be_present
           expect(json_attr['dataPath']).not_to     be_present
           expect(json_attr['tableName']).not_to    be_present
