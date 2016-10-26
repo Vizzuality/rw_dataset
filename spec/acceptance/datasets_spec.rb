@@ -296,7 +296,7 @@ module V1
         end
 
         it 'Allows to create json dataset from json url' do
-          post '/dataset', params: {"loggedUser": {"role": "manager", "apps": ["gfw","wrw"], "id": "3242-32442-432"},
+          post '/dataset', params: {"loggedUser": {"role": "Manager", "apps": ["gfw","wrw"], "id": "3242-32442-432"},
                                     "dataset": {
                                       "connectorType": "json", "application": ["gfw"],
                                       "name": "Json external data test api", "dataPath": "data",
@@ -316,7 +316,7 @@ module V1
         end
 
         it 'Allows to update dataset data' do
-          post "/dataset/#{dataset_id}/data", params: {"loggedUser": {"role": "manager", "apps": ["gfw","wrw"], "id": "3242-32442-432"},
+          post "/dataset/#{dataset_id}/data", params: {"loggedUser": {"role": "manager", "apps": ["Gfw", "gfw","wrw"], "id": "3242-32442-432"},
                                                        "dataset": {"data": [
                                                        {"cartodbId": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
                                                        {"cartodbId": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
@@ -355,7 +355,7 @@ module V1
 
       context 'Doc dataset' do
         it 'Allows to create csv dataset with tags' do
-          post '/dataset', params: {"loggedUser": {"role": "manager", "apps": ["gfw","wrw"], "id": "3242-32442-432"},
+          post '/dataset', params: {"loggedUser": {"role": "Manager", "apps": ["gfw","wrw"], "id": "3242-32442-432"},
                                     "dataset": {"connectorType": "document", "application": ["gfw"],
                                                  "connectorUrl": "https://test-csv.csv",
                                                  "tableName": "my_table",
@@ -390,8 +390,8 @@ module V1
           expect(json_attr['tags']).to             eq(["tag1", "tag2"])
         end
 
-        it 'Allows to delete wms dataset' do
-          delete "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "manager", "apps": ["gfw","wrw"], "id": "3242-32442-432"}, "dataset": {"id": "#{dataset_id}"}}
+        it 'Allows to delete wms dataset for superadmin' do
+          delete "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Superadmin"}, "dataset": {"id": "#{dataset_id}"}}
 
           expect(status).to eq(200)
           expect(json_main['message']).to eq('Dataset would be deleted!')

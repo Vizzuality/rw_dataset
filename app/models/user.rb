@@ -6,7 +6,7 @@ class User < ActiveHash::Base
 
   def self.authorize_user!(user, dataset_apps, dataset_user_id=nil)
     user_role    = user.role
-    user_apps    = user.apps.uniq    if user.apps.present?
+    user_apps    = user.apps if user.apps.present?
     dataset_apps = dataset_apps.uniq if dataset_apps.present?
     any_apps     = if user_apps.present? && dataset_apps.present? && (user_apps & dataset_apps).any? && user_apps.size > dataset_apps.size && user_apps | dataset_apps == user_apps
                      true

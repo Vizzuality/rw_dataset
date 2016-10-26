@@ -179,10 +179,10 @@ module V1
       end
 
       def set_user
-        if params[:logged_user].present?
+        if dataset_params[:logged_user].present?
           user_id       = dataset_params[:logged_user][:id]
-          role          = dataset_params[:logged_user][:role]
-          apps          = dataset_params[:logged_user][:apps]
+          role          = dataset_params[:logged_user][:role].downcase
+          apps          = dataset_params[:logged_user][:apps].map { |v| v.downcase }.uniq if dataset_params[:logged_user][:apps].present?
           @dataset_apps = dataset_params[:dataset_attributes][:application]
 
           User.data = [{ user_id: user_id, role: role, apps: apps }]
