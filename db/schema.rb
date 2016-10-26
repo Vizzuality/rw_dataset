@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160902082552) do
+ActiveRecord::Schema.define(version: 20161025064220) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20160902082552) do
     t.boolean  "data_overwrite",  default: false
     t.string   "subtitle"
     t.jsonb    "topics",          default: []
+    t.string   "user_id"
     t.index ["application"], name: "index_datasets_on_application", using: :gin
     t.index ["dateable_id", "dateable_type"], name: "index_datasets_on_connector_and_connector_type", unique: true, using: :btree
     t.index ["layer_info"], name: "index_datasets_on_layer_info", using: :gin

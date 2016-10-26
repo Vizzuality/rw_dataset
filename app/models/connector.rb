@@ -88,7 +88,11 @@ class Connector
 
     def new(options)
       connector_type = options['connector_type']          if options['connector_type'].present?
-      options        = options['connector_type'].present? ? options.except(:connector_type) : options
+      options        = if options['connector_type'].present? || options['logged_user'].present?
+                         options.except(:connector_type, :logged_user)
+                       else
+                         options
+                       end
 
       case connector_type
       when 'json'
