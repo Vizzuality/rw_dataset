@@ -28,7 +28,7 @@ module V1
           render json: { success: false, message: 'Error updating dataset' }, status: 422
         end
       else
-        render json: { success: false, message: 'Not authorize!' }, status: 401
+        render json: { success: false, message: 'Not authorized!' }, status: 401
       end
     end
 
@@ -42,7 +42,7 @@ module V1
           render json: { success: false, message: 'Error updating dataset data' }, status: 422
         end
       else
-        render json: { success: false, message: 'Not authorize!' }, status: 401
+        render json: { success: false, message: 'Not authorized!' }, status: 401
       end
     end
 
@@ -62,7 +62,7 @@ module V1
           render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
         end
       else
-        render json: { success: false, message: 'Not authorize!' }, status: 401
+        render json: { success: false, message: 'Not authorized!' }, status: 401
       end
     end
 
@@ -76,7 +76,7 @@ module V1
           render json: { success: false, message: 'Error updating dataset data' }, status: 422
         end
       else
-        render json: { success: false, message: 'Not authorize!' }, status: 401
+        render json: { success: false, message: 'Not authorized!' }, status: 401
       end
     end
 
@@ -90,7 +90,7 @@ module V1
           render json: { success: false, message: 'Error deleting dataset data' }, status: 422
         end
       else
-        render json: { success: false, message: 'Not authorize!' }, status: 401
+        render json: { success: false, message: 'Not authorized!' }, status: 401
       end
     end
 
@@ -105,7 +105,7 @@ module V1
           render json: { success: false, message: 'Error creating dataset' }, status: 422
         end
       else
-        render json: { success: false, message: 'Not authorize!' }, status: 401
+        render json: { success: false, message: 'Not authorized!' }, status: 401
       end
     end
 
@@ -120,7 +120,7 @@ module V1
           render json: { success: false, message: 'Error cloning dataset' }, status: 422
         end
       else
-        render json: { success: false, message: 'Not authorize!' }, status: 401
+        render json: { success: false, message: 'Not authorized!' }, status: 401
       end
     end
 
@@ -134,7 +134,7 @@ module V1
           render json: { success: true, message: 'Dataset would be deleted!' }, status: 200
         end
       else
-        render json: { success: false, message: 'Not authorize!' }, status: 401
+        render json: { success: false, message: 'Not authorized!' }, status: 401
       end
     end
 
@@ -188,7 +188,7 @@ module V1
           User.data = [{ user_id: user_id, role: role, apps: apps }]
           @user= User.last
         else
-          render json: { success: false, message: 'Not authorize!' }, status: 401
+          render json: { success: false, message: 'Not authorized!' }, status: 401
         end
       end
 
