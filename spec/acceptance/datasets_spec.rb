@@ -5,6 +5,7 @@ module V1
     fixtures :rest_connectors
     fixtures :json_connectors
     fixtures :wms_connectors
+    fixtures :doc_connectors
     fixtures :datasets
 
     context 'For datasets list', redis: true do
@@ -14,7 +15,7 @@ module V1
         dataset_json = json[0]
         dataset_rest = json[3]
         expect(status).to eq(200)
-        expect(json.length).to              eq(5)
+        expect(json.length).to              eq(6)
         expect(dataset_json['provider']).to eq('rwjson')
         expect(dataset_rest['provider']).to eq('cartodb')
       end
@@ -53,7 +54,7 @@ module V1
         get '/datasets?status=all'
 
         expect(status).to eq(200)
-        expect(json.size).to eq(7)
+        expect(json.size).to eq(8)
       end
 
       it 'Show list of datasets with pending status' do
@@ -67,7 +68,7 @@ module V1
         get '/datasets?status=active'
 
         expect(status).to eq(200)
-        expect(json.size).to eq(5)
+        expect(json.size).to eq(6)
       end
 
       it 'Show list of datasets with disabled status' do
@@ -104,7 +105,7 @@ module V1
         get '/datasets?app=all'
 
         expect(status).to eq(200)
-        expect(json.size).to eq(5)
+        expect(json.size).to eq(6)
       end
     end
 
@@ -327,6 +328,8 @@ module V1
       end
 
       context 'Doc dataset' do
+        let!(:dataset_id) { Dataset.find_by(name: 'Csv test set 1').id }
+
         it 'Allows to create csv dataset with tags' do
           post '/datasets', params: {"dataset": {"connector_type": "document",
                                                  "connector_url": "https://test-csv.csv",
@@ -341,6 +344,13 @@ module V1
           expect(json['format']).to        be_present
           expect(json['connector_url']).to be_present
           expect(json['tags']).to          eq(["tag1", "tag2"])
+        end
+
+        it 'Allows to overwrite csv dataset data' do
+          post "/datasets/#{dataset_id}/data-overwrite", params: {"dataset": {"connector_url": "http://new-url.org"}}
+
+          expect(status).to eq(200)
+          expect(json_main['message']).to eq('Dataset data update in progress')
         end
       end
 

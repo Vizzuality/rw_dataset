@@ -1,0 +1,18 @@
+# == Schema Information
+#
+# Table name: doc_connectors
+#
+#  id                 :uuid             not null, primary key
+#  connector_provider :integer          default("csv")
+#  connector_url      :string
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  table_name         :string
+#
+
+---
+doc_connector_1:
+  id: 'c547146d-de0c-47ff-a406-5125667fd5c1'
+  connector_url: 'https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint'
+  created_at: '2016-03-01 20:00:00.050118'
+  updated_at: '2016-03-01 20:00:00.050118'
