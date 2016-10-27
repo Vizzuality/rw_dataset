@@ -35,6 +35,7 @@ module V1
     def overwrite_data
       begin
         if @dataset.data_overwrite? && @overwriteable
+          @dateable.update(dataset_params_for_update)
           @dateable.connect_to_service(dataset_data_params_for_overwrite)
           render json: { success: true, message: 'Dataset data update in progress' }, status: 200
         elsif @overwriteable
@@ -126,6 +127,7 @@ module V1
         @dataset        = Dataset.includes(:dateable).find(params[:id])
         @dateable       = @dataset.dateable                                          if @dataset.present?
         @json_connector = @dateable.class.name.include?('JsonConnector')             if @dateable.present?
+        @doc_connector  = @dateable.class.name.include?('DocConnector')              if @dateable.present?
         @overwriteable  = @dateable.class.name.in? ['JsonConnector', 'DocConnector'] if @dateable.present?
         record_not_found                                                             if @dataset.blank?
       end
@@ -145,6 +147,8 @@ module V1
       def dataset_params_for_update
         if @json_connector
           params.require(:dataset).except(:data, :data_attributes, :connector_url).permit!
+        elsif @doc_connector
+          params.require(:dataset).except(:point, :polygon).permit!
         else
           params.require(:dataset).except(:data, :data_attributes).permit!
         end

@@ -347,9 +347,13 @@ module V1
         end
 
         it 'Allows to overwrite csv dataset data' do
-          post "/datasets/#{dataset_id}/data-overwrite", params: {"dataset": {"connector_url": "http://new-url.org"}}
+          post "/datasets/#{dataset_id}/data-overwrite", params: {"dataset": {"connector_url": "http://new-url.org", "table_name": "new_name",
+                                                                              "polygon": "Madrid alcobendas",
+                                                                              "point": { "lat": "23233233", "long": "66565676" }}}
 
           expect(status).to eq(200)
+          expect(DocConnector.find('c547146d-de0c-47ff-a406-5125667fd5c1').connector_url).to eq('http://new-url.org')
+          expect(DocConnector.find('c547146d-de0c-47ff-a406-5125667fd5c1').table_name).to eq('new_name')
           expect(json_main['message']).to eq('Dataset data update in progress')
         end
       end
