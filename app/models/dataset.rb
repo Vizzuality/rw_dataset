@@ -20,6 +20,7 @@
 #  data_overwrite  :boolean          default(FALSE)
 #  subtitle        :string
 #  topics          :jsonb
+#  user_id         :string
 #
 
 class Dataset < ApplicationRecord
@@ -52,7 +53,7 @@ class Dataset < ApplicationRecord
   scope :filter_doc,  -> { where(dateable_type: 'DocConnector').includes(:dateable)  }
   scope :filter_wms,  -> { where(dateable_type: 'WmsConnector').includes(:dateable)  }
 
-  scope :filter_apps, -> (app) { where('application ?| array[:keys]', keys: ["#{app}"]) }
+  scope :filter_apps, ->(app) { where('application ?| array[:keys]', keys: ["#{app}"]) }
 
   def format_txt
     FORMAT[format - 0]

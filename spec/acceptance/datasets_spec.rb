@@ -5,6 +5,7 @@ module V1
     fixtures :rest_connectors
     fixtures :json_connectors
     fixtures :wms_connectors
+    fixtures :doc_connectors
     fixtures :datasets
 
     context 'For datasets list', redis: true do
@@ -14,7 +15,7 @@ module V1
         dataset_json = json[0]['attributes']
         dataset_rest = json[3]['attributes']
         expect(status).to eq(200)
-        expect(json.length).to              eq(5)
+        expect(json.length).to              eq(6)
         expect(dataset_json['provider']).to eq('rwjson')
         expect(dataset_rest['provider']).to eq('cartodb')
       end
@@ -53,7 +54,7 @@ module V1
         get '/dataset?status=all'
 
         expect(status).to eq(200)
-        expect(json.size).to eq(7)
+        expect(json.size).to eq(8)
       end
 
       it 'Show list of datasets with pending status' do
@@ -67,7 +68,7 @@ module V1
         get '/dataset?status=active'
 
         expect(status).to eq(200)
-        expect(json.size).to eq(5)
+        expect(json.size).to eq(6)
       end
 
       it 'Show list of datasets with disabled status' do
@@ -104,7 +105,7 @@ module V1
         get '/dataset?app=all'
 
         expect(status).to eq(200)
-        expect(json.size).to eq(5)
+        expect(json.size).to eq(6)
       end
     end
 
@@ -268,7 +269,6 @@ module V1
           expect(status).to eq(201)
           expect(json_attr['name']).to     eq('Json test api')
           expect(json_attr['provider']).to eq('rwjson')
-          # expect(json_attr['format']).to   be_present
           expect(json_attr['tags']).to     eq(["tag1", "tag2"])
         end
 
@@ -327,6 +327,8 @@ module V1
       end
 
       context 'Doc dataset' do
+        let!(:csv_dataset_id) { Dataset.find_by(name: 'Csv test set 1').id }
+
         it 'Allows to create csv dataset with tags' do
           post '/dataset', params: {"dataset": {"connectorType": "document",
                                                  "connectorUrl": "https://test-csv.csv",
@@ -338,14 +340,24 @@ module V1
           expect(status).to eq(201)
           expect(json_attr['name']).not_to     be_nil
           expect(json_attr['provider']).to     eq('csv')
-          # expect(json_attr['format']).to       be_present
           expect(json_attr['connectorUrl']).to be_present
           expect(json_attr['tags']).to         eq(["tag1", "tag2"])
+        end
+
+        it 'Allows to overwrite csv dataset data' do
+          post "/dataset/#{csv_dataset_id}/data-overwrite", params: {"dataset": {"connector_url": "http://new-url.org", "table_name": "new_name",
+                                                                                 "polygon": "Madrid alcobendas",
+                                                                                 "point": { "lat": "23233233", "long": "66565676" }}}
+
+          expect(status).to eq(200)
+          expect(DocConnector.find('c547146d-de0c-47ff-a406-5125667fd5c2').connector_url).to eq('http://new-url.org')
+          expect(DocConnector.find('c547146d-de0c-47ff-a406-5125667fd5c2').table_name).to eq('new_name')
+          expect(json_main['message']).to eq('Dataset data update in progress')
         end
       end
 
       context 'Wms dataset' do
-        let!(:dataset_id) { Dataset.find_by(name: 'Wms test set 1').id }
+        let!(:csv_dataset_id) { Dataset.find_by(name: 'Wms test set 1').id }
 
         it 'Allows to create wms dataset with tags' do
           post '/dataset', params: {"dataset": {"connectorType": "wms", "name": "Wms test api",
@@ -362,7 +374,7 @@ module V1
         end
 
         it 'Allows to delete wms dataset' do
-          delete "/dataset/#{dataset_id}"
+          delete "/dataset/#{csv_dataset_id}"
 
           expect(status).to eq(200)
           expect(json_main['message']).to eq('Dataset would be deleted!')

@@ -37,10 +37,11 @@ module V1
 
     def overwrite_data
       begin
-        if @dataset.data_overwrite? && @json_connector
+        if @dataset.data_overwrite? && @overwriteable
+          @dateable.update(dataset_params_for_update)
           @dateable.connect_to_service(dataset_data_params_for_overwrite)
           render json: { success: true, message: 'Dataset data update in progress' }, status: 200
-        elsif @json_connector
+        elsif @overwriteable
           render json: { errors: [{ status: 422, title: "Dataset data is locked and can't be updated" }] }, status: 422
         else
           render json: { errors: [{ status: 422, title: 'Not a fuction' }] }, status: 422
@@ -101,20 +102,22 @@ module V1
 
       def clone_dataset
         dataset_params['dataset_url'] = dataset_url_fixer
-        JsonConnector.create(
-          parent_connector_url: dataset_params['dataset_url'],
-          parent_connector_provider: @dateable.attributes['connector_provider'],
-          parent_connector_type: @dateable.class.name,
-          parent_connector_id: @dataset.attributes['id'],
-          parent_connector_data_path: 'data',
-          dataset_attributes: {
-            name: @dataset.attributes['name'] + '_copy',
-            format: @dataset.attributes['format'],
-            data_path: @dataset.attributes['data_path'],
-            attributes_path: @dataset.attributes['attributes_path'],
-            row_count: @dataset.attributes['row_count']
-          }
-        ) if dataset_params['dataset_url'].present?
+        if dataset_params['dataset_url'].present?
+          JsonConnector.create(
+            parent_connector_url: dataset_params['dataset_url'],
+            parent_connector_provider: @dateable.attributes['connector_provider'],
+            parent_connector_type: @dateable.class.name,
+            parent_connector_id: @dataset.attributes['id'],
+            parent_connector_data_path: 'data',
+            dataset_attributes: {
+              name: @dataset.attributes['name'] + '_copy',
+              format: @dataset.attributes['format'],
+              data_path: @dataset.attributes['data_path'],
+              attributes_path: @dataset.attributes['attributes_path'],
+              row_count: @dataset.attributes['row_count']
+            }
+          )
+        end
       end
 
       def dataset_url_fixer
@@ -127,9 +130,11 @@ module V1
 
       def set_dataset
         @dataset        = Dataset.includes(:dateable).find(params[:id])
-        @dateable       = @dataset.dateable                              if @dataset.present?
-        @json_connector = @dateable.class.name.include?('JsonConnector') if @dateable.present?
-        record_not_found                                                 if @dataset.blank?
+        @dateable       = @dataset.dateable                                          if @dataset.present?
+        @json_connector = @dateable.class.name.include?('JsonConnector')             if @dateable.present?
+        @doc_connector  = @dateable.class.name.include?('DocConnector')              if @dateable.present?
+        @overwriteable  = @dateable.class.name.in? ['JsonConnector', 'DocConnector'] if @dateable.present?
+        record_not_found                                                             if @dataset.blank?
       end
 
       def populate_dataset
@@ -147,6 +152,8 @@ module V1
       def dataset_params_for_update
         if @json_connector
           dataset_params_sanitizer.except(:data, :data_attributes, :connector_url)
+        elsif @doc_connector
+          dataset_params_sanitizer.except(:point, :polygon)
         else
           dataset_params_sanitizer.except(:data, :data_attributes)
         end
@@ -161,7 +168,7 @@ module V1
       end
 
       def dataset_data_params_for_overwrite
-        params.require(:dataset).merge(overwrite: true).permit! if @json_connector
+        params.require(:dataset).merge(overwrite: true).permit! if @overwriteable
       end
 
       def dataset_data_params_for_delete
