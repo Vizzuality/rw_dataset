@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 module V1
   class DatasetsController < ApplicationController
+    before_action :set_user,         except: [:index, :show]
     before_action :set_dataset,      except: [:index, :create, :info]
     before_action :populate_dataset, only: :show, if: :params_includes_present?
 
@@ -19,82 +20,125 @@ module V1
     end
 
     def update
-      if @dateable.update(dataset_params_for_update)
-        render json: @dataset.reload, status: 200, serializer: DatasetSerializer, root: false
+      authorized = User.authorize_user!(@user, @dataset.application, @dataset.user_id)
+      if authorized.present?
+        if @dateable.update(dataset_params_for_update)
+          render json: @dataset.reload, status: 200, serializer: DatasetSerializer, root: false
+        else
+          render json: { success: false, message: 'Error updating dataset' }, status: 422
+        end
       else
-        render json: { success: false, message: 'Error creating dataset' }, status: 422
+        render json: { success: false, message: 'Not authorized!' }, status: 401
       end
     end
 
     def update_data
-      begin
-        @dateable.connect_to_service(dataset_data_params_for_update)
-        render json: { success: true, message: 'Dataset data update in progress' }, status: 200
-      rescue
-        render json: { success: false, message: 'Error updating dataset data' }, status: 422
+      authorized = User.authorize_user!(@user, @dataset.application, @dataset.user_id)
+      if authorized.present?
+        begin
+          @dateable.connect_to_service(dataset_data_params_for_update)
+          render json: { success: true, message: 'Dataset data update in progress' }, status: 200
+        rescue
+          render json: { success: false, message: 'Error updating dataset data' }, status: 422
+        end
+      else
+        render json: { success: false, message: 'Not authorized!' }, status: 401
       end
     end
 
     def overwrite_data
-      begin
-        if @dataset.data_overwrite? && @overwriteable
-          @dateable.update(dataset_params_for_update)
-          @dateable.connect_to_service(dataset_data_params_for_overwrite)
-          render json: { success: true, message: 'Dataset data update in progress' }, status: 200
-        elsif @overwriteable
-          render json: { errors: [{ status: 422, title: "Dataset data is locked and can't be updated" }] }, status: 422
-        else
-          render json: { errors: [{ status: 422, title: 'Not a fuction' }] }, status: 422
+      authorized = User.authorize_user!(@user, @dataset.application, @dataset.user_id)
+      if authorized.present?
+        begin
+          if @dataset.data_overwrite? && @overwriteable
+            if @dateable.update(dataset_params_for_update)
+              @dateable.connect_to_service(dataset_data_params_for_overwrite)
+              render json: { success: true, message: 'Dataset data update in progress' }, status: 200
+            else
+              render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
+            end
+          elsif @overwriteable
+            render json: { errors: [{ status: 422, title: "Dataset data is locked and can't be updated" }] }, status: 422
+          else
+            render json: { errors: [{ status: 422, title: 'Not a fuction' }] }, status: 422
+          end
+        rescue
+          render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
         end
-      rescue
-        render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
+      else
+        render json: { success: false, message: 'Not authorized!' }, status: 401
       end
     end
 
     def update_layer_info
-      begin
-        @dataset.update_layer_info(params.to_unsafe_hash)
-        render json: { success: true, message: 'Dataset layer info update in progress' }, status: 200
-      rescue
-        render json: { success: false, message: 'Error updating dataset data' }, status: 422
+      authorized = User.authorize_user!(@user, @dataset.application, @dataset.user_id)
+      if authorized.present?
+        begin
+          @dataset.update_layer_info(params.to_unsafe_hash)
+          render json: { success: true, message: 'Dataset layer info update in progress' }, status: 200
+        rescue
+          render json: { success: false, message: 'Error updating dataset data' }, status: 422
+        end
+      else
+        render json: { success: false, message: 'Not authorized!' }, status: 401
       end
     end
 
     def delete_data
-      begin
-        @dateable.connect_to_service(dataset_data_params_for_delete)
-        render json: { success: true, message: 'Dataset data deleted' }, status: 200
-      rescue
-        render json: { success: false, message: 'Error deleting dataset data' }, status: 422
+      authorized = User.authorize_user!(@user, @dataset.application, @dataset.user_id)
+      if authorized.present?
+        begin
+          @dateable.connect_to_service(dataset_data_params_for_delete)
+          render json: { success: true, message: 'Dataset data deleted' }, status: 200
+        rescue
+          render json: { success: false, message: 'Error deleting dataset data' }, status: 422
+        end
+      else
+        render json: { success: false, message: 'Not authorized!' }, status: 401
       end
     end
 
     def create
-      @dateable = Connector.new(dataset_params)
-      if @dateable.save
-        @dateable.connect_to_service(dataset_params)
-        render json: @dateable.dataset, status: 201, serializer: DatasetSerializer, root: false
+      authorized = User.authorize_user!(@user, @dataset_apps)
+      if authorized.present?
+        @dateable = Connector.new(dataset_params)
+        if @dateable.save
+          @dateable.connect_to_service(dataset_params)
+          render json: @dateable.dataset, status: 201, serializer: DatasetSerializer, root: false
+        else
+          render json: { success: false, message: 'Error creating dataset' }, status: 422
+        end
       else
-        render json: { success: false, message: 'Error creating dataset' }, status: 422
+        render json: { success: false, message: 'Not authorized!' }, status: 401
       end
     end
 
     def clone
-      @dataset = clone_dataset.dataset
-      if @dataset&.save
-        @dataset.dateable.connect_to_service(dataset_params)
-        render json: @dataset, status: 201, serializer: DatasetSerializer, root: false
+      authorized = User.authorize_user!(@user, @dataset.application)
+      if authorized.present?
+        @dataset = clone_dataset.dataset
+        if @dataset&.save
+          @dataset.dateable.connect_to_service(dataset_params)
+          render json: @dataset, status: 201, serializer: DatasetSerializer, root: false
+        else
+          render json: { success: false, message: 'Error cloning dataset' }, status: 422
+        end
       else
-        render json: { success: false, message: 'Error cloning dataset' }, status: 422
+        render json: { success: false, message: 'Not authorized!' }, status: 401
       end
     end
 
     def destroy
-      if @dataset.deleted?
-        render json: { success: true, message: 'Dataset deleted!' }, status: 200
+      authorized = User.authorize_user!(@user, @dataset.application, @dataset.user_id)
+      if authorized.present?
+        if @dataset.deleted?
+          render json: { success: true, message: 'Dataset deleted!' }, status: 200
+        else
+          @dateable.connect_to_service('delete')
+          render json: { success: true, message: 'Dataset would be deleted!' }, status: 200
+        end
       else
-        @dateable.connect_to_service('delete')
-        render json: { success: true, message: 'Dataset would be deleted!' }, status: 200
+        render json: { success: false, message: 'Not authorized!' }, status: 401
       end
     end
 
@@ -114,7 +158,8 @@ module V1
               format: @dataset.attributes['format'],
               data_path: @dataset.attributes['data_path'],
               attributes_path: @dataset.attributes['attributes_path'],
-              row_count: @dataset.attributes['row_count']
+              row_count: @dataset.attributes['row_count'],
+              user_id: dataset_params['user_id']
             }
           )
         end
@@ -141,6 +186,22 @@ module V1
         @dataset.populate(options_filter['includes'], options_filter['app'])
       end
 
+      def set_user
+        if dataset_params[:logged_user].present?
+          user_id       = dataset_params[:logged_user][:id]
+          role          = dataset_params[:logged_user][:role].downcase
+          apps          = if dataset_params[:logged_user][:extra_user_data].present? && dataset_params[:logged_user][:extra_user_data][:apps].present?
+                            dataset_params[:logged_user][:extra_user_data][:apps].map { |v| v.downcase }.uniq
+                          end
+          @dataset_apps = dataset_params[:dataset_attributes][:application]
+
+          User.data = [{ user_id: user_id, role: role, apps: apps }]
+          @user= User.last
+        else
+          render json: { success: false, message: 'Not authorized!' }, status: 401
+        end
+      end
+
       def params_includes_present?
         params[:includes].present?
       end
@@ -151,29 +212,29 @@ module V1
 
       def dataset_params_for_update
         if @json_connector
-          dataset_params_sanitizer.except(:data, :data_attributes, :connector_url)
+          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :connector_url)
         elsif @doc_connector
-          dataset_params_sanitizer.except(:point, :polygon)
+          dataset_params_sanitizer.except(:point, :polygon, :logged_user)
         else
-          dataset_params_sanitizer.except(:data, :data_attributes)
+          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user)
         end
       end
 
       def dataset_data_params_for_update
         if @json_connector && params[:data_id].present?
-          params.require(:dataset).merge(data_to_update: true, data_id: params[:data_id]).permit!
+          params.require(:dataset).merge(data_to_update: true, data_id: params[:data_id], logged_user: params[:logged_user]).permit!
         else
-          params.require(:dataset).merge(to_update: true).permit!
+          params.require(:dataset).merge(to_update: true, logged_user: params[:logged_user]).permit!
         end
       end
 
       def dataset_data_params_for_overwrite
-        params.require(:dataset).merge(overwrite: true).permit! if @overwriteable
+        params.require(:dataset).merge(overwrite: true, logged_user: params[:logged_user]).permit! if @overwriteable
       end
 
       def dataset_data_params_for_delete
         if @json_connector && params[:data_id].present?
-          params.merge(to_delete: true, data_to_update: true, data_id: params[:data_id])
+          params.merge(to_delete: true, data_to_update: true, data_id: params[:data_id], logged_user: params[:logged_user])
         end
       end
   end
