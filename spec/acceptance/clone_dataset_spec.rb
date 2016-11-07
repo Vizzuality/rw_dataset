@@ -11,7 +11,8 @@ module V1
         let!(:dataset_id) { Dataset.find_by(name: 'cartodb test set').id }
 
         it 'Allows to clone cartodb dataset' do
-          post "/dataset/#{dataset_id}/clone", params: {"dataset": {"datasetUrl": "http://ec2-52-23-163-254.compute-1.amazonaws.com/query/4?select[]=iso,population&filter=(iso=='ESP','AUS')&aggrBy[]=iso&aggrFunc=sum&order[]=-iso"} }
+          post "/dataset/#{dataset_id}/clone", params: {"loggedUser": {"role": "Manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
+                                                        "dataset": {"datasetUrl": "http://ec2-52-23-163-254.compute-1.amazonaws.com/query/4?select[]=iso,population&filter=(iso=='ESP','AUS')&aggrBy[]=iso&aggrFunc=sum&order[]=-iso"} }
 
           expect(status).to eq(201)
           expect(json_attr['name']).to                       match('_copy')
@@ -26,7 +27,8 @@ module V1
         let!(:settings)   { ServiceSetting.create(name: 'api-gateway', listener: true, token: '3123123der324eewr434ewr4324', url: 'http://192.168.99.100:8000') }
 
         it 'Allows to clone json dataset' do
-          post "/dataset/#{dataset_id}/clone", params: {"dataset": {"datasetUrl": "http://192.168.99.100:8000/query/4?select[]=iso,population&filter=(iso=='ESP','AUS')&aggrBy[]=iso&aggrFunc=sum&order[]=-iso"} }
+          post "/dataset/#{dataset_id}/clone", params: {"loggedUser": {"role": "admin", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
+                                                        "dataset": {"datasetUrl": "http://192.168.99.100:8000/query/4?select[]=iso,population&filter=(iso=='ESP','AUS')&aggrBy[]=iso&aggrFunc=sum&order[]=-iso"} }
 
           expect(status).to eq(201)
           expect(json_attr['name']).to                       match('_copy')

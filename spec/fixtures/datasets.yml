@@ -19,7 +19,6 @@
 #  data_overwrite  :boolean          default(FALSE)
 #  subtitle        :string
 #  topics          :jsonb
-#  user_id         :string
 #
 
 ---
@@ -37,6 +36,7 @@ rest_data_1:
   tags: ["tag1", "tag3", "tag2"]
   layer_info: [{"application": "wrw", "default": false, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30m"}]
   application: ['gfw', 'wrw']
+  user_id: '3242-32442-432'
 
 rest_data_2:
   dateable_id: 'd547146d-de0c-47ff-a406-5125667fd5e1'
@@ -51,6 +51,7 @@ rest_data_2:
   updated_at: '2016-03-02 20:00:00.050118'
   application: ['gfw']
   layer_info: [{"application": "gfw", "default": false, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30j"}]
+  user_id: '3242-32442-432'
 
 rest_data_3:
   dateable_id: 'd547146d-de0c-47ff-a406-5125667fd533'
@@ -63,6 +64,9 @@ rest_data_3:
   status: 0
   created_at: '2016-03-02 20:00:00.050118'
   updated_at: '2016-03-02 20:00:00.050118'
+  user_id: '3242-32442-432'
+  layer_info: [{"application": "gfw", "default": false, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30j"}]
+  application: ['gfw']
 
 rest_data_4:
   dateable_id: 'd547146d-de0c-47ff-a406-5125667fd321'
@@ -75,6 +79,9 @@ rest_data_4:
   status: 3
   created_at: '2016-03-02 20:00:00.050118'
   updated_at: '2016-03-02 20:00:00.050118'
+  user_id: '3242-32442-432'
+  layer_info: [{"application": "gfw", "default": false, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30j"}]
+  application: ['gfw']
 
 json_data_1:
   dateable_id: 'a547146d-de0c-47ff-a406-5125667fd5e1'
@@ -88,6 +95,9 @@ json_data_1:
   created_at: '2016-03-03 20:00:00.050118'
   updated_at: '2016-03-03 20:00:00.050118'
   data_overwrite: true
+  user_id: '3242-32442-432'
+  layer_info: [{"application": "gfw", "default": false, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30j"}]
+  application: ['gfw']
 
 json_data_2:
   dateable_id: 'b547146d-de0c-47ff-a406-5125667fd5e1'
@@ -101,6 +111,9 @@ json_data_2:
   created_at: '2016-03-04 20:00:00.050118'
   updated_at: '2016-03-04 20:00:00.050118'
   data_overwrite: false
+  user_id: '3242-32442-432'
+  layer_info: [{"application": "gfw", "default": false, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30j"}]
+  application: ['gfw']
 
 wms_data_2:
   dateable_id: 'c547146d-de0c-47ff-a406-5125667fd5c1'
@@ -115,7 +128,7 @@ wms_data_2:
   application: ['prep']
 
 csv_data_1:
-  dateable_id: 'c547146d-de0c-47ff-a406-5125667fd5c2'
+  dateable_id: '19fb848b-259c-56f7-9e89-de672d76597f'
   dateable_type: 'DocConnector'
   name: 'Csv test set 1'
   format: 0
@@ -124,5 +137,7 @@ csv_data_1:
   created_at: '2016-03-01 20:00:00.050118'
   updated_at: '2016-03-01 20:00:00.050118'
   status: 1
-  application: ['prep']
   data_overwrite: true
+  application: ['gfw']
+  user_id: '3242-32442-432'
+  layer_info: [{"application": "gfw", "default": false, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30j"}]

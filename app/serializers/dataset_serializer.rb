@@ -20,11 +20,10 @@
 #  data_overwrite  :boolean          default(FALSE)
 #  subtitle        :string
 #  topics          :jsonb
-#  user_id         :string
 #
 
 class DatasetSerializer < ApplicationSerializer
-  attributes :id, :application, :name, :subtitle, :data_path, :attributes_path, :connector_type, :provider,
+  attributes :id, :application, :name, :subtitle, :data_path, :attributes_path, :connector_type, :provider, :user_id,
              :connector_url, :table_name, :layer_info, :topics, :tags, :cloned_host, :metadata
 
   def provider
