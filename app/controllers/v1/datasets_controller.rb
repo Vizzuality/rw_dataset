@@ -101,20 +101,22 @@ module V1
 
       def clone_dataset
         dataset_params['dataset_url'] = dataset_url_fixer
-        JsonConnector.create(
-          parent_connector_url: dataset_params['dataset_url'],
-          parent_connector_provider: @dateable.attributes['connector_provider'],
-          parent_connector_type: @dateable.class.name,
-          parent_connector_id: @dataset.attributes['id'],
-          parent_connector_data_path: 'data',
-          dataset_attributes: {
-            name: @dataset.attributes['name'] + '_copy',
-            format: @dataset.attributes['format'],
-            data_path: @dataset.attributes['data_path'],
-            attributes_path: @dataset.attributes['attributes_path'],
-            row_count: @dataset.attributes['row_count']
-          }
-        ) if dataset_params['dataset_url'].present?
+        if dataset_params['dataset_url'].present?
+          JsonConnector.create(
+            parent_connector_url: dataset_params['dataset_url'],
+            parent_connector_provider: @dateable.attributes['connector_provider'],
+            parent_connector_type: @dateable.class.name,
+            parent_connector_id: @dataset.attributes['id'],
+            parent_connector_data_path: 'data',
+            dataset_attributes: {
+              name: @dataset.attributes['name'] + '_copy',
+              format: @dataset.attributes['format'],
+              data_path: @dataset.attributes['data_path'],
+              attributes_path: @dataset.attributes['attributes_path'],
+              row_count: @dataset.attributes['row_count']
+            }
+          )
+        end
       end
 
       def dataset_url_fixer
