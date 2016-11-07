@@ -37,10 +37,11 @@ module V1
 
     def overwrite_data
       begin
-        if @dataset.data_overwrite? && @json_connector
+        if @dataset.data_overwrite? && @overwriteable
+          @dateable.update(dataset_params_for_update)
           @dateable.connect_to_service(dataset_data_params_for_overwrite)
           render json: { success: true, message: 'Dataset data update in progress' }, status: 200
-        elsif @json_connector
+        elsif @overwriteable
           render json: { errors: [{ status: 422, title: "Dataset data is locked and can't be updated" }] }, status: 422
         else
           render json: { errors: [{ status: 422, title: 'Not a fuction' }] }, status: 422
@@ -129,9 +130,11 @@ module V1
 
       def set_dataset
         @dataset        = Dataset.includes(:dateable).find(params[:id])
-        @dateable       = @dataset.dateable                              if @dataset.present?
-        @json_connector = @dateable.class.name.include?('JsonConnector') if @dateable.present?
-        record_not_found                                                 if @dataset.blank?
+        @dateable       = @dataset.dateable                                          if @dataset.present?
+        @json_connector = @dateable.class.name.include?('JsonConnector')             if @dateable.present?
+        @doc_connector  = @dateable.class.name.include?('DocConnector')              if @dateable.present?
+        @overwriteable  = @dateable.class.name.in? ['JsonConnector', 'DocConnector'] if @dateable.present?
+        record_not_found                                                             if @dataset.blank?
       end
 
       def populate_dataset
@@ -149,6 +152,8 @@ module V1
       def dataset_params_for_update
         if @json_connector
           dataset_params_sanitizer.except(:data, :data_attributes, :connector_url)
+        elsif @doc_connector
+          dataset_params_sanitizer.except(:point, :polygon)
         else
           dataset_params_sanitizer.except(:data, :data_attributes)
         end
@@ -163,7 +168,7 @@ module V1
       end
 
       def dataset_data_params_for_overwrite
-        params.require(:dataset).merge(overwrite: true).permit! if @json_connector
+        params.require(:dataset).merge(overwrite: true).permit! if @overwriteable
       end
 
       def dataset_data_params_for_delete
