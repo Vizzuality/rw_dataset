@@ -20,7 +20,6 @@
 #  data_overwrite  :boolean          default(FALSE)
 #  subtitle        :string
 #  topics          :jsonb
-#  user_id         :string
 #
 
 class Dataset < ApplicationRecord

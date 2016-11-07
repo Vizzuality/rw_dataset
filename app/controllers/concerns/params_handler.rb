@@ -5,9 +5,10 @@ module ParamsHandler
   included do
     def dataset_params_sanitizer
       params.require(:dataset).except(:name, :format, :data_path, :attributes_path, :status, :application,
-                                    :layer_info, :data_overwrite, :subtitle, :tags, :topics, :provider)
-                              .merge(connector_provider: params[:dataset].dig(:provider),
-                                     dataset_attributes: { name: params[:dataset].dig(:name),
+                                      :layer_info, :data_overwrite, :subtitle, :tags, :topics, :provider)
+                              .merge(logged_user: params[:logged_user], connector_provider: params[:dataset].dig(:provider),
+                                     dataset_attributes: { user_id: params.dig(:logged_user, :id),
+                                                           name: params[:dataset].dig(:name),
                                                            format: params[:dataset].dig(:format),
                                                            data_path: params[:dataset].dig(:data_path),
                                                            attributes_path: params[:dataset].dig(:attributes_path),
