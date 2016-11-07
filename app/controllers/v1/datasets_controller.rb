@@ -4,6 +4,7 @@ module V1
     before_action :set_user,         except: [:index, :show]
     before_action :set_dataset,      except: [:index, :create, :info]
     before_action :populate_dataset, only: :show, if: :params_includes_present?
+    before_action :set_caller,       only: :update
 
     include ParamsHandler
 
@@ -20,9 +21,8 @@ module V1
     end
 
     def update
-      authorized = User.authorize_user!(@user, @dataset.application, @dataset.user_id)
-      if authorized.present?
-        if @dateable.update(dataset_params_for_update)
+      if @authorized.present?
+        if @dateable.update(@dataset_params_for_update)
           render json: @dataset.reload, status: 200, serializer: DatasetSerializer, root: false
         else
           render json: { success: false, message: 'Error updating dataset' }, status: 422
@@ -187,7 +187,7 @@ module V1
       end
 
       def set_user
-        if dataset_params[:logged_user].present?
+        if dataset_params[:logged_user].present? && dataset_params[:logged_user][:id] != 'microservice'
           user_id       = dataset_params[:logged_user][:id]
           role          = dataset_params[:logged_user][:role].downcase
           apps          = if dataset_params[:logged_user][:extra_user_data].present? && dataset_params[:logged_user][:extra_user_data][:apps].present?
@@ -198,7 +198,17 @@ module V1
           User.data = [{ user_id: user_id, role: role, apps: apps }]
           @user= User.last
         else
-          render json: { success: false, message: 'Not authorized!' }, status: 401
+          render json: { success: false, message: 'Not authorized!' }, status: 401 if dataset_params[:logged_user][:id] != 'microservice'
+        end
+      end
+
+      def set_caller
+        if dataset_params[:logged_user].present? && dataset_params[:logged_user][:id] == 'microservice'
+          @dataset_params_for_update = dataset_params_for_update.except(:user_id)
+          @authorized = true
+        else
+          @dataset_params_for_update = dataset_params_for_update
+          @authorized = User.authorize_user!(@user, @dataset.application, @dataset.user_id)
         end
       end
 

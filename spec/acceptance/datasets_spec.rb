@@ -287,6 +287,14 @@ module V1
           expect(json_attr['name']).to eq('Json test api update with patch')
         end
 
+        it 'Allows to update dataset from internal microservice' do
+          patch "/dataset/#{dataset_id}", params: {"loggedUser": {"id": "microservice"},
+                                                   "dataset": {"status": 1}}
+
+          expect(status).to eq(200)
+          expect(Dataset.find(dataset_id).status).to eq(1)
+        end
+
         it 'Allows to create json dataset with tags' do
           post '/dataset', params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
                                     "dataset": {

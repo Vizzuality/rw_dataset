@@ -44,6 +44,7 @@
       {
         "url": "/dataset/:id",
         "method": "PUT",
+        "authenticated": true,
         "endpoints": [{
             "method": "PUT",
             "baseUrl": "http://localhost:3000",
@@ -53,6 +54,7 @@
       {
         "url": "/dataset/:id",
         "method": "PATCH",
+        "authenticated": true,
         "endpoints": [{
             "method": "PATCH",
             "baseUrl": "http://localhost:3000",
@@ -71,6 +73,7 @@
       {
         "url": "/dataset/:id/data",
         "method": "POST",
+        "authenticated": true,
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://localhost:3000",
@@ -80,6 +83,7 @@
       {
         "url": "/dataset/:id/data-overwrite",
         "method": "POST",
+        "authenticated": true,
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://localhost:3000",
@@ -89,6 +93,7 @@
       {
         "url": "/dataset/:id/data/:data_id",
         "method": "POST",
+        "authenticated": true,
         "endpoints": [{
             "method": "POST",
             "baseUrl": "http://localhost:3000",
@@ -98,6 +103,7 @@
       {
         "url": "/dataset/:id/data/:data_id",
         "method": "DELETE",
+        "authenticated": true,
         "endpoints": [{
             "method": "DELETE",
             "baseUrl": "http://localhost:3000",

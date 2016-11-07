@@ -25,6 +25,8 @@
 class Dataset < ApplicationRecord
   self.table_name = :datasets
 
+  # enum status: { pending: 0, saved: 1, failed: 2, deleted: 3 }
+
   FORMAT = %w(JSON).freeze
   STATUS = %w(pending saved failed deleted).freeze
 
