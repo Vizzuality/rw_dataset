@@ -179,7 +179,7 @@ module V1
                                                  "name": "Carto test api"}}
 
           expect(status).to eq(401)
-          expect(json_main['message']).to eq('Not authorized!')
+          expect(json_main['errors'][0]['title']).to eq('Not authorized!')
         end
 
         it 'Do not allows to create rest dataset by manager user if not in apps' do
@@ -189,7 +189,7 @@ module V1
                                                  "name": "Carto test api"}}
 
           expect(status).to eq(401)
-          expect(json_main['message']).to eq('Not authorized!')
+          expect(json_main['errors'][0]['title']).to eq('Not authorized!')
         end
 
         it 'Allows to update dataset' do
@@ -236,7 +236,7 @@ module V1
                                                        "dataset": {"layer_info": {"application": "wrw", "default": true, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30m"}}}
 
           expect(status).to eq(401)
-          expect(json_main['message']).to eq('Not authorized!')
+          expect(json_main['errors'][0]['title']).to eq('Not authorized!')
         end
 
         it 'Allows to delete dataset' do
