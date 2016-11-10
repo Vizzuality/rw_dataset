@@ -187,7 +187,7 @@ module V1
       end
 
       def set_user
-        if ENV['OLD_GATEWAY'].include?('true')
+        if ENV.key?('OLD_GATEWAY') && ENV.fetch('OLD_GATEWAY').include?('true')
           User.data = [{ user_id: '123-123-123', role: 'superadmin', apps: nil }]
           @user= User.last
         elsif dataset_params[:logged_user].present? && dataset_params[:logged_user][:id] != 'microservice'
