@@ -187,7 +187,10 @@ module V1
       end
 
       def set_user
-        if dataset_params[:logged_user].present? && dataset_params[:logged_user][:id] != 'microservice'
+        if ENV.key?('OLD_GATEWAY') && ENV.fetch('OLD_GATEWAY').include?('true')
+          User.data = [{ user_id: '123-123-123', role: 'superadmin', apps: nil }]
+          @user= User.last
+        elsif dataset_params[:logged_user].present? && dataset_params[:logged_user][:id] != 'microservice'
           user_id       = dataset_params[:logged_user][:id]
           role          = dataset_params[:logged_user][:role].downcase
           apps          = if dataset_params[:logged_user][:extra_user_data].present? && dataset_params[:logged_user][:extra_user_data][:apps].present?
@@ -222,11 +225,11 @@ module V1
 
       def dataset_params_for_update
         if @json_connector
-          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :connector_url)
+          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :connector_url, :user_id)
         elsif @doc_connector
-          dataset_params_sanitizer.except(:point, :polygon, :logged_user)
+          dataset_params_sanitizer.except(:point, :polygon, :logged_user, :user_id)
         else
-          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user)
+          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :user_id)
         end
       end
 
