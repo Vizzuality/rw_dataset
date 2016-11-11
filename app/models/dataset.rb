@@ -31,7 +31,7 @@ class Dataset < ApplicationRecord
   FORMAT = %w(JSON).freeze
   STATUS = %w(pending saved failed deleted).freeze
 
-  attr_accessor :metadata
+  attr_accessor :metadata, :layer
 
   belongs_to :dateable, polymorphic: true
 
@@ -83,14 +83,21 @@ class Dataset < ApplicationRecord
     status_txt == 'saved'
   end
 
-  def populate(includes_meta, app)
-    includes_meta = includes_meta.split(',') if includes_meta.present?
+  def populate(includes, applications)
+    includes = includes.split(',') if includes.present?
+    app      = applications        if applications.present? && !applications.include?('all')
+    if app.present? && app.include?(',')
+      app = app.split(',')
+    end
 
-    includes_meta.each do |include|
+    includes.each do |include|
       case include
       when 'metadata'
         Metadata.data = MetadataService.populate_dataset(self.id, app)
         @metadata     = Metadata.where(dataset: self.id)
+      when 'layer'
+        Layer.data = LayerService.populate_dataset(self.id, app)
+        @layer     = Layer.where(dataset: self.id)
       end
     end
   end
