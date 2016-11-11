@@ -83,8 +83,7 @@ module V1
 
         expect(status).to eq(200)
         expect(json.size).to eq(5)
-        expect(json[0]['attributes']['layerInfo'][0]['application']).to eq('gfw')
-        expect(json[0]['attributes']['application'][0]).to              eq('gfw')
+        expect(json[0]['attributes']['application'][0]).to eq('gfw')
       end
 
       it 'Show list of datasets for app WRW' do
