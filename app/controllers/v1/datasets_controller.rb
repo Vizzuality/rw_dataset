@@ -10,7 +10,7 @@ module V1
 
     def index
       @datasets = Connector.fetch_all(options_filter)
-      render json: @datasets, each_serializer: DatasetSerializer, include: params[:includes], meta: { datasets_count: @datasets.count }
+      render json: @datasets, each_serializer: DatasetSerializer, include: params[:includes], meta: { datasets_count: @datasets.size }
     end
 
     def show
@@ -23,7 +23,10 @@ module V1
     def update
       if @authorized.present?
         if @dateable.update(@dataset_params_for_update)
-          render json: @dataset.reload, status: 200, serializer: DatasetSerializer, root: false
+          render json: @dataset.reload, status: 200, serializer: DatasetSerializer, meta: { status: @dataset.try(:status_txt),
+                                                                                            overwrite: @dataset.try(:data_overwrite),
+                                                                                            updated_at: @dataset.try(:updated_at),
+                                                                                            created_at: @dataset.try(:created_at) }
         else
           render json: { errors: [{ status: 422, title: 'Error updating dataset' }] }, status: 422
         end
@@ -104,7 +107,10 @@ module V1
         @dateable = Connector.new(dataset_params)
         if @dateable.save
           @dateable.connect_to_service(dataset_params)
-          render json: @dateable.dataset, status: 201, serializer: DatasetSerializer, root: false
+          render json: @dateable.dataset, status: 201, serializer: DatasetSerializer, meta: { status: @dataset.try(:status_txt),
+                                                                                              overwrite: @dataset.try(:data_overwrite),
+                                                                                              updated_at: @dataset.try(:updated_at),
+                                                                                              created_at: @dataset.try(:created_at) }
         else
           render json: { success: false, message: 'Error creating dataset' }, status: 422
         end
@@ -119,7 +125,10 @@ module V1
         @dataset = clone_dataset.dataset
         if @dataset&.save
           @dataset.dateable.connect_to_service(dataset_params)
-          render json: @dataset, status: 201, serializer: DatasetSerializer, root: false
+          render json: @dataset, status: 201, serializer: DatasetSerializer, meta: { status: @dataset.try(:status_txt),
+                                                                                     overwrite: @dataset.try(:data_overwrite),
+                                                                                     updated_at: @dataset.try(:updated_at),
+                                                                                     created_at: @dataset.try(:created_at) }
         else
           render json: { success: false, message: 'Error cloning dataset' }, status: 422
         end
