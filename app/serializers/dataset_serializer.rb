@@ -25,7 +25,7 @@
 
 class DatasetSerializer < ApplicationSerializer
   attributes :id, :application, :name, :subtitle, :data_path, :attributes_path, :connector_type, :provider, :user_id,
-             :connector_url, :table_name, :topics, :tags, :cloned_host, :metadata
+             :connector_url, :table_name, :topics, :tags, :cloned_host, :metadata, :layer
 
   def provider
     object.dateable.try(:provider_txt)
@@ -58,7 +58,7 @@ class DatasetSerializer < ApplicationSerializer
   end
 
   def layer
-    object.try(:layers).tap do |layer|
+    object.try(:layer).tap do |layer|
       LayerSerializer.new(layer)
     end
   end

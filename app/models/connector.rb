@@ -56,11 +56,14 @@ class Connector
       datasets
     end
 
-    def includes_filter(scope, including, app)
+    def includes_filter(scope, including, applications)
       datasets    = scope
       dataset_ids = datasets.to_a.pluck(:id)
       including   = including.split(',') if including.present?
-      app         = app                  if app.present? && !app.include?('all')
+      app         = applications         if applications.present? && !applications.include?('all')
+      if app.present? && app.include?(',')
+        app = app.split(',')
+      end
 
       including.each do |include|
         case include
@@ -68,6 +71,11 @@ class Connector
           Metadata.data = MetadataService.populate_dataset(dataset_ids, app)
           datasets = datasets.each do |dataset|
                        dataset.metadata = Metadata.where(dataset: dataset.id)
+                     end
+        when 'layer'
+          Layer.data = LayerService.populate_dataset(dataset_ids, app)
+          datasets = datasets.each do |dataset|
+                       dataset.layer = Layer.where(dataset: dataset.id)
                      end
         end
       end
