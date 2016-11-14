@@ -31,7 +31,7 @@ class Dataset < ApplicationRecord
   FORMAT = %w(JSON).freeze
   STATUS = %w(pending saved failed deleted).freeze
 
-  attr_accessor :metadata, :layer
+  attr_accessor :metadata, :layer, :widget
 
   belongs_to :dateable, polymorphic: true
 
@@ -98,6 +98,9 @@ class Dataset < ApplicationRecord
       when 'layer'
         Layer.data = LayerService.populate_dataset(self.id, app)
         @layer     = Layer.where(dataset: self.id)
+      when 'widget'
+        Widget.data = WidgetService.populate_dataset(self.id, app)
+        @widget     = Widget.where(dataset: self.id)
       end
     end
   end

@@ -77,6 +77,11 @@ class Connector
           datasets = datasets.each do |dataset|
                        dataset.layer = Layer.where(dataset: dataset.id)
                      end
+        when 'widget'
+          Widget.data = WidgetService.populate_dataset(dataset_ids, app)
+          datasets = datasets.each do |dataset|
+                       dataset.widget = Widget.where(dataset: dataset.id)
+                     end
         end
       end
 
