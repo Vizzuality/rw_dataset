@@ -182,8 +182,8 @@ module V1
         end
 
         it 'Do not allows to create rest dataset by manager user if not in apps' do
-          post '/dataset', params: {"loggedUser": {"role": "user", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-432"},
-                                    "dataset": {"provider": "cartodb", "application": ["wri"],
+          post '/dataset', params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-432"},
+                                    "dataset": {"provider": "cartodb", "application": ["wri", "gfw"],
                                                  "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
                                                  "name": "Carto test api"}}
 

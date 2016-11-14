@@ -120,7 +120,7 @@ module V1
     end
 
     def clone
-      authorized = User.authorize_user!(@user, @dataset.application)
+      authorized = User.authorize_user!(@user, dataset_params['dataset_attributes']['application'])
       if authorized.present?
         @dataset = clone_dataset.dataset
         if @dataset&.save
@@ -169,7 +169,8 @@ module V1
               data_path: @dataset.attributes['data_path'],
               attributes_path: @dataset.attributes['attributes_path'],
               row_count: @dataset.attributes['row_count'],
-              user_id: dataset_params['dataset_attributes']['user_id']
+              user_id: dataset_params['dataset_attributes']['user_id'],
+              application: dataset_params['dataset_attributes']['application']
             }
           )
         end
