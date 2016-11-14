@@ -75,7 +75,7 @@ module V1
 
           expect(status).to eq(200)
           expect(json.length).to eq(1)
-          expect(dataset_json['widget']).to eq([{"attributes"=>{"dataset"=>"baca8364-3aa8-5d74-8100-44ef25885e9a", "application"=>["prep"], "widgetConfig"=>{"organization"=>"University of Washington/Joe Casola"}, "id"=>1}}])
+          expect(dataset_json['widget']).to eq([{"attributes"=>{"dataset"=>"baca8364-3aa8-5d74-8100-44ef25885e9a", "application"=>["prep"], "widgetConfig"=>{"organization"=>"University of Washington/Joe Casola"}, "id"=>"57bc054f4f30010f00bbec71"}}])
         end
       end
 
@@ -104,7 +104,7 @@ module V1
                                                              "legendConfig"=>{"marks"=>{"type"=>"rect", "from"=>{"data"=>"table"}}},
                                                              "applicationConfig"=>
                                                               {"config one"=>{"type"=>"lorem", "from"=>{"data"=>"table"}}},
-                                                             "id"=>1}}])
+                                                             "id"=>"57bc054f4f30010f00bbec71"}}])
         end
 
         it 'Show empty widget for specific dataset' do
@@ -147,7 +147,7 @@ module V1
                                                              "legendConfig"=>{"marks"=>{"type"=>"rect", "from"=>{"data"=>"table"}}},
                                                              "applicationConfig"=>
                                                               {"config one"=>{"type"=>"lorem", "from"=>{"data"=>"table"}}},
-                                                             "id"=>1}}])
+                                                             "id"=>"57bc054f4f30010f00bbec71"}}])
         end
       end
     end
