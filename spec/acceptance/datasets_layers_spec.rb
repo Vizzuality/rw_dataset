@@ -10,7 +10,7 @@ module V1
     let!(:dataset_id) { Dataset.find_by(name: 'Wms test set 1').id }
 
     let!(:layers_data) {{
-                           "data": [{"id": "57bc054f4f30010f00bbec71", "type": "layers", "attributes": { "dataset": "#{dataset_id}",
+                           "data": [{"id": "57bc054f4f30010f00bbec72", "type": "layers", "attributes": { "dataset": "#{dataset_id}",
                                                                                                          "application": "prep",
                                                                                                          "name": "test-dataset-layer",
                                                                                                          "default": true,
@@ -75,7 +75,7 @@ module V1
 
           expect(status).to eq(200)
           expect(json.length).to eq(1)
-          expect(dataset_json['layer']).to eq([{"attributes"=>{"dataset"=>"baca8364-3aa8-5d74-8100-44ef25885e9a", "application"=>"prep", "layerConfig"=>{"organization"=>"University of Washington/Joe Casola"}, "id"=>1}}])
+          expect(dataset_json['layer']).to eq([{"attributes"=>{"dataset"=>"baca8364-3aa8-5d74-8100-44ef25885e9a", "application"=>"prep", "layerConfig"=>{"organization"=>"University of Washington/Joe Casola"}, "id"=>"57bc054f4f30010f00bbec71"}}])
         end
       end
 
@@ -104,7 +104,7 @@ module V1
                                                             "legendConfig"=>{"marks"=>{"type"=>"rect", "from"=>{"data"=>"table"}}},
                                                             "applicationConfig"=>
                                                              {"config one"=>{"type"=>"lorem", "from"=>{"data"=>"table"}}},
-                                                            "id"=>1}}])
+                                                            "id"=>"57bc054f4f30010f00bbec72"}}])
         end
 
         it 'Show empty layer for specific dataset' do
@@ -147,7 +147,7 @@ module V1
                                                             "legendConfig"=>{"marks"=>{"type"=>"rect", "from"=>{"data"=>"table"}}},
                                                             "applicationConfig"=>
                                                              {"config one"=>{"type"=>"lorem", "from"=>{"data"=>"table"}}},
-                                                            "id"=>1}}])
+                                                            "id"=>"57bc054f4f30010f00bbec72"}}])
         end
       end
     end

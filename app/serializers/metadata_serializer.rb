@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 class MetadataSerializer < ApplicationSerializer
-  attributes :dataset, :application, :info
+  attributes :id, :dataset, :application, :info
 end

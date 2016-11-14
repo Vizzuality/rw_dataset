@@ -58,7 +58,7 @@ module MetadataService
       curl.follow_location = true
       curl.timeout_ms = 3000
       curl.on_complete do |response|
-        response.on_success { @data = Oj.load(curl.body_str.force_encoding(Encoding::UTF_8))['data'].map { |d| d['attributes'] } }
+        response.on_success { @data = Oj.load(curl.body_str.force_encoding(Encoding::UTF_8))['data'].map { |d| d['attributes'].merge({ id: d['id'] }) } }
         response.on_failure { @data = [] }
       end
     end

@@ -10,7 +10,7 @@ module V1
     let!(:dataset_id) { Dataset.find_by(name: 'Wms test set 1').id }
 
     let!(:metadata_data) {{
-                           "data": [{"id": "57bc054f4f30010f00bbec71", "type": "metadata", "attributes": { "dataset": "#{dataset_id}",
+                           "data": [{"id": "57bc054f4f30010f00bbec73", "type": "metadata", "attributes": { "dataset": "#{dataset_id}",
                                                                                                            "application": "prep",
                                                                                                            "info": { "organization": "University of Washington/Joe Casola" }
                                                                                                          }
@@ -50,7 +50,7 @@ module V1
 
           expect(status).to eq(200)
           expect(json.length).to eq(1)
-          expect(dataset_json['metadata']).to eq([{"attributes"=>{"dataset"=>"baca8364-3aa8-5d74-8100-44ef25885e9a", "application"=>"prep", "info"=>{"organization"=>"University of Washington/Joe Casola"}, "id"=>1}}])
+          expect(dataset_json['metadata']).to eq([{"attributes"=>{"dataset"=>"baca8364-3aa8-5d74-8100-44ef25885e9a", "application"=>"prep", "info"=>{"organization"=>"University of Washington/Joe Casola"}, "id"=>"57bc054f4f30010f00bbec71"}}])
         end
       end
 
@@ -65,7 +65,7 @@ module V1
           get "/dataset/#{dataset_id}?includes=metadata"
 
           expect(status).to eq(200)
-          expect(json_attr['metadata']).to eq([{"attributes"=>{"dataset"=>"baca8364-3aa8-5d74-8100-44ef25885e9a", "application"=>"prep", "info"=>{"organization"=>"University of Washington/Joe Casola"}, "id"=>1}}])
+          expect(json_attr['metadata']).to eq([{"attributes"=>{"dataset"=>"baca8364-3aa8-5d74-8100-44ef25885e9a", "application"=>"prep", "info"=>{"organization"=>"University of Washington/Joe Casola"}, "id"=>"57bc054f4f30010f00bbec73"}}])
         end
 
         it 'Show empty metadata for specific dataset' do
@@ -94,7 +94,7 @@ module V1
           get "/dataset/#{dataset_id}?includes=metadata&app=prep"
 
           expect(status).to eq(200)
-          expect(json_attr['metadata']).to eq([{"attributes"=>{"dataset"=>"baca8364-3aa8-5d74-8100-44ef25885e9a", "application"=>"prep", "info"=>{"organization"=>"University of Washington/Joe Casola"}, "id"=>1}}])
+          expect(json_attr['metadata']).to eq([{"attributes"=>{"dataset"=>"baca8364-3aa8-5d74-8100-44ef25885e9a", "application"=>"prep", "info"=>{"organization"=>"University of Washington/Joe Casola"}, "id"=>"57bc054f4f30010f00bbec73"}}])
         end
       end
     end
