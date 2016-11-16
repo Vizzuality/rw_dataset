@@ -34,11 +34,15 @@ class Dataset < ApplicationRecord
   attr_accessor :metadata, :layer, :widget
 
   belongs_to :dateable, polymorphic: true
+  belongs_to :rest_connector, -> { where("datasets.dateable_type = 'RestConnector'") }, foreign_key: :dateable_id
+  belongs_to :json_connector, -> { where("datasets.dateable_type = 'JsonConnector'") }, foreign_key: :dateable_id
+  belongs_to :doc_connector,  -> { where("datasets.dateable_type = 'DocConnector'")  }, foreign_key: :dateable_id
+  belongs_to :wms_connector,  -> { where("datasets.dateable_type = 'WmsConnector'")  }, foreign_key: :dateable_id
 
-  before_save  :merge_tags,        if: "tags.present? && tags_changed?"
-  before_save  :merge_topics,      if: "topics.present? && topics_changed?"
-  before_save  :merge_apps,        if: "application.present? && application_changed?"
-  after_save   :call_tags_service, if: "tags_changed? || topics_changed?"
+  before_save  :merge_tags,        if: 'tags.present? && tags_changed?'
+  before_save  :merge_topics,      if: 'topics.present? && topics_changed?'
+  before_save  :merge_apps,        if: 'application.present? && application_changed?'
+  after_save   :call_tags_service, if: 'tags_changed? || topics_changed?'
   after_save   :clear_cache
   after_create :update_data_path,  if: "data_path.blank? && dateable_type.include?('JsonConnector')"
 
@@ -56,6 +60,28 @@ class Dataset < ApplicationRecord
   scope :filter_wms,  -> { where(dateable_type: 'WmsConnector').includes(:dateable)  }
 
   scope :filter_apps, ->(app) { where('application ?| array[:keys]', keys: ["#{app}"]) }
+
+  def self.filter_providers(provider)
+    provider_value = case provider
+                     when 'cartodb'        then 0
+                     when 'featureservice' then 1
+                     when 'rwjson'         then 0
+                     when 'csv'            then 0
+                     when 'wms'            then 0
+                     else
+                       nil
+                     end
+
+    case provider
+    when 'cartodb', 'featureservice'
+      joins(:rest_connector).where('rest_connectors.connector_provider = ?', provider_value)
+    when 'rwjson' then joins(:json_connector).where('json_connectors.connector_provider = ?', provider_value)
+    when 'csv'    then joins(:doc_connector).where('doc_connectors.connector_provider = ?', provider_value)
+    when 'wms'    then joins(:wms_connector).where('wms_connectors.connector_provider = ?', provider_value)
+    else
+      []
+    end
+  end
 
   def format_txt
     FORMAT[format - 0]

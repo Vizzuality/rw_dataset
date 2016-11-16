@@ -26,7 +26,7 @@ module V1
         dataset = json[0]['attributes']
         expect(status).to eq(200)
         expect(json.length).to              eq(2)
-        expect(dataset['provider']).to      eq('cartodb')
+        expect(dataset['provider']).to      eq('featureservice')
         expect(dataset['connectorType']).to eq('rest')
       end
 
@@ -38,6 +38,70 @@ module V1
         expect(json.length).to              eq(2)
         expect(dataset['provider']).to      eq('rwjson')
         expect(dataset['connectorType']).to eq('json')
+      end
+
+      it 'Allows to access datasets list filtering by provider rwjson' do
+        get '/dataset?provider=rwjson'
+
+        dataset = json[0]['attributes']
+        expect(status).to eq(200)
+        expect(json.length).to              eq(2)
+        expect(dataset['provider']).to      eq('rwjson')
+        expect(dataset['connectorType']).to eq('json')
+      end
+
+      it 'Allows to access datasets list filtering by provider cartodb' do
+        get '/dataset?provider=cartodb'
+
+        dataset = json[0]['attributes']
+        expect(status).to eq(200)
+        expect(json.length).to              eq(1)
+        expect(dataset['provider']).to      eq('cartodb')
+        expect(dataset['connectorType']).to eq('rest')
+      end
+
+      it 'Allows to access datasets list filtering by provider featureservice' do
+        get '/dataset?provider=featureservice'
+
+        dataset = json[0]['attributes']
+        expect(status).to eq(200)
+        expect(json.length).to              eq(1)
+        expect(dataset['provider']).to      eq('featureservice')
+        expect(dataset['connectorType']).to eq('rest')
+      end
+
+      it 'Allows to access datasets list filtering by provider csv' do
+        get '/dataset?provider=csv'
+
+        dataset = json[0]['attributes']
+        expect(status).to eq(200)
+        expect(json.length).to              eq(1)
+        expect(dataset['provider']).to      eq('csv')
+        expect(dataset['connectorType']).to eq('document')
+      end
+
+      it 'Allows to access datasets list filtering by provider wms' do
+        get '/dataset?provider=wms'
+
+        dataset = json[0]['attributes']
+        expect(status).to eq(200)
+        expect(json.length).to              eq(1)
+        expect(dataset['provider']).to      eq('wms')
+        expect(dataset['connectorType']).to eq('wms')
+      end
+
+      it 'Allows to access datasets list filtering by non existing provider' do
+        get '/dataset?provider=nonexisting'
+
+        expect(status).to eq(200)
+        expect(json.length).to eq(0)
+      end
+
+      it 'Allows to access datasets list filtering by all providers' do
+        get '/dataset?provider=all'
+
+        expect(status).to eq(200)
+        expect(json.length).to eq(6)
       end
 
       it 'Allows to access datasets list filtering by type wms' do

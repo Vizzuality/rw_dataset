@@ -24,3 +24,4 @@ rest_connector_2:
   table_name:  'carts_test_endoint'
   created_at: '2016-03-02 20:00:00.050118'
   updated_at: '2016-03-02 20:00:00.050118'
+  connector_provider: "featureservice"
