@@ -218,7 +218,7 @@ module V1
 
       def set_caller
         if dataset_params[:logged_user].present? && dataset_params[:logged_user][:id] == 'microservice'
-          @dataset_params_for_update = dataset_params_for_update.except(:user_id)
+          @dataset_params_for_update = dataset_params_for_update.each { |k,v| v.delete('user_id') if k == 'dataset_attributes' }
           @authorized = true
         else
           @dataset_params_for_update = dataset_params_for_update
@@ -248,11 +248,11 @@ module V1
 
       def dataset_params_for_update
         if @json_connector
-          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :connector_url, :user_id)
+          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :connector_url)
         elsif @doc_connector
-          dataset_params_sanitizer.except(:point, :polygon, :logged_user, :user_id)
+          dataset_params_sanitizer.except(:point, :polygon, :logged_user)
         else
-          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :user_id)
+          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user)
         end
       end
 

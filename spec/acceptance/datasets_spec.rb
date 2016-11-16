@@ -381,7 +381,8 @@ module V1
                                                    "dataset": {"status": 1}}
 
           expect(status).to eq(200)
-          expect(Dataset.find(dataset_id).status).to eq(1)
+          expect(Dataset.find(dataset_id).status).to  eq(1)
+          expect(Dataset.find(dataset_id).user_id).to eq('3242-32442-432')
         end
 
         it 'Allows to create json dataset with tags' do
