@@ -3,23 +3,28 @@ class User < ActiveHash::Base
   fields :user_id, :role, :apps
 
   class << self
-    def authorize_user!(user, dataset_apps, dataset_user_id=nil)
-      user_role    = user.role
-      user_apps    = user.apps if user.apps.present?
-      dataset_apps = dataset_apps.uniq if dataset_apps.present?
-      first_case   = user_apps.present? && dataset_apps.present? &&
-                                        (user_apps & dataset_apps).any? &&
-                                        user_apps.size > dataset_apps.size &&
-                                        user_apps | dataset_apps == user_apps
-      second_case  = user_apps.present? && dataset_apps.present? &&
-                                        user_apps.sort == dataset_apps.sort
-      any_apps     = if first_case
-                       true
-                     elsif second_case
-                       true
-                     else
-                       false
-                     end
+    def authorize_user!(user, dataset_apps, dataset_user_id=nil, match_apps=false)
+      user_role     = user.role
+      user_apps     = user.apps.sort         if user.apps.present?
+      dataset_apps  = dataset_apps.uniq.sort if dataset_apps.present?
+      if user_apps.present? && dataset_apps.present?
+        create_case_a = user_apps.present? && dataset_apps.present? && match_apps.blank? &&
+                                          (user_apps & dataset_apps).any? &&
+                                          user_apps.size > dataset_apps.size &&
+                                          user_apps | dataset_apps == user_apps
+
+        create_case_b = user_apps.present? && dataset_apps.present? && match_apps.blank? &&
+                                          user_apps == dataset_apps
+
+        update_case   = user_apps.present? && dataset_apps.present? && match_apps.present? &&
+                                          (user_apps & dataset_apps).any?
+      end
+
+      any_apps      = if user_apps.present? && dataset_apps.present? && (create_case_a || create_case_b || update_case)
+                        true
+                      else
+                        false
+                      end
 
       user_dataset = user.user_id == dataset_user_id if dataset_user_id.present?
 
