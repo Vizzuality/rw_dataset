@@ -100,7 +100,7 @@ class Connector
     end
 
     def new(options)
-      connector_type = options['connector_type']          if options['connector_type'].present?
+      connector_type = options['connector_type'] if options['connector_type'].present?
       options        = if options['connector_type'].present? || options['logged_user'].present?
                          options.except(:connector_type, :logged_user)
                        else

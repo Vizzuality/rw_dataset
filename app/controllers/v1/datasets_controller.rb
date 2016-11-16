@@ -120,7 +120,7 @@ module V1
     end
 
     def clone
-      authorized = User.authorize_user!(@user, dataset_params['dataset_attributes']['application'])
+      authorized = User.authorize_user!(@user, @dataset_apps)
       if authorized.present?
         @dataset = clone_dataset.dataset
         if @dataset&.save
@@ -170,7 +170,7 @@ module V1
               attributes_path: @dataset.attributes['attributes_path'],
               row_count: @dataset.attributes['row_count'],
               user_id: dataset_params['dataset_attributes']['user_id'],
-              application: dataset_params['dataset_attributes']['application']
+              application: @dataset_apps
             }
           )
         end
@@ -248,11 +248,11 @@ module V1
 
       def dataset_params_for_update
         if @json_connector
-          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :connector_url)
+          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :connector_url, :connector_type, :connector_provider)
         elsif @doc_connector
-          dataset_params_sanitizer.except(:point, :polygon, :logged_user)
+          dataset_params_sanitizer.except(:point, :polygon, :logged_user, :connector_type, :connector_provider)
         else
-          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user)
+          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :connector_type, :connector_provider)
         end
       end
 
