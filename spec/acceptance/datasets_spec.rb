@@ -191,8 +191,98 @@ module V1
           expect(json_main['errors'][0]['title']).to eq('Not authorized!')
         end
 
+        it 'Allows to update rest dataset by admin user if not in apps' do
+          patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw", "wrw","prep"] }, "id": "3242-32442-436"},
+                                                   "dataset": {"provider": "cartodb", "application": ["prep", "gfw"],
+                                                               "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
+                                                               "name": "Carto test api"}}
+
+          expect(status).to eq(200)
+          expect(json_attr['name']).to         eq('Carto test api')
+          expect(json_attr['provider']).not_to be_nil
+          expect(json_attr['application']).to  eq(["prep", "gfw"])
+        end
+
+        it 'Do not allow to update rest dataset by admin user if not in apps' do
+          patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-436"},
+                                                   "dataset": {"provider": "cartodb", "application": ["prep", "gfw"],
+                                                               "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
+                                                               "name": "Carto test api"}}
+
+          expect(status).to eq(401)
+          expect(json_main['errors'][0]['title']).to eq('Not authorized!')
+        end
+
+        it 'Do not allows to update rest dataset by admin user if not in apps' do
+          patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-436"},
+                                                   "dataset": {"provider": "cartodb", "application": ["testapp"],
+                                                               "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
+                                                               "name": "Carto test api"}}
+
+          expect(status).to eq(401)
+          expect(json_main['errors'][0]['title']).to eq('Not authorized!')
+        end
+
+        it 'Allows to update rest dataset by superadmin user' do
+          patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Superadmin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-436"},
+                                                   "dataset": {"provider": "cartodb", "application": ["testapp"],
+                                                               "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
+                                                               "name": "Carto test api"}}
+
+          expect(status).to eq(200)
+          expect(json_attr['name']).to         eq('Carto test api')
+          expect(json_attr['provider']).not_to be_nil
+          expect(json_attr['application']).to  eq(["testapp"])
+        end
+
+        it 'Allows to update rest dataset by admin user if in apps changing apps' do
+          patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw", "wrw", "prep","testapp"] }, "id": "3242-32442-436"},
+                                                   "dataset": {"provider": "cartodb", "application": ["gfw", "wrw" ,"testapp"],
+                                                               "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
+                                                               "name": "Carto test api additional apps"}}
+
+          expect(status).to eq(200)
+          expect(json_attr['name']).to         eq('Carto test api additional apps')
+          expect(json_attr['provider']).not_to be_nil
+          expect(json_attr['application']).to  eq(["gfw", "wrw", "testapp"])
+        end
+
+        it 'Do not allows to update rest dataset by admin user if not in apps' do
+          patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-436"},
+                                                   "dataset": {"provider": "cartodb", "application": ["wri", "gfw"],
+                                                               "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
+                                                               "name": "Carto test api"}}
+
+          expect(status).to eq(401)
+          expect(json_main['errors'][0]['title']).to eq('Not authorized!')
+        end
+
         it 'Allows to update dataset' do
           put "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
+                                                  "dataset": {"name": "Carto test api update",
+                                                  "data": [{"cartodbId": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
+                                                           {"cartodbId": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
+
+          expect(status).to eq(200)
+          expect(json_attr['name']).to         eq('Carto test api update')
+          expect(json_attr['provider']).not_to be_nil
+          expect(json_attr['tags']).to         eq(["tag1", "tag3", "tag2"])
+        end
+
+        it 'Allows to update dataset' do
+          put "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw","wrw","test"] }, "id": "3242-32442-432"},
+                                                  "dataset": {"name": "Carto test api update",
+                                                  "data": [{"cartodbId": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
+                                                           {"cartodbId": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
+
+          expect(status).to eq(200)
+          expect(json_attr['name']).to         eq('Carto test api update')
+          expect(json_attr['provider']).not_to be_nil
+          expect(json_attr['tags']).to         eq(["tag1", "tag3", "tag2"])
+        end
+
+        it 'Allows to update dataset' do
+          put "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw"] }, "id": "3242-32442-432"},
                                                   "dataset": {"name": "Carto test api update",
                                                   "data": [{"cartodbId": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
                                                            {"cartodbId": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
