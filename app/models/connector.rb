@@ -6,6 +6,7 @@ class Connector
       status         = options['status'].downcase         if options['status'].present?
       app            = options['app'].downcase            if options['app'].present?
       including      = options['includes']                if options['includes'].present?
+      provider       = options['provider']                if options['provider'].present?
 
       cache_options   = ''
       cache_options  += "_#{connector_type}"     if connector_type.present?
@@ -17,6 +18,7 @@ class Connector
         datasets
       else
         datasets = Dataset.includes(:dateable).recent
+
         datasets = case connector_type
                    when 'rest'                 then datasets.filter_rest.recent
                    when 'json'                 then datasets.filter_json.recent
@@ -26,13 +28,14 @@ class Connector
                      datasets
                    end
 
-        datasets = app_filter(datasets, app) if app.present?
-
         datasets = if status.present?
                      status_filter(datasets, status)
                    else
                      datasets.available
                    end
+
+        datasets = app_filter(datasets, app)           if app.present?
+        datasets = provider_filter(datasets, provider) if provider.present?
 
         datasets = includes_filter(datasets, including, app) if including.present? && datasets.any?
 
@@ -92,6 +95,17 @@ class Connector
       datasets = scope
       datasets = if app.present? && !app.include?('all')
                    datasets.filter_apps(app)
+                 else
+                   datasets.available
+                 end
+
+      datasets
+    end
+
+    def provider_filter(scope, provider)
+      datasets = scope
+      datasets = if provider.present? && !provider.include?('all')
+                   datasets.filter_providers(provider)
                  else
                    datasets.available
                  end
