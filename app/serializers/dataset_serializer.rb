@@ -25,7 +25,10 @@
 
 class DatasetSerializer < ApplicationSerializer
   attributes :id, :application, :name, :subtitle, :data_path, :attributes_path, :connector_type, :provider, :user_id,
-             :connector_url, :table_name, :topics, :tags, :cloned_host, :metadata, :layer, :widget
+             :connector_url, :table_name, :topics, :tags, :cloned_host
+  attribute :metadata, if: :metadata_not_null?
+  attribute :layer,    if: :layer_not_null?
+  attribute :widget,   if: :widget_not_null?
 
   def provider
     object.dateable.try(:provider_txt)
@@ -77,5 +80,23 @@ class DatasetSerializer < ApplicationSerializer
     data['host_type']     = object.dateable.try(:parent_connector_type)
     data['host_path']     = object.dateable.try(:parent_connector_data_path)
     data
+  end
+
+  def serializable_hash(adapter_options = nil, options = {}, adapter_instance = self.class.serialization_adapter_instance)
+    hash = super
+    hash.each { |key, value| hash.delete(key) if value.nil? }
+    hash
+  end
+
+  def metadata_not_null?
+    true if !object.metadata.nil?
+  end
+
+  def layer_not_null?
+    true if !object.layer.nil?
+  end
+
+  def widget_not_null?
+    true if !object.widget.nil?
   end
 end
