@@ -155,7 +155,12 @@ module V1
 
       def clone_dataset
         dataset_params['dataset_url'] = dataset_url_fixer
-        dataset_params['dataset_attributes']['user_id'] ||= params['logged_user']['id']
+        user_id = if dataset_params['dataset_attributes']['user_id'].present?
+                  elsif params['logged_user'].present?
+                    params['logged_user']['id'] if params['logged_user']['id'].present?
+                  else
+                    nil
+                  end
         if dataset_params['dataset_url'].present?
           JsonConnector.create(
             parent_connector_url: dataset_params['dataset_url'],
@@ -169,7 +174,7 @@ module V1
               data_path: @dataset.attributes['data_path'],
               attributes_path: @dataset.attributes['attributes_path'],
               row_count: @dataset.attributes['row_count'],
-              user_id: dataset_params['dataset_attributes']['user_id'],
+              user_id: user_id,
               application: @dataset_apps
             }
           )
