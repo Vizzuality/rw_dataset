@@ -156,6 +156,7 @@ module V1
       def clone_dataset
         dataset_params['dataset_url'] = dataset_url_fixer
         user_id = if dataset_params['dataset_attributes']['user_id'].present?
+                    dataset_params['dataset_attributes']['user_id']
                   elsif params['logged_user'].present?
                     params['logged_user']['id'] if params['logged_user']['id'].present?
                   else
