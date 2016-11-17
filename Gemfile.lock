@@ -236,6 +236,7 @@ GEM
     websocket-driver (0.6.4)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
+    will_paginate (3.1.5)
 
 PLATFORMS
   ruby
@@ -275,6 +276,7 @@ DEPENDENCIES
   typhoeus
   tzinfo-data
   webmock
+  will_paginate
 
 RUBY VERSION
    ruby 2.3.1p112
