@@ -25,3 +25,52 @@ rest_connector_2:
   created_at: '2016-03-02 20:00:00.050118'
   updated_at: '2016-03-02 20:00:00.050118'
   connector_provider: "featureservice"
+
+rest_connector_3:
+  id: 'd547146d-de0c-47ff-a406-5125667fd533'
+  connector_url: 'https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint'
+  table_name:  'carts_test_endoint'
+  created_at: '2016-03-02 20:00:00.050118'
+  updated_at: '2016-03-02 20:00:00.050118'
+
+rest_connector_4:
+  id: 'd547146d-de0c-47ff-a406-5125667fd321'
+  connector_url: 'https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint'
+  table_name:  'carts_test_endoint'
+  created_at: '2016-03-02 20:00:00.050118'
+  updated_at: '2016-03-02 20:00:00.050118'
+
+rest_connector_5:
+  id: 'd547146d-de0c-47ff-a406-5125667fd322'
+  connector_url: 'https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint'
+  table_name:  'carts_test_endoint'
+  created_at: '2016-03-02 20:00:00.050118'
+  updated_at: '2016-03-02 20:00:00.050118'
+
+rest_connector_6:
+  id: 'd547146d-de0c-47ff-a406-5125667fd323'
+  connector_url: 'https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint'
+  table_name:  'carts_test_endoint'
+  created_at: '2016-03-02 20:00:00.050118'
+  updated_at: '2016-03-02 20:00:00.050118'
+
+rest_connector_7:
+  id: 'd547146d-de0c-47ff-a406-5125667fd324'
+  connector_url: 'https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint'
+  table_name:  'carts_test_endoint'
+  created_at: '2016-03-02 20:00:00.050118'
+  updated_at: '2016-03-02 20:00:00.050118'
+
+rest_connector_8:
+  id: 'd547146d-de0c-47ff-a406-5125667fd325'
+  connector_url: 'https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint'
+  table_name:  'carts_test_endoint'
+  created_at: '2016-03-02 20:00:00.050118'
+  updated_at: '2016-03-02 20:00:00.050118'
+
+rest_connector_9:
+  id: 'd547146d-de0c-47ff-a406-5125667fd326'
+  connector_url: 'https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint'
+  table_name:  'carts_test_endoint'
+  created_at: '2016-03-02 20:00:00.050118'
+  updated_at: '2016-03-02 20:00:00.050118'

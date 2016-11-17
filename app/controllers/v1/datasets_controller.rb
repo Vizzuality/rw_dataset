@@ -9,8 +9,8 @@ module V1
     include ParamsHandler
 
     def index
-      @datasets = Connector.fetch_all(options_filter)
-      render json: @datasets, each_serializer: DatasetSerializer, include: params[:includes], meta: { datasets_count: @datasets.size }
+      @datasets = DatasetsIndex.new(self)
+      render json: @datasets.datasets, each_serializer: DatasetSerializer, include: params[:includes]
     end
 
     def show
