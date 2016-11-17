@@ -112,7 +112,7 @@ module V1
                                                                                               updated_at: @dataset.try(:updated_at),
                                                                                               created_at: @dataset.try(:created_at) }
         else
-          render json: { success: false, message: 'Error creating dataset' }, status: 422
+          render json: { success: false, message: @dateable.errors.full_messages }, status: 422
         end
       else
         render json: { errors: [{ status: 401, title: 'Not authorized!' }] }, status: 401
