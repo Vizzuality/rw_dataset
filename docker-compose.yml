@@ -9,9 +9,9 @@ prod:
 
   dns: ${DNS_SERVER}
 
-  log_driver: 'gelf'
-  log_opt:
-    gelf-address: ${GELF_ADDRESS}
+  # log_driver: 'gelf'
+  # log_opt:
+  #   gelf-address: ${GELF_ADDRESS}
 
   links:
     - redis
