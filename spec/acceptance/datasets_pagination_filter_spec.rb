@@ -184,6 +184,13 @@ module V1
         expect(status).to eq(200)
         expect(json.size).to eq(10)
       end
+
+      it 'Show blank list of datasets for all apps first page with per pege param' do
+        get '/dataset?page[number]=1&page[size]=100&status=all'
+
+        expect(status).to eq(200)
+        expect(json.size).to eq(13)
+      end
     end
   end
 end

@@ -15,7 +15,7 @@ class DatasetsIndex
 
   def datasets
     @datasets ||= Dataset.includes(:dateable).order(sort_params)
-                         .paginate(page: current_page, per_page: PER_PAGE)
+                         .paginate(page: current_page, per_page: per_page)
                          .fetch_all(options_filter)
   end
 
@@ -32,6 +32,10 @@ class DatasetsIndex
 
     def current_page
       (params.to_unsafe_h.dig('page', 'number') || 1).to_i
+    end
+
+    def per_page
+      (params.to_unsafe_h.dig('page', 'size') || PER_PAGE).to_i
     end
 
     def first_page
