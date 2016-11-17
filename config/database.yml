@@ -53,13 +53,9 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 
-# staging:
-#   <<: *default
-#   database: rw_dataset
-#   password: <%= ENV['POSTGRES_PASS'] %>
 staging:
   <<: *default
-  database: rw_dataset_test_staging
+  database: rw_dataset
   password: <%= ENV['POSTGRES_PASS'] %>
 
 production:
