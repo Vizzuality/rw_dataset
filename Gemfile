@@ -13,6 +13,7 @@ gem 'active_model_serializers', '~> 0.10.2'
 gem 'typhoeus', require: false
 gem 'curb',     require: false
 gem 'active_hash'
+gem 'will_paginate'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.5.1'
