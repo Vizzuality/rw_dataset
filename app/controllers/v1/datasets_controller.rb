@@ -210,7 +210,9 @@ module V1
         elsif params[:logged_user].present? && params[:logged_user][:id] != 'microservice'
           user_id       = params[:logged_user][:id]
           @role         = params[:logged_user][:role].downcase
-          @apps         = if params[:logged_user][:extra_user_data].present? && params[:logged_user][:extra_user_data][:apps].present?
+          @apps         = if @role.include?('superadmin')
+                            ['AllApps']
+                          elsif params[:logged_user][:extra_user_data].present? && params[:logged_user][:extra_user_data][:apps].present?
                             params[:logged_user][:extra_user_data][:apps].map { |v| v.downcase }.uniq
                           end
           @dataset_apps = if !['destroy', 'delete_data'].include?(action_name) && dataset_params[:dataset_attributes].present? && dataset_params[:dataset_attributes][:application].present?
@@ -218,7 +220,7 @@ module V1
                           end
 
           User.data = [{ user_id: user_id, role: @role, apps: @apps }]
-          @user= User.last
+          @user = User.last
         else
           render json: { errors: [{ status: 401, title: 'Not authorized!' }] }, status: 401 if params[:logged_user][:id] != 'microservice'
         end

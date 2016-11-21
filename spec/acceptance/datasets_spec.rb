@@ -104,7 +104,7 @@ module V1
           expect(json_main['errors'][0]['title']).to eq('Not authorized!')
         end
 
-        it 'Allows to update rest dataset by admin user if not in apps' do
+        it 'Allows to update rest dataset by admin user if in apps' do
           patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw", "wrw","prep"] }, "id": "3242-32442-436"},
                                                    "dataset": {"provider": "cartodb", "application": ["prep", "gfw"],
                                                                "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
@@ -137,7 +137,7 @@ module V1
         end
 
         it 'Allows to update rest dataset by superadmin user' do
-          patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Superadmin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-436"},
+          patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Superadmin", "extraUserData": { }, "id": "3242-32442-436"},
                                                    "dataset": {"provider": "cartodb", "application": ["testapp"],
                                                                "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
                                                                "name": "Carto test api"}}
