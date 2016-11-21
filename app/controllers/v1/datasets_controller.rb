@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 module V1
   class DatasetsController < ApplicationController
+    include ParamsHandler
+
     before_action :set_dataset,      except: [:index, :create, :info]
     before_action :populate_dataset, only: :show, if: :params_includes_present?
     before_action :set_user,         except: [:index, :show]
     before_action :set_caller,       only: :update
-
-    include ParamsHandler
 
     def index
       @datasets = DatasetsIndex.new(self)
@@ -36,7 +36,7 @@ module V1
     end
 
     def update_data
-      authorized = User.authorize_user!(@user, intersect_apps(@dataset.application, @apps, @dataset_apps), @dataset.user_id, match_apps: true)
+      authorized = User.authorize_user!(@user, intersect_apps(@dataset.application, @apps), @dataset.user_id, match_apps: true)
       if authorized.present?
         begin
           @dateable.connect_to_service(dataset_data_params_for_update)
@@ -50,7 +50,7 @@ module V1
     end
 
     def overwrite_data
-      authorized = User.authorize_user!(@user, intersect_apps(@dataset.application, @apps, @dataset_apps), @dataset.user_id, match_apps: true)
+      authorized = User.authorize_user!(@user, intersect_apps(@dataset.application, @apps), @dataset.user_id, match_apps: true)
       if authorized.present?
         begin
           if @dataset.data_overwrite? && @overwriteable
@@ -88,7 +88,7 @@ module V1
     end
 
     def delete_data
-      authorized = User.authorize_user!(@user, intersect_apps(@dataset.application, @apps, @dataset_apps), @dataset.user_id, match_apps: true)
+      authorized = User.authorize_user!(@user, intersect_apps(@dataset.application, @apps), @dataset.user_id, match_apps: true)
       if authorized.present?
         begin
           @dateable.connect_to_service(dataset_data_params_for_delete)
@@ -138,7 +138,7 @@ module V1
     end
 
     def destroy
-      authorized = User.authorize_user!(@user, intersect_apps(@dataset.application, @apps, @dataset_apps), @dataset.user_id, match_apps: true)
+      authorized = User.authorize_user!(@user, intersect_apps(@dataset.application, @apps), @dataset.user_id, match_apps: true)
       if authorized.present?
         if @dataset.deleted?
           render json: { success: true, message: 'Dataset deleted!' }, status: 200
@@ -207,18 +207,20 @@ module V1
         if ENV.key?('OLD_GATEWAY') && ENV.fetch('OLD_GATEWAY').include?('true')
           User.data = [{ user_id: '123-123-123', role: 'superadmin', apps: nil }]
           @user= User.last
-        elsif dataset_params[:logged_user].present? && dataset_params[:logged_user][:id] != 'microservice'
-          user_id       = dataset_params[:logged_user][:id]
-          @role         = dataset_params[:logged_user][:role].downcase
-          @apps         = if dataset_params[:logged_user][:extra_user_data].present? && dataset_params[:logged_user][:extra_user_data][:apps].present?
-                            dataset_params[:logged_user][:extra_user_data][:apps].map { |v| v.downcase }.uniq
+        elsif params[:logged_user].present? && params[:logged_user][:id] != 'microservice'
+          user_id       = params[:logged_user][:id]
+          @role         = params[:logged_user][:role].downcase
+          @apps         = if params[:logged_user][:extra_user_data].present? && params[:logged_user][:extra_user_data][:apps].present?
+                            params[:logged_user][:extra_user_data][:apps].map { |v| v.downcase }.uniq
                           end
-          @dataset_apps = dataset_params[:dataset_attributes][:application]
+          @dataset_apps = if !['destroy', 'delete_data'].include?(action_name) && dataset_params[:dataset_attributes].present? && dataset_params[:dataset_attributes][:application].present?
+                            dataset_params[:dataset_attributes][:application]
+                          end
 
           User.data = [{ user_id: user_id, role: @role, apps: @apps }]
           @user= User.last
         else
-          render json: { errors: [{ status: 401, title: 'Not authorized!' }] }, status: 401 if dataset_params[:logged_user][:id] != 'microservice'
+          render json: { errors: [{ status: 401, title: 'Not authorized!' }] }, status: 401 if params[:logged_user][:id] != 'microservice'
         end
       end
 

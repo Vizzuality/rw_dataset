@@ -242,7 +242,7 @@ module V1
         end
 
         it 'Allows to delete dataset' do
-          delete "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"}, "dataset": {"id": "#{dataset_id}"}}
+          delete "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"}}
 
           expect(status).to eq(200)
           expect(json_main['message']).to eq('Dataset would be deleted!')
@@ -332,7 +332,7 @@ module V1
         end
 
         it 'Allows to delete dataset' do
-          delete "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"}, "dataset": {"id": "#{dataset_id}"}}
+          delete "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"}}
 
           expect(status).to eq(200)
           expect(json_main['message']).to eq('Dataset would be deleted!')
@@ -369,7 +369,7 @@ module V1
         end
 
         it 'Allows to delete dataset data' do
-          delete "/dataset/#{dataset_id}/data/e3b4acca-d34d-46b9-833f-08c3a14fe2f5", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"}, "dataset": {"id": "#{dataset_id}"}}
+          delete "/dataset/#{dataset_id}/data/e3b4acca-d34d-46b9-833f-08c3a14fe2f5", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"}}
 
           expect(status).to eq(200)
           expect(json_main['message']).to eq('Dataset data deleted')
@@ -426,7 +426,7 @@ module V1
         end
 
         it 'Allows to delete wms dataset for superadmin' do
-          delete "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Superadmin"}, "dataset": {"id": "#{dataset_id}"}}
+          delete "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Superadmin"}}
 
           expect(status).to eq(200)
           expect(json_main['message']).to eq('Dataset would be deleted!')
