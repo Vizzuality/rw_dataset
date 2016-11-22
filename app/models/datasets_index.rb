@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class DatasetsIndex
-  DEFAULT_SORTING = { created_at: :desc }
+  DEFAULT_SORTING = { updated_at: :desc }
   SORTABLE_FIELDS = [:name, :subtitle, :updated_at, :created_at]
   PER_PAGE = 10
 

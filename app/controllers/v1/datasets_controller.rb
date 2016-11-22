@@ -42,7 +42,7 @@ module V1
           @dateable.connect_to_service(dataset_data_params_for_update)
           render json: { success: true, message: 'Dataset data update in progress' }, status: 200
         rescue
-          render json: { success: false, message: 'Error updating dataset data' }, status: 422
+          render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
         end
       else
         render json: { errors: [{ status: 401, title: 'Not authorized!' }] }, status: 401
@@ -80,7 +80,7 @@ module V1
           @dataset.update_layer_info(params.to_unsafe_hash)
           render json: { success: true, message: 'Dataset layer info update in progress' }, status: 200
         rescue
-          render json: { success: false, message: 'Error updating dataset data' }, status: 422
+          render json: { errors: [{ status: 422, title: 'Error updating dataset layer info' }] }, status: 422
         end
       else
         render json: { errors: [{ status: 401, title: 'Not authorized!' }] }, status: 401
@@ -94,7 +94,7 @@ module V1
           @dateable.connect_to_service(dataset_data_params_for_delete)
           render json: { success: true, message: 'Dataset data deleted' }, status: 200
         rescue
-          render json: { success: false, message: 'Error deleting dataset data' }, status: 422
+          render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
         end
       else
         render json: { errors: [{ status: 401, title: 'Not authorized!' }] }, status: 401
@@ -130,7 +130,7 @@ module V1
                                                                                      updated_at: @dataset.try(:updated_at),
                                                                                      created_at: @dataset.try(:created_at) }
         else
-          render json: { success: false, message: 'Error cloning dataset' }, status: 422
+          render json: { errors: [{ status: 422, title: 'Error cloning dataset' }] }, status: 422
         end
       else
         render json: { errors: [{ status: 401, title: 'Not authorized!' }] }, status: 401

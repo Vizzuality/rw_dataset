@@ -84,13 +84,13 @@ class Dataset < ApplicationRecord
       if datasets = Rails.cache.read(cache_key(cache_options))
         datasets
       else
-        datasets = Dataset.includes(:dateable).recent
+        datasets = Dataset.includes(:dateable).all
 
         datasets = case connector_type
-                   when 'rest'                 then datasets.filter_rest.recent
-                   when 'json'                 then datasets.filter_json.recent
-                   when ('doc' || 'document')  then datasets.filter_doc.recent
-                   when 'wms'                  then datasets.filter_wms.recent
+                   when 'rest'                 then datasets.filter_rest
+                   when 'json'                 then datasets.filter_json
+                   when ('doc' || 'document')  then datasets.filter_doc
+                   when 'wms'                  then datasets.filter_wms
                    else
                      datasets
                    end
