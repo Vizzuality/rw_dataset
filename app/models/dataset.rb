@@ -291,7 +291,7 @@ class Dataset < ApplicationRecord
     end
 
     def clear_cache
-      Rails.cache.delete_matched('*datasets_*')
+      Rails.cache.delete_matched('*datasets_*') if Rails.cache.read('*datasets_*').present?
     end
 
     def call_tags_service
