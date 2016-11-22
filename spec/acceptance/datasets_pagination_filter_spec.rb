@@ -164,32 +164,48 @@ module V1
         expect(json.size).to eq(0)
       end
 
-      it 'Show blank list of datasets for all apps' do
+      it 'Show list of datasets for all apps' do
         get '/dataset?app=all'
 
         expect(status).to eq(200)
         expect(json.size).to eq(10)
       end
 
-      it 'Show blank list of datasets for all apps and second page (for total items 13)' do
+      it 'Show list of datasets for all apps and second page (for total items 13)' do
         get '/dataset?page[number]=2&page[size]=10&status=all'
 
         expect(status).to eq(200)
         expect(json.size).to eq(3)
       end
 
-      it 'Show blank list of datasets for all apps first page' do
+      it 'Show list of datasets for all apps first page' do
         get '/dataset?page[number]=1&page[size]=10&status=all'
 
         expect(status).to eq(200)
         expect(json.size).to eq(10)
       end
 
-      it 'Show blank list of datasets for all apps first page with per pege param' do
+      it 'Show list of datasets for all apps first page with per pege param' do
         get '/dataset?page[number]=1&page[size]=100&status=all'
 
         expect(status).to eq(200)
         expect(json.size).to eq(13)
+      end
+
+      it 'Show list of layers for all apps sort by name' do
+        get '/dataset?sort=name&status=all'
+
+        expect(status).to eq(200)
+        expect(json.size).to eq(10)
+        expect(json[0]['attributes']['name']).to eq('cartodb test set')
+      end
+
+      it 'Show list of datasets for all apps sort by name DESC' do
+        get '/dataset?sort=-name&status=all'
+
+        expect(status).to eq(200)
+        expect(json.size).to eq(10)
+        expect(json[0]['attributes']['name']).to eq('Wms test set 1')
       end
     end
   end
