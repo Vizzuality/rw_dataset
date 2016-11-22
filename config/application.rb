@@ -42,7 +42,7 @@ module RwDataset
     end
 
     config.host = ENV.fetch('REDIS_PORT_6379_TCP_ADDR') { 'localhost' }
-    config.port = ENV.fetch('REDIS_PORT_6379_TCP_PORT') { 6379 }
+    config.port = ENV.fetch('REDIS_PORT_6379_TCP_PORT') { 6379        }
 
     config.redis_url = "redis://#{config.host}:#{config.port}/0/cache"
   end
