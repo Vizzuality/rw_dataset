@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+require 'oj'
+
 class ApplicationController < ActionController::API
   before_action :deep_underscore_params!
 
@@ -11,6 +13,9 @@ class ApplicationController < ActionController::API
     end
 
     def deep_underscore_params!(val = request.parameters)
+      request.parameters[:logged_user] = request.parameters[:logged_user].present? &&
+                                         request.parameters[:logged_user].is_a?(String) ? Oj.load(request.parameters[:logged_user]) :
+                                                                                          request.parameters[:logged_user]
       case val
       when Array then val.map { |v| deep_underscore_params!(v) }
       when Hash
