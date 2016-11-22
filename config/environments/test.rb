@@ -23,9 +23,7 @@ Rails.application.configure do
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
 
-  if Rails.root.join('tmp/caching-dev.txt').exist?
-    config.cache_store = :redis_store, Rails.application.config.redis_url
-  end
+  config.cache_store = :redis_store, Rails.application.config.redis_url
 
   # Raise exceptions instead of rendering exception templates.
   config.action_dispatch.show_exceptions = false
