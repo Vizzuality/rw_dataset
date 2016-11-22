@@ -72,7 +72,7 @@ class Dataset < ApplicationRecord
       page_size      = options['page']['size']            if options['page'].present? && options['page']['size'].present?
       sort           = options['sort']                    if options['sort'].present?
 
-      cache_options  = 'list'
+      cache_options  = 'all'
       cache_options += "_#{connector_type}"          if connector_type.present?
       cache_options += "_status:#{status}"           if status.present?
       cache_options += "_app:#{app}"                 if app.present?
@@ -80,6 +80,7 @@ class Dataset < ApplicationRecord
       cache_options += "_page_number:#{page_number}" if page_number.present?
       cache_options += "_page_size:#{page_size}"     if page_size.present?
       cache_options += "_sort:#{sort}"               if sort.present?
+      cache_options += "_provider:#{provider}"       if provider.present?
 
       if datasets = Rails.cache.read(cache_key(cache_options))
         datasets
