@@ -197,7 +197,7 @@ module V1
 
         expect(status).to eq(200)
         expect(json.size).to eq(10)
-        expect(json[0]['attributes']['name']).to eq('Csv test set 1')
+        expect(json[0]['attributes']['name']).to eq('cartodb test set')
       end
 
       it 'Show list of datasets for all apps sort by name DESC' do
@@ -205,7 +205,7 @@ module V1
 
         expect(status).to eq(200)
         expect(json.size).to eq(10)
-        expect(json[0]['attributes']['name']).to eq('cartodb test set 9')
+        expect(json[0]['attributes']['name']).to eq('Wms test set 1')
       end
     end
   end
