@@ -106,7 +106,7 @@ class Dataset < ApplicationRecord
 
         datasets = includes_filter(datasets, including, app) if including.present? && datasets.any?
 
-        Rails.cache.write(cache_key(cache_options), datasets.to_a) if RwDataset::Application.config.cache_store.present?
+        Rails.cache.write(cache_key(cache_options), datasets.to_a)
       end
       datasets
     end
@@ -291,7 +291,7 @@ class Dataset < ApplicationRecord
     end
 
     def clear_cache
-      Rails.cache.delete_matched('*datasets_*') if RwDataset::Application.config.cache_store.present?
+      Rails.cache.delete_matched('*datasets_*')
     end
 
     def call_tags_service
