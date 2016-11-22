@@ -332,7 +332,7 @@ module V1
         end
 
         it 'Allows to delete dataset' do
-          delete "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"}}
+          delete "/dataset/#{dataset_id}", params: {"loggedUser": "{\"role\": \"manager\", \"extraUserData\": { \"apps\": [\"gfw\",\"wrw\"] }, \"id\": \"3242-32442-432\"}"}
 
           expect(status).to eq(200)
           expect(json_main['message']).to eq('Dataset would be deleted!')
