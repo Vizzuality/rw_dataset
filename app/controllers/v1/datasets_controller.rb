@@ -11,7 +11,7 @@ module V1
 
     def index
       datasets_index = DatasetsIndex.new(self)
-      render json: datasets_index.datasets, each_serializer: DatasetSerializer, include: params[:includes], links: datasets_index.links
+      render json: datasets_index.datasets, each_serializer: DatasetSerializer, include: params[:includes], links: datasets_index.links, type: 'dataset'
     end
 
     def show
