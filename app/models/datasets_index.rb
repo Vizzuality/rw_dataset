@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+require 'will_paginate/array'
+
 class DatasetsIndex
   DEFAULT_SORTING = { updated_at: :desc }
   SORTABLE_FIELDS = [:name, :subtitle, :updated_at, :created_at]
@@ -13,10 +15,22 @@ class DatasetsIndex
     @controller = controller
   end
 
-  def datasets_list
-    Dataset.includes(:dateable).order(sort_params)
-           .paginate(page: current_page, per_page: per_page)
-           .fetch_all(options_filter)
+  def datasets
+    @datasets ||= Dataset.includes(:dateable)
+                         .order(sort_params)
+                         .fetch_all(options_filter)
+                         .paginate(page: current_page, per_page: per_page)
+
+  end
+
+  def links
+    {
+      self:  datasets_url(rebuild_params),
+      first: datasets_url(rebuild_params.merge(first_page)),
+      prev:  datasets_url(rebuild_params.merge(prev_page)),
+      next:  datasets_url(rebuild_params.merge(next_page)),
+      last:  datasets_url(rebuild_params.merge(last_page))
+    }
   end
 
   private
