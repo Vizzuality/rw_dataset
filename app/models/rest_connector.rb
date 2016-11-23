@@ -53,7 +53,7 @@ class RestConnector < ApplicationRecord
       self.table_name = if self.connector_provider.include?('cartodb')
                           Connector.cartodb_table_name_param(self.connector_url)
                         else
-                          Connector.arcgis_table_name_param(connector_url)
+                          Connector.arcgis_table_name_param(self.connector_url)
                         end
     end
 end
