@@ -236,6 +236,17 @@ module V1
           expect(json_attr['tags']).to         eq(["tag1", "tag2"])
         end
 
+        it 'Validation of name' do
+          post '/dataset', params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
+                                    "dataset": {"provider": "featureservice", "application": ["gfw"],
+                                                 "connectorUrl": "https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga_County/FeatureServer/0?f=json",
+                                                 "name": "333", "format": 0, "data_path": "features", "attributesPath": "fields",
+                                                  "tags": ["tag1", "tag1", "Tag1", "tag2"]}}
+
+          expect(status).to eq(422)
+          expect(json_main['errors'][0]['title']).to eq(["Dataset name must contain at least one letter and no special character"])
+        end
+
         it 'Do not allow to overwrite not a json dataset' do
           post "/dataset/#{dataset_id}/data-overwrite", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
                                                                  "dataset": {"data": [

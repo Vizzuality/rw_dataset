@@ -28,7 +28,7 @@ module V1
                                                                                           updated_at: @dataset.try(:updated_at),
                                                                                           created_at: @dataset.try(:created_at) }
       else
-        render json: { errors: [{ status: 422, title: 'Error updating dataset' }] }, status: 422
+        render json: { errors: [{ status: 422, title: @dateable.errors.full_messages }] }, status: 422
       end
     end
 
@@ -78,7 +78,7 @@ module V1
                                                                                             updated_at: @dataset.try(:updated_at),
                                                                                             created_at: @dataset.try(:created_at) }
       else
-        render json: { success: false, message: @dateable.errors.full_messages }, status: 422
+        render json: { errors: [{ status: 422, title: @dateable.errors.full_messages }] }, status: 422
       end
     end
 
