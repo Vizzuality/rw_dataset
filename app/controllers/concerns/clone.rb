@@ -3,25 +3,8 @@ module Clone
   extend ActiveSupport::Concern
 
   included do
-    def clone
-      authorized = User.authorize_user!(@user, @dataset_apps)
-      if authorized.present?
-        @dataset = clone_dataset.dataset
-        if @dataset&.save
-          @dataset.dateable.connect_to_service(dataset_params)
-          render json: @dataset, status: 201, serializer: DatasetSerializer, meta: { status: @dataset.try(:status_txt),
-                                                                                     overwrite: @dataset.try(:data_overwrite),
-                                                                                     updated_at: @dataset.try(:updated_at),
-                                                                                     created_at: @dataset.try(:created_at) }
-        else
-          render json: { errors: [{ status: 422, title: 'Error cloning dataset' }] }, status: 422
-        end
-      else
-        render json: { errors: [{ status: 401, title: 'Not authorized!' }] }, status: 401
-      end
-    end
-
     private
+
       def clone_dataset
         dataset_params['dataset_url'] = dataset_url_fixer
         user_id = if dataset_params['dataset_attributes']['user_id'].present?

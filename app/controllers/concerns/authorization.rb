@@ -5,7 +5,7 @@ module Authorization
   included do
     before_action :set_user,       except: [:index, :show]
     before_action :set_caller,     only: :update
-    before_action :authorize_user, only: [:update_data, :overwrite_data, :delete_data, :destroy, :create]
+    before_action :authorize_user, only: [:update_data, :overwrite_data, :delete_data, :destroy, :create, :clone]
 
     private
 
@@ -59,7 +59,7 @@ module Authorization
       end
 
       def authorize_user
-        @authorized = if ['create'].include?(action_name)
+        @authorized = if ['create', 'clone'].include?(action_name)
                         User.authorize_user!(@user, @dataset_apps)
                       else
                         User.authorize_user!(@user, intersect_apps(@dataset.application, @apps), @dataset.user_id, match_apps: true)
