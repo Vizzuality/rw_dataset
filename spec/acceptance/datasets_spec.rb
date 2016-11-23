@@ -23,7 +23,8 @@ module V1
 
     context 'For specific dataset' do
       context 'Rest dataset' do
-        let!(:dataset_id) { Dataset.find_by(name: 'cartodb test set').id }
+        let!(:dataset_id)    { Dataset.find_by(name: 'cartodb test set').id }
+        let!(:dataset_fs_id) { Dataset.find_by(name: 'arcgis test set').id }
 
         it 'Allows to access dataset details' do
           get "/dataset/#{dataset_id}"
@@ -70,6 +71,25 @@ module V1
           expect(json_attr['userId']).to       eq('3242-32442-432')
         end
 
+        it 'Allows to create rest dataset by a admin with tags and topics extracting table name from url' do
+          post '/dataset', params: {"loggedUser": {"role": "admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-432"},
+                                    "dataset": {"provider": "cartodb", "application": ["gfw"],
+                                                 "connectorUrl": "https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint",
+                                                 "name": "Carto test api", "format": 0, "data_path": "rows", "attributesPath": "fields",
+                                                  "tags": ["tag1", "tag1", "Tag1", "tag2"], "topics": ["topic1", "topic1", "Topic1", "topic2"]}
+                                    }
+
+          expect(status).to eq(201)
+          expect(json_attr['name']).not_to     be_nil
+          expect(json_attr['provider']).to     eq('cartodb')
+          expect(json_attr['connectorUrl']).to be_present
+          expect(json_attr['dataPath']).to     be_present
+          expect(json_attr['tableName']).to    eq('public.carts_test_endoint')
+          expect(json_attr['tags']).to         eq(['tag1', 'tag2'])
+          expect(json_attr['topics']).to       eq(['topic1', 'topic2'])
+          expect(json_attr['userId']).to       eq('3242-32442-432')
+        end
+
         it 'Allows to create rest dataset owned by an manager, without tags and only required attributes' do
           post '/dataset', params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-432"},
                                     "dataset": {"provider": "cartodb", "application": ["gfw"],
@@ -106,7 +126,7 @@ module V1
 
         it 'Allows to update rest dataset by admin user if in apps' do
           patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw", "wrw","prep"] }, "id": "3242-32442-436"},
-                                                   "dataset": {"provider": "cartodb", "application": ["prep", "gfw"],
+                                                   "dataset": {"application": ["prep", "gfw"],
                                                                "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
                                                                "name": "Carto test api"}}
 
@@ -118,7 +138,7 @@ module V1
 
         it 'Do not allow to update rest dataset by admin user if not in apps' do
           patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-436"},
-                                                   "dataset": {"provider": "cartodb", "application": ["prep", "gfw"],
+                                                   "dataset": {"application": ["prep", "gfw"],
                                                                "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
                                                                "name": "Carto test api"}}
 
@@ -128,7 +148,7 @@ module V1
 
         it 'Do not allows to update rest dataset by admin user if not in apps' do
           patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-436"},
-                                                   "dataset": {"provider": "cartodb", "application": ["testapp"],
+                                                   "dataset": {"application": ["testapp"],
                                                                "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
                                                                "name": "Carto test api"}}
 
@@ -138,7 +158,7 @@ module V1
 
         it 'Allows to update rest dataset by superadmin user' do
           patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Superadmin", "extraUserData": { }, "id": "3242-32442-436"},
-                                                   "dataset": {"provider": "cartodb", "application": ["testapp"],
+                                                   "dataset": {"application": ["testapp"],
                                                                "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
                                                                "name": "Carto test api"}}
 
@@ -148,9 +168,52 @@ module V1
           expect(json_attr['application']).to  eq(["testapp"])
         end
 
+        it 'Allows to update rest dataset by superadmin user' do
+          patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Superadmin", "extraUserData": { }, "id": "3242-32442-436"},
+                                                   "dataset": {"application": ["testapp"],
+                                                               "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
+                                                               "name": "Carto test api"}}
+
+          expect(status).to eq(200)
+          expect(json_attr['name']).to          eq('Carto test api')
+          expect(json_attr['provider']).not_to  be_nil
+          expect(json_attr['application']).to   eq(["testapp"])
+          expect(json_attr['provider']).to      eq('cartodb')
+          expect(json_attr['connectorType']).to eq('rest')
+          expect(json_attr['tableName']).to     eq('cait_2_0_country_ghg_emissions_filtered')
+        end
+
+        it 'Allows to update rest dataset of type featureservice by superadmin user and generate table name' do
+          patch "/dataset/#{dataset_fs_id}", params: {"loggedUser": {"role": "Superadmin", "extraUserData": { }, "id": "3242-32442-436"},
+                                                      "dataset": {"application": ["testapp"],
+                                                                  "connectorUrl": "https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga_County/FeatureServer/0?f=json",
+                                                                  "name": "Arcgis test api",
+                                                                  "data_path": "features", "attributesPath": "fields"}}
+
+          expect(status).to eq(200)
+          expect(json_attr['name']).to          eq('Arcgis test api')
+          expect(json_attr['provider']).not_to  be_nil
+          expect(json_attr['application']).to   eq(["testapp"])
+          expect(json_attr['provider']).to      eq('featureservice')
+          expect(json_attr['connectorType']).to eq('rest')
+          expect(json_attr['tableName']).to     eq('Public_Schools_in_Onondaga_County')
+        end
+
+        it 'Do not allows to update rest dataset by superadmin user if table_name, provider or connector_type present' do
+          patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Superadmin", "extraUserData": { }, "id": "3242-32442-436"},
+                                                   "dataset": {"provider": "featureservice", "application": ["testapp"],
+                                                               "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
+                                                               "tableName": "not_valid",
+                                                               "connectorType": "not_valid",
+                                                               "name": "Carto test api"}}
+
+          expect(status).to eq(422)
+          expect(json_main['errors'][0]['title']).to eq('The attributes: tableName, connectorType and provider are fixed on create process')
+        end
+
         it 'Allows to update rest dataset by admin user if in apps changing apps' do
           patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw", "wrw", "prep","testapp"] }, "id": "3242-32442-436"},
-                                                   "dataset": {"provider": "cartodb", "application": ["gfw", "wrw" ,"testapp"],
+                                                   "dataset": {"application": ["gfw", "wrw" ,"testapp"],
                                                                "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
                                                                "name": "Carto test api additional apps"}}
 
@@ -162,7 +225,7 @@ module V1
 
         it 'Do not allows to update rest dataset by admin user if not in apps' do
           patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-436"},
-                                                   "dataset": {"provider": "cartodb", "application": ["wri", "gfw"],
+                                                   "dataset": {"application": ["wri", "gfw"],
                                                                "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
                                                                "name": "Carto test api"}}
 
@@ -381,14 +444,24 @@ module V1
 
         it 'Allows to overwrite csv dataset data' do
           post "/dataset/#{csv_dataset_id}/data-overwrite", params: {"loggedUser": {"role": "Manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
-                                                                     "dataset": {"connector_url": "http://new-url.org", "table_name": "new_name",
+                                                                     "dataset": {"connector_url": "http://new-url.org",
                                                                                  "polygon": "Madrid alcobendas",
                                                                                  "point": { "lat": "23233233", "long": "66565676" }}}
 
           expect(status).to eq(200)
-          expect(DocConnector.find(csv_dataset_id).connector_url).to eq('http://new-url.org')
-          expect(DocConnector.find(csv_dataset_id).table_name).to eq('new_name')
-          expect(json_main['message']).to eq('Dataset data update in progress')
+          expect(DocConnector.find(csv_dataset_id).connector_url).to  eq('http://new-url.org')
+          expect(DocConnector.find(csv_dataset_id).table_name).not_to be_present
+          expect(json_main['message']).to                             eq('Dataset data update in progress')
+        end
+
+        it 'Allows to update dataset table _name from internal microservice' do
+          patch "/dataset/#{csv_dataset_id}", params: {"loggedUser": {"id": "microservice"},
+                                                       "dataset": {"status": 1, "tableName": "test_table_name"}}
+
+          expect(status).to eq(200)
+          expect(Dataset.find(csv_dataset_id).status).to          eq(1)
+          expect(Dataset.find(csv_dataset_id).user_id).to         eq('3242-32442-432')
+          expect(DocConnector.find(csv_dataset_id).table_name).to eq('test_table_name')
         end
       end
 

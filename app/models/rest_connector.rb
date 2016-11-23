@@ -18,6 +18,8 @@ class RestConnector < ApplicationRecord
 
   enum connector_provider: { cartodb: 0, featureservice: 1 }
 
+  before_update :generate_table_name, if: 'connector_url_changed?'
+
   has_one :dataset, as: :dateable, dependent: :destroy, inverse_of: :dateable
   accepts_nested_attributes_for :dataset, allow_destroy: true, update_only: true
 
@@ -44,4 +46,14 @@ class RestConnector < ApplicationRecord
     ConnectorServiceJob.perform_later(object, params_for_adapter)
     dataset.update_attributes(status: 0)
   end
+
+  private
+
+    def generate_table_name
+      self.table_name = if self.connector_provider.include?('cartodb')
+                          Connector.cartodb_table_name_param(self.connector_url)
+                        else
+                          Connector.arcgis_table_name_param(connector_url)
+                        end
+    end
 end
