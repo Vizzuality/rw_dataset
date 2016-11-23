@@ -38,6 +38,12 @@ module Authorization
           @authorized = true
         else
           @dataset_params_for_update = dataset_params_for_update
+          if @dataset_params_for_update[:table_name].present? ||
+             @dataset_params_for_update[:connector_type].present? ||
+             @dataset_params_for_update[:connector_provider].present?
+
+            return render json: { errors: [{ status: 422, title: 'The attributes: tableName, connectorType and provider are fixed on create process' }] }, status: 422
+          end
           @authorized = User.authorize_user!(@user, intersect_apps(@dataset.application, @apps, @dataset_apps), @dataset.user_id, match_apps: true)
         end
 

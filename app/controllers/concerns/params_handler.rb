@@ -6,7 +6,8 @@ module ParamsHandler
     def dataset_params_sanitizer
       params.require(:dataset).except(:name, :format, :data_path, :attributes_path, :status, :application,
                                       :layer_info, :data_overwrite, :subtitle, :tags, :topics, :provider)
-                              .merge(logged_user: params[:logged_user], connector_provider: params[:dataset].dig(:provider),
+                              .merge(logged_user: params[:logged_user],
+                                     connector_provider: params[:dataset].dig(:provider),
                                      dataset_attributes: { user_id: params.dig(:logged_user, :id),
                                                            name: params[:dataset].dig(:name),
                                                            format: params[:dataset].dig(:format),
@@ -26,16 +27,16 @@ module ParamsHandler
     private
 
       def dataset_params
-        dataset_params_sanitizer
+        dataset_params_sanitizer.except(:table_name)
       end
 
       def dataset_params_for_update
         if @json_connector
-          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :connector_url, :connector_type, :connector_provider)
+          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :connector_url)
         elsif @doc_connector
-          dataset_params_sanitizer.except(:point, :polygon, :logged_user, :connector_type, :connector_provider)
+          dataset_params_sanitizer.except(:point, :polygon, :logged_user)
         else
-          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :connector_type, :connector_provider)
+          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user)
         end
       end
 

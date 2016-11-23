@@ -70,7 +70,8 @@ rest_connector_8:
 
 rest_connector_9:
   id: 'd547146d-de0c-47ff-a406-5125667fd326'
-  connector_url: 'https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint'
-  table_name:  'carts_test_endoint'
+  connector_provider: 1
+  connector_url: 'https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga/FeatureServer/0?f=json'
+  table_name:  'Public_Schools_in_Onondaga'
   created_at: '2016-03-02 20:00:00.050118'
   updated_at: '2016-03-02 20:00:00.050118'

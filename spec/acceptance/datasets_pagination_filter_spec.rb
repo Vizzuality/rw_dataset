@@ -55,7 +55,7 @@ module V1
 
         dataset = json[0]['attributes']
         expect(status).to eq(200)
-        expect(json.length).to              eq(6)
+        expect(json.length).to              eq(5)
         expect(dataset['provider']).to      eq('cartodb')
         expect(dataset['connectorType']).to eq('rest')
       end
@@ -65,7 +65,7 @@ module V1
 
         dataset = json[0]['attributes']
         expect(status).to eq(200)
-        expect(json.length).to              eq(1)
+        expect(json.length).to              eq(2)
         expect(dataset['provider']).to      eq('featureservice')
         expect(dataset['connectorType']).to eq('rest')
       end
@@ -197,7 +197,7 @@ module V1
 
         expect(status).to eq(200)
         expect(json.size).to eq(10)
-        expect(json[0]['attributes']['name']).to eq('cartodb test set')
+        expect(json[0]['attributes']['name']).to eq('arcgis test set')
       end
 
       it 'Show list of datasets for all apps sort by name DESC' do

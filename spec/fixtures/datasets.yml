@@ -147,7 +147,7 @@ rest_data_8:
 rest_data_9:
   dateable_id: 'd547146d-de0c-47ff-a406-5125667fd326'
   dateable_type: 'RestConnector'
-  name: 'cartodb test set 9'
+  name: 'arcgis test set'
   format: 0
   data_path: 'rows'
   attributes_path: 'fields'
