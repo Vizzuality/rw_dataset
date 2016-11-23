@@ -10,8 +10,8 @@ module V1
     include Clone
 
     def index
-      @datasets = DatasetsIndex.new(self)
-      render json: @datasets.datasets_list, each_serializer: DatasetSerializer, include: params[:includes]
+      datasets_index = DatasetsIndex.new(self)
+      render json: datasets_index.datasets, each_serializer: DatasetSerializer, include: params[:includes], links: datasets_index.links
     end
 
     def show

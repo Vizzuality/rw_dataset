@@ -40,9 +40,9 @@ Rails.application.configure do
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
 
-  Bullet.enable = true
-  Bullet.bullet_logger = true
-  Bullet.raise = true
+  Bullet.enable = false
+  Bullet.bullet_logger = false
+  Bullet.raise = false
 
   config.after_initialize do
     # Set Time.now to September 1, 2015 12:00:00 AM (at this instant)
