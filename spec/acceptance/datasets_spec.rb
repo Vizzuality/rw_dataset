@@ -214,33 +214,6 @@ module V1
           expect(json_attr['tags']).to eq(["tag1", "tag2"])
         end
 
-        it 'Allows to add layers to existing dataset' do
-          put "/dataset/#{dataset_id}/layer", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
-                                                       "dataset": {"layer_info": {"application": "wrw", "default": true, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30l"}}}
-
-          expect(status).to eq(200)
-          expect(json_main['message']).to eq('Dataset layer info update in progress')
-          expect(Dataset.find(dataset_id).layer_info.size).to eq(2)
-        end
-
-        it 'Allows to add layers to existing dataset' do
-          put "/dataset/#{dataset_id}/layer", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
-                                                       "dataset": {"layer_info": {"application": "wrw", "default": true, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30m"}}}
-
-          expect(status).to eq(200)
-          expect(json_main['message']).to eq('Dataset layer info update in progress')
-          expect(Dataset.find(dataset_id).layer_info.size).to eq(1)
-          expect(Dataset.find(dataset_id).layer_info[0]['default']).to eq('true')
-        end
-
-        it 'Do not allow to update not owned dataset for manager user' do
-          put "/dataset/#{dataset_id}/layer", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-431"},
-                                                       "dataset": {"layer_info": {"application": "wrw", "default": true, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30m"}}}
-
-          expect(status).to eq(401)
-          expect(json_main['errors'][0]['title']).to eq('Not authorized!')
-        end
-
         it 'Allows to delete dataset' do
           delete "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"}}
 
