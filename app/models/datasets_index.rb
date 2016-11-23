@@ -13,10 +13,10 @@ class DatasetsIndex
     @controller = controller
   end
 
-  def datasets
-    @datasets ||= Dataset.includes(:dateable).order(sort_params)
-                         .paginate(page: current_page, per_page: per_page)
-                         .fetch_all(options_filter)
+  def datasets_list
+    Dataset.includes(:dateable).order(sort_params)
+           .paginate(page: current_page, per_page: per_page)
+           .fetch_all(options_filter)
   end
 
   private
