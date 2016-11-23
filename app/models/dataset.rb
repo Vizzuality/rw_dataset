@@ -72,7 +72,7 @@ class Dataset < ApplicationRecord
       page_size      = options['page']['size']            if options['page'].present? && options['page']['size'].present?
       sort           = options['sort']                    if options['sort'].present?
 
-      cache_options  = 'all'
+      cache_options  = 'index-all'
       cache_options += "_#{connector_type}"          if connector_type.present?
       cache_options += "_status:#{status}"           if status.present?
       cache_options += "_app:#{app}"                 if app.present?
