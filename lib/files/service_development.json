@@ -57,15 +57,6 @@
         }]
       },
       {
-        "url": "/dataset/:id/layer",
-        "method": "PUT",
-        "endpoints": [{
-            "method": "PUT",
-            "baseUrl": "http://192.168.99.100:3000",
-            "path": "/dataset/:id/layer"
-        }]
-      },
-      {
         "url": "/dataset/:id/data",
         "method": "POST",
         "endpoints": [{

@@ -22,6 +22,40 @@ module ParamsHandler
                               .permit!
                               .reject{ |_, v| v.nil? }
     end
+
+    private
+
+      def dataset_params
+        dataset_params_sanitizer
+      end
+
+      def dataset_params_for_update
+        if @json_connector
+          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :connector_url, :connector_type, :connector_provider)
+        elsif @doc_connector
+          dataset_params_sanitizer.except(:point, :polygon, :logged_user, :connector_type, :connector_provider)
+        else
+          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :connector_type, :connector_provider)
+        end
+      end
+
+      def dataset_data_params_for_update
+        if @json_connector && params[:data_id].present?
+          params.require(:dataset).merge(data_to_update: true, data_id: params[:data_id], logged_user: params[:logged_user]).permit!
+        else
+          params.require(:dataset).merge(to_update: true, logged_user: params[:logged_user]).permit!
+        end
+      end
+
+      def dataset_data_params_for_overwrite
+        params.require(:dataset).merge(overwrite: true, logged_user: params[:logged_user]).permit! if @overwriteable
+      end
+
+      def dataset_data_params_for_delete
+        if @json_connector && params[:data_id].present?
+          params.merge(to_delete: true, data_to_update: true, data_id: params[:data_id], logged_user: params[:logged_user])
+        end
+      end
   end
 
   class_methods {}
