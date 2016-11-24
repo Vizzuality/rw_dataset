@@ -124,6 +124,16 @@ module V1
           expect(json_main['errors'][0]['title']).to eq('Not authorized!')
         end
 
+        it 'Do not allows to create rest dataset by admin user if wrong attribute' do
+          post '/dataset', params: {"loggedUser": {"role": "admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-432"},
+                                    "dataset": {"provider": "cartodb", "application": ["gfw"],
+                                                 "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
+                                                 "names": "Carto test api"}}
+
+          expect(status).to eq(422)
+          expect(json_main['errors'][0]['title']).to eq("unknown attribute 'names' for RestConnector.")
+        end
+
         it 'Allows to update rest dataset by admin user if in apps' do
           patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw", "wrw","prep"] }, "id": "3242-32442-436"},
                                                    "dataset": {"application": ["prep", "gfw"],
@@ -134,6 +144,16 @@ module V1
           expect(json_attr['name']).to         eq('Carto test api')
           expect(json_attr['provider']).not_to be_nil
           expect(json_attr['application']).to  eq(["prep", "gfw"])
+        end
+
+        it 'Do not allows to update rest dataset by admin user if not valid attribute' do
+          patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw", "wrw","prep"] }, "id": "3242-32442-436"},
+                                                   "dataset": {"applications": ["prep", "gfw"],
+                                                               "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
+                                                               "name": "Carto test api"}}
+
+          expect(status).to eq(422)
+          expect(json_main['errors'][0]['title']).to eq("unknown attribute 'applications' for RestConnector.")
         end
 
         it 'Do not allow to update rest dataset by admin user if not in apps' do
