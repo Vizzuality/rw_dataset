@@ -34,21 +34,21 @@ module Authorization
 
       def set_caller
         if dataset_params[:logged_user].present? && dataset_params[:logged_user][:id] == 'microservice'
-          @dataset_params_for_update = dataset_params_for_update.each { |k,v| v.delete('user_id') if k == 'dataset_attributes' }
           @authorized = true
         else
-          @dataset_params_for_update = dataset_params_for_update
-          if @dataset_params_for_update[:table_name].present? ||
-             @dataset_params_for_update[:connector_type].present? ||
-             @dataset_params_for_update[:connector_provider].present?
-
-            return render json: { errors: [{ status: 422, title: 'The attributes: tableName, connectorType and provider are fixed on create process' }] }, status: 422
-          end
           @authorized = User.authorize_user!(@user, intersect_apps(@dataset.application, @apps, @dataset_apps), @dataset.user_id, match_apps: true)
         end
 
         if @authorized.blank?
           render json: { errors: [{ status: 401, title: 'Not authorized!' }] }, status: 401
+        elsif (dataset_params[:table_name].present? ||
+               dataset_params[:connector_type].present? ||
+               dataset_params[:connector_provider].present?) &&
+               dataset_params[:logged_user].present? && dataset_params[:logged_user][:id] != 'microservice'
+
+          render json: { errors: [{ status: 422, title: 'The attributes: tableName, connectorType and provider can not be changed' }] }, status: 422
+        elsif params[:dataset][:user_id].present? && params[:logged_user][:role] != 'superadmin'
+          render json: { errors: [{ status: 401, title: 'Not authorized to update UserId' }] }, status: 401
         end
       end
 
