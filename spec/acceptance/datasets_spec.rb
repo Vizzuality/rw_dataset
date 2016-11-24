@@ -146,6 +146,31 @@ module V1
           expect(json_main['errors'][0]['title']).to eq('Not authorized!')
         end
 
+        it 'Do not allow to update user_id on dataset if user is an admin' do
+          patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-436"},
+                                                   "dataset": {"name": "Carto test api update", "user_id": "123"}}
+
+          expect(status).to eq(401)
+          expect(json_main['errors'][0]['title']).to eq('Not authorized to update UserId')
+        end
+
+        it 'Do not allow to update user_id on dataset if user is a manager' do
+          patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-436"},
+                                                   "dataset": {"name": "Carto test api update", "user_id": "123"}}
+
+          expect(status).to eq(401)
+          expect(json_main['errors'][0]['title']).to eq('Not authorized to update UserId')
+        end
+
+        it 'Allows to update user_id on dataset if user is a supermanager' do
+          patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "superadmin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-436"},
+                                                   "dataset": {"name": "Carto test api update", "user_id": "123"}}
+
+          expect(status).to eq(200)
+          expect(json_attr['name']).to   eq('Carto test api update')
+          expect(json_attr['userId']).to eq('123')
+        end
+
         it 'Do not allows to update rest dataset by admin user if not in apps' do
           patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-436"},
                                                    "dataset": {"application": ["testapp"],
@@ -208,7 +233,19 @@ module V1
                                                                "name": "Carto test api"}}
 
           expect(status).to eq(422)
-          expect(json_main['errors'][0]['title']).to eq('The attributes: tableName, connectorType and provider are fixed on create process')
+          expect(json_main['errors'][0]['title']).to eq('The attributes: tableName, connectorType and provider can not be changed')
+        end
+
+        it 'Do not allows to update rest dataset by admin user if not in apps check begore table_name, provider or connector_type not allowed' do
+          patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "admin", "extraUserData": { "apps": ["blablaapp"] }, "id": "3242-32442-436"},
+                                                   "dataset": {"provider": "featureservice", "application": ["testapp"],
+                                                               "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
+                                                               "tableName": "not_valid",
+                                                               "connectorType": "not_valid",
+                                                               "name": "Carto test api"}}
+
+          expect(status).to eq(401)
+          expect(json_main['errors'][0]['title']).to eq('Not authorized!')
         end
 
         it 'Allows to update rest dataset by admin user if in apps changing apps' do
@@ -454,7 +491,7 @@ module V1
           expect(json_main['message']).to                             eq('Dataset data update in progress')
         end
 
-        it 'Allows to update dataset table _name from internal microservice' do
+        it 'Allows to update dataset table_name from internal microservice' do
           patch "/dataset/#{csv_dataset_id}", params: {"loggedUser": {"id": "microservice"},
                                                        "dataset": {"status": 1, "tableName": "test_table_name"}}
 

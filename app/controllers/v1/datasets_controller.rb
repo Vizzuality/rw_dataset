@@ -22,7 +22,7 @@ module V1
     end
 
     def update
-      if @dateable.update(@dataset_params_for_update)
+      if @dateable.update(dataset_params_for_update)
         render json: @dataset.reload, status: 200, serializer: DatasetSerializer, meta: { status: @dataset.try(:status_txt),
                                                                                           overwrite: @dataset.try(:data_overwrite),
                                                                                           updated_at: @dataset.try(:updated_at),

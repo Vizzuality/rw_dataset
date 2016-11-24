@@ -8,8 +8,7 @@ module ParamsHandler
                                       :layer_info, :data_overwrite, :subtitle, :tags, :topics, :provider)
                               .merge(logged_user: params[:logged_user],
                                      connector_provider: params[:dataset].dig(:provider),
-                                     dataset_attributes: { user_id: params.dig(:logged_user, :id),
-                                                           name: params[:dataset].dig(:name),
+                                     dataset_attributes: { name: params[:dataset].dig(:name),
                                                            format: params[:dataset].dig(:format),
                                                            data_path: params[:dataset].dig(:data_path),
                                                            attributes_path: params[:dataset].dig(:attributes_path),
@@ -27,16 +26,24 @@ module ParamsHandler
     private
 
       def dataset_params
-        dataset_params_sanitizer.except(:table_name)
+        dataset_params_sanitizer.except(:table_name, :user_id).tap do |create_params|
+          create_params[:dataset_attributes][:user_id] = params.dig(:logged_user, :id)
+        end
       end
 
       def dataset_params_for_update
         if @json_connector
-          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :connector_url)
+          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :connector_url, :user_id).tap do |update_params|
+            update_params[:dataset_attributes][:user_id] = params[:dataset][:user_id] if params[:dataset][:user_id].present? && params[:logged_user][:role] == 'superadmin'
+          end
         elsif @doc_connector
-          dataset_params_sanitizer.except(:point, :polygon, :logged_user)
+          dataset_params_sanitizer.except(:point, :polygon, :logged_user, :user_id).tap do |update_params|
+            update_params[:dataset_attributes][:user_id] = params[:dataset][:user_id] if params[:dataset][:user_id].present? && params[:logged_user][:role] == 'superadmin'
+          end
         else
-          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user)
+          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :user_id).tap do |update_params|
+            update_params[:dataset_attributes][:user_id] = params[:dataset][:user_id] if params[:dataset][:user_id].present? && params[:logged_user][:role] == 'superadmin'
+          end
         end
       end
 
