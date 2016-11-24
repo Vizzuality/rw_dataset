@@ -26,14 +26,14 @@ module MetadataService
 
       method = options['ids'].present? ? 'post' : 'get'
 
-      url  = "#{Service::SERVICE_URL}/metadata"
+      url  = "#{Service::SERVICE_URL}/dataset"
       url += if options['ids'].present?
-               "/find-by-ids"
+               "/metadata/find-by-ids"
              else
-               "/#{options['dataset_id']}"
+               "/#{options['dataset_id']}/metadata"
              end
 
-      url += "/#{options['app']}" if options['app'].present? && options['ids'].blank?
+      url += "?application=#{options['app']}" if options['app'].present? && options['ids'].blank?
       url  = URI.decode(url)
 
       begin
