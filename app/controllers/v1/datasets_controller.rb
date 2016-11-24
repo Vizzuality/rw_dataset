@@ -22,13 +22,17 @@ module V1
     end
 
     def update
-      if @dateable.update(dataset_params_for_update)
-        render json: @dataset.reload, status: 200, serializer: DatasetSerializer, meta: { status: @dataset.try(:status_txt),
-                                                                                          overwrite: @dataset.try(:data_overwrite),
-                                                                                          updated_at: @dataset.try(:updated_at),
-                                                                                          created_at: @dataset.try(:created_at) }
-      else
-        render json: { errors: [{ status: 422, title: @dateable.errors.full_messages }] }, status: 422
+      begin
+        if @dateable.update(dataset_params_for_update)
+          render json: @dataset.reload, status: 200, serializer: DatasetSerializer, meta: { status: @dataset.try(:status_txt),
+                                                                                            overwrite: @dataset.try(:data_overwrite),
+                                                                                            updated_at: @dataset.try(:updated_at),
+                                                                                            created_at: @dataset.try(:created_at) }
+        else
+          render json: { errors: [{ status: 422, title: @dateable.errors.full_messages }] }, status: 422
+        end
+      rescue StandardError => e
+        render json: { errors: [{ status: 422, title: e }] }, status: 422
       end
     end
 
@@ -70,15 +74,19 @@ module V1
     end
 
     def create
-      @dateable = Connector.new(dataset_params)
-      if @dateable.save
-        @dateable.connect_to_service(dataset_params)
-        render json: @dateable.dataset, status: 201, serializer: DatasetSerializer, meta: { status: @dataset.try(:status_txt),
-                                                                                            overwrite: @dataset.try(:data_overwrite),
-                                                                                            updated_at: @dataset.try(:updated_at),
-                                                                                            created_at: @dataset.try(:created_at) }
-      else
-        render json: { errors: [{ status: 422, title: @dateable.errors.full_messages }] }, status: 422
+      begin
+        @dateable = Connector.new(dataset_params)
+        if @dateable.save
+          @dateable.connect_to_service(dataset_params)
+          render json: @dateable.dataset, status: 201, serializer: DatasetSerializer, meta: { status: @dataset.try(:status_txt),
+                                                                                              overwrite: @dataset.try(:data_overwrite),
+                                                                                              updated_at: @dataset.try(:updated_at),
+                                                                                              created_at: @dataset.try(:created_at) }
+        else
+          render json: { errors: [{ status: 422, title: @dateable.errors.full_messages }] }, status: 422
+        end
+      rescue StandardError => e
+        render json: { errors: [{ status: 422, title: e }] }, status: 422
       end
     end
 
