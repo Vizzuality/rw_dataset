@@ -6,7 +6,6 @@ module Clone
     private
 
       def clone_dataset
-        dataset_params['dataset_url'] = dataset_url_fixer
         user_id = if dataset_params['dataset_attributes']['user_id'].present?
                     dataset_params['dataset_attributes']['user_id']
                   elsif params['logged_user'].present?
@@ -14,6 +13,7 @@ module Clone
                   else
                     nil
                   end
+
         if dataset_params['dataset_url'].present?
           JsonConnector.create(
             parent_connector_url: dataset_params['dataset_url'],
@@ -32,10 +32,6 @@ module Clone
             }
           )
         end
-      end
-
-      def dataset_url_fixer
-        dataset_params['dataset_url'].include?('http://') ? dataset_params['dataset_url'] : "#{Service::SERVICE_URL}#{dataset_params['dataset_url']}"
       end
   end
 

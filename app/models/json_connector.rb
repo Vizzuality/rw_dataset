@@ -54,7 +54,7 @@ class JsonConnector < ApplicationRecord
 
     params_for_adapter['attributes_path'] = dataset.attributes_path if dataset.attributes_path.present?
 
-    params_for_adapter['connector_url']   = self.try(:parent_connector_url).present? ? self.try(:parent_connector_url) : options['connector_url']
+    params_for_adapter['connector_url']   = dataset_url_fixer(options['connector_url'])
     params_for_adapter['data_attributes'] = Oj.dump(options['data_attributes']) if options['data_attributes'].present?
     params_for_adapter['data']            = Oj.dump(options['data'])            if options['data'].present?
     params_for_adapter['to_delete']       = true                                if options.include?('delete') || options['to_delete'].present?
@@ -64,5 +64,15 @@ class JsonConnector < ApplicationRecord
 
     ConnectorServiceJob.perform_later(object, params_for_adapter)
     dataset.update_attributes(status: 0)
+  end
+
+  def dataset_url_fixer(options_connector_url=nil)
+    connector_url = if self.parent_connector_url.present?
+                      self.parent_connector_url
+                    else
+                      options_connector_url
+                    end
+
+    connector_url.present? && connector_url.include?('http://') ? connector_url : "#{Service::SERVICE_URL}#{connector_url}"
   end
 end
