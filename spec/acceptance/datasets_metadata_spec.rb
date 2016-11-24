@@ -37,7 +37,7 @@ module V1
     context 'Populate datasets with metadata', redis: true do
       context 'datasets list' do
         before(:each) do
-          stub_request(:post, "http://192.168.99.100:8000/metadata/find-by-ids").
+          stub_request(:post, "http://192.168.99.100:8000/dataset/metadata/find-by-ids").
           with(:body => "{\"ids\":[\"#{dataset_id}\"]}",
                :headers => {'Accept'=>'application/json', 'Authentication'=>'3123123der324eewr434ewr4324'}).
           to_return(:status => 200, :body => Oj.dump(dataset_metas), :headers => {})
@@ -56,7 +56,7 @@ module V1
 
       context 'specific dataset without app' do
         before(:each) do
-          stub_request(:get, "http://192.168.99.100:8000/metadata/#{dataset_id}").
+          stub_request(:get, "http://192.168.99.100:8000/dataset/#{dataset_id}/metadata").
           with(:headers => {'Accept'=>'application/json', 'Authentication'=>'3123123der324eewr434ewr4324'}).
           to_return(:status => 200, :body => Oj.dump(metadata_data), :headers => {})
         end
@@ -85,7 +85,7 @@ module V1
 
       context 'specific dataset' do
         before(:each) do
-          stub_request(:get, "http://192.168.99.100:8000/metadata/#{dataset_id}/prep").
+          stub_request(:get, "http://192.168.99.100:8000/dataset/#{dataset_id}/metadata?application=prep").
           with(:headers => {'Accept'=>'application/json', 'Authentication'=>'3123123der324eewr434ewr4324'}).
           to_return(:status => 200, :body => Oj.dump(metadata_data), :headers => {})
         end
@@ -103,7 +103,7 @@ module V1
       let!(:dataset_id) { Dataset.find_by(name: 'cartodb test set').id }
 
       before(:each) do
-        stub_request(:get, "http://192.168.99.100:8000/metadata/#{dataset_id}").
+        stub_request(:get, "http://192.168.99.100:8000/dataset/#{dataset_id}/metadata").
         to_timeout
       end
 
