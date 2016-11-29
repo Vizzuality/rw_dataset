@@ -61,7 +61,7 @@ class Dataset < ApplicationRecord
 
   scope :filter_apps, ->(app) { where('application ?| array[:keys]', keys: ["#{app}"]) }
 
-  validates :name, presence: true
+  validates :name, presence: true, on: :create
   validates_format_of :name, with: /\A(?=.*[a-z])([\w \.\-@]+)\Z/i,
                              message: 'must contain at least one letter and no special character'
 

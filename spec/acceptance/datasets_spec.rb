@@ -205,10 +205,10 @@ module V1
           patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Superadmin", "extraUserData": { }, "id": "3242-32442-436"},
                                                    "dataset": {"application": ["testapp"],
                                                                "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
-                                                               "name": "Carto test api"}}
+                                                               }}
 
           expect(status).to eq(200)
-          expect(json_attr['name']).to         eq('Carto test api')
+          expect(json_attr['name']).to         eq('cartodb test set')
           expect(json_attr['provider']).not_to be_nil
           expect(json_attr['application']).to  eq(["testapp"])
         end
