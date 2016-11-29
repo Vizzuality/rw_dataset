@@ -46,6 +46,10 @@ class Dataset < ApplicationRecord
   after_save   :clear_cache
   after_create :update_data_path,  if: "data_path.blank? && dateable_type.include?('JsonConnector')"
 
+  before_validation(on: [:create, :update]) do
+    validate_name
+  end
+
   scope :recent,             -> { order('updated_at DESC') }
   scope :including_dateable, -> { includes(:dateable)      }
   scope :filter_pending,     -> { where(status: 0)         }
@@ -62,8 +66,6 @@ class Dataset < ApplicationRecord
   scope :filter_apps, ->(app) { where('application ?| array[:keys]', keys: ["#{app}"]) }
 
   validates :name, presence: true, on: :create
-  validates_format_of :name, with: /\A(?=.*[a-z])([\w \.\-@]+)\Z/i,
-                             message: 'must contain at least one letter and no special character'
 
   class << self
     def fetch_all(options)
@@ -296,5 +298,18 @@ class Dataset < ApplicationRecord
       params_for_topics['topics_list']    = topics
 
       TagServiceJob.perform_later('Dataset', params_for_tags, params_for_topics)
+    end
+
+    def validate_name
+      self.errors.add(:name, "must be a valid string") if valid_json?(self.name)
+    end
+
+    def valid_json?(json)
+      begin
+        JSON.parse(json)
+        return true
+      rescue JSON::ParserError
+        return false
+      end
     end
 end

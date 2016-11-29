@@ -56,12 +56,12 @@ module V1
           post '/dataset', params: {"loggedUser": {"role": "admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-432"},
                                     "dataset": {"provider": "cartodb", "tableName": "public.carts_test_endoint", "application": ["gfw"],
                                                  "connectorUrl": "https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint",
-                                                 "name": "Carto test api", "format": 0, "data_path": "rows", "attributesPath": "fields",
+                                                 "name": "mydataset(prep)", "format": 0, "data_path": "rows", "attributesPath": "fields",
                                                   "tags": ["tag1", "tag1", "Tag1", "tag2"], "topics": ["topic1", "topic1", "Topic1", "topic2"]}
                                     }
 
           expect(status).to eq(201)
-          expect(json_attr['name']).not_to     be_nil
+          expect(json_attr['name']).to         eq('mydataset(prep)')
           expect(json_attr['provider']).to     eq('cartodb')
           expect(json_attr['connectorUrl']).to be_present
           expect(json_attr['dataPath']).to     be_present
@@ -360,11 +360,11 @@ module V1
           post '/dataset', params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
                                     "dataset": {"provider": "featureservice", "application": ["gfw"],
                                                  "connectorUrl": "https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga_County/FeatureServer/0?f=json",
-                                                 "name": "333", "format": 0, "data_path": "features", "attributesPath": "fields",
+                                                 "name": ["a", "b"], "format": 0, "data_path": "features", "attributesPath": "fields",
                                                   "tags": ["tag1", "tag1", "Tag1", "tag2"]}}
 
           expect(status).to eq(422)
-          expect(json_main['errors'][0]['title']).to eq(["Dataset name must contain at least one letter and no special character"])
+          expect(json_main['errors'][0]['title']).to eq(["Dataset name must be a valid string"])
         end
 
         it 'Do not allow to overwrite not a json dataset' do
