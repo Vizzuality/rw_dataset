@@ -20,6 +20,7 @@
 #  subtitle        :string
 #  topics          :jsonb
 #  user_id         :string
+#  legend          :jsonb
 #
 
 ---

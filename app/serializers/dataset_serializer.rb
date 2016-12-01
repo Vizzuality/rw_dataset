@@ -21,11 +21,12 @@
 #  subtitle        :string
 #  topics          :jsonb
 #  user_id         :string
+#  legend          :jsonb
 #
 
 class DatasetSerializer < ApplicationSerializer
   attributes :id, :application, :name, :subtitle, :data_path, :attributes_path, :connector_type, :provider, :user_id,
-             :connector_url, :table_name, :topics, :tags, :cloned_host
+             :connector_url, :table_name, :topics, :tags, :legend, :cloned_host
   attribute :metadata, if: :metadata_not_null?
   attribute :layer,    if: :layer_not_null?
   attribute :widget,   if: :widget_not_null?

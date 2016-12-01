@@ -537,6 +537,21 @@ module V1
           expect(json.length).to eq(1)
         end
       end
+
+      context 'Create dataset with valid legend' do
+        it 'Allows to create dataset with valid legend' do
+          post '/dataset', params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
+                                    "dataset": {"provider": "featureservice", "application": ["gfw"],
+                                                 "legend": {"long": "123", "lat": "123", "country": "pais", "region": "barrio", "date": ["start_date", "end_date"]},
+                                                 "connectorUrl": "https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga_County/FeatureServer/0?f=json",
+                                                 "name": "Test dataset", "format": 0, "data_path": "features", "attributesPath": "fields",
+                                                  "tags": ["tag1", "tag1", "Tag1", "tag2"]}}
+
+          expect(status).to eq(201)
+          expect(json_attr['name']).to   eq('Test dataset')
+          expect(json_attr['legend']).to eq({"long" => "123", "lat" => "123", "country" => "pais", "region" => "barrio", "date" => ["start_date", "end_date"]})
+        end
+      end
     end
   end
 end

@@ -21,6 +21,7 @@
 #  subtitle        :string
 #  topics          :jsonb
 #  user_id         :string
+#  legend          :jsonb
 #
 
 class Dataset < ApplicationRecord
@@ -32,6 +33,8 @@ class Dataset < ApplicationRecord
   STATUS = %w(pending saved failed deleted).freeze
 
   attr_accessor :metadata, :layer, :widget
+
+  store_accessor :legend, :country, :region, :date, :lat, :long
 
   belongs_to :dateable, polymorphic: true
   belongs_to :rest_connector, -> { where("datasets.dateable_type = 'RestConnector'") }, foreign_key: :dateable_id, optional: true
