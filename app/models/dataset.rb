@@ -92,7 +92,7 @@ class Dataset < ApplicationRecord
       cache_options += "_page_size:#{page_size}"     if page_size.present?
       cache_options += "_sort:#{sort}"               if sort.present?
       cache_options += "_provider:#{provider}"       if provider.present?
-      cache_options += "_name:#{find_by_name}"       if find_by_name.present?
+      cache_options += "_name:word_#{find_by_name}"  if find_by_name.present?
 
       if datasets = Rails.cache.read(cache_key(cache_options))
         datasets
