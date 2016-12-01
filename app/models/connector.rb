@@ -35,7 +35,7 @@ class Connector
     end
 
     def cartodb_table_name_param(connector_url)
-      if connector_url.include?('/tables/')
+      if connector_url.present? && connector_url.include?('/tables/')
         URI(connector_url).path.split("/tables/")[1].split("/")[0]
       else
         URI.decode(connector_url).downcase.split('from ')[1].split(' ')[0]
