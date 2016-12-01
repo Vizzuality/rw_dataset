@@ -115,7 +115,7 @@ module V1
     private
 
       def options_filter
-        params.permit(:connector_type, :provider, :status, :dataset, :app, :includes, :name, dataset: {})
+        params.permit(:connector_type, :provider, :status, :dataset, :app, :includes, dataset: {})
       end
 
       def set_dataset
