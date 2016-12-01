@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161117163038) do
+ActiveRecord::Schema.define(version: 20161201084341) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,8 +26,8 @@ ActiveRecord::Schema.define(version: 20161117163038) do
     t.string   "attributes_path"
     t.integer  "row_count"
     t.integer  "status",          default: 0
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at",                                                                                 null: false
+    t.datetime "updated_at",                                                                                 null: false
     t.jsonb    "tags",            default: []
     t.jsonb    "application",     default: []
     t.jsonb    "layer_info",      default: []
@@ -35,9 +35,11 @@ ActiveRecord::Schema.define(version: 20161117163038) do
     t.string   "subtitle"
     t.jsonb    "topics",          default: []
     t.string   "user_id"
+    t.jsonb    "legend",          default: {"lat"=>"", "date"=>[], "long"=>"", "region"=>"", "country"=>""}
     t.index ["application"], name: "index_datasets_on_application", using: :gin
     t.index ["dateable_id", "dateable_type"], name: "index_datasets_on_connector_and_connector_type", unique: true, using: :btree
     t.index ["layer_info"], name: "index_datasets_on_layer_info", using: :gin
+    t.index ["legend"], name: "index_datasets_on_legend", using: :gin
     t.index ["tags"], name: "index_datasets_on_tags", using: :gin
     t.index ["topics"], name: "index_datasets_on_topics", using: :gin
   end

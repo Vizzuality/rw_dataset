@@ -21,6 +21,7 @@
 #  subtitle        :string
 #  topics          :jsonb
 #  user_id         :string
+#  legend          :jsonb
 #
 
 class Dataset < ApplicationRecord
@@ -32,6 +33,8 @@ class Dataset < ApplicationRecord
   STATUS = %w(pending saved failed deleted).freeze
 
   attr_accessor :metadata, :layer, :widget
+
+  store_accessor :legend, :country, :region, :date, :lat, :long
 
   belongs_to :dateable, polymorphic: true
   belongs_to :rest_connector, -> { where("datasets.dateable_type = 'RestConnector'") }, foreign_key: :dateable_id, optional: true
@@ -63,7 +66,8 @@ class Dataset < ApplicationRecord
   scope :filter_doc,  -> { where(dateable_type: 'DocConnector').includes(:dateable)  }
   scope :filter_wms,  -> { where(dateable_type: 'WmsConnector').includes(:dateable)  }
 
-  scope :filter_apps, ->(app) { where('application ?| array[:keys]', keys: ["#{app}"]) }
+  scope :filter_apps, ->(app)  { where('application ?| array[:keys]', keys: ["#{app}"])   }
+  scope :filter_name, ->(name) { where('LOWER(datasets.name) LIKE LOWER(?)', "%#{name}%") }
 
   validates :name, presence: true, on: :create
 
@@ -77,6 +81,7 @@ class Dataset < ApplicationRecord
       page_number    = options['page']['number']          if options['page'].present? && options['page']['number'].present?
       page_size      = options['page']['size']            if options['page'].present? && options['page']['size'].present?
       sort           = options['sort']                    if options['sort'].present?
+      find_by_name   = options['name']                    if options['name'].present?
 
       cache_options  = 'dataset-list'
       cache_options += "_#{connector_type}"          if connector_type.present?
@@ -87,6 +92,7 @@ class Dataset < ApplicationRecord
       cache_options += "_page_size:#{page_size}"     if page_size.present?
       cache_options += "_sort:#{sort}"               if sort.present?
       cache_options += "_provider:#{provider}"       if provider.present?
+      cache_options += "_name:#{find_by_name}"       if find_by_name.present?
 
       if datasets = Rails.cache.read(cache_key(cache_options))
         datasets
@@ -110,6 +116,7 @@ class Dataset < ApplicationRecord
 
         datasets = app_filter(datasets, app)           if app.present?
         datasets = provider_filter(datasets, provider) if provider.present?
+        datasets = filter_name(find_by_name)           if find_by_name.present?
 
         datasets = includes_filter(datasets, including, app) if including.present? && datasets.any?
 

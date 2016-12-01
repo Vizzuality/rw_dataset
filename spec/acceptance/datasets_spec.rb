@@ -522,28 +522,34 @@ module V1
         end
       end
 
-      context 'Wms dataset' do
-        let!(:dataset_id) { Dataset.find_by(name: 'Wms test set 1').id }
-
-        it 'Allows to create wms dataset with tags' do
-          post '/dataset', params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
-                                    "dataset": {"connectorType": "wms", "name": "Wms test api", "application": ["gfw"],
-                                                 "tags": ["tag1", "tag1", "Tag1", "tag2"]}}
-
-          expect(status).to eq(201)
-          expect(json_attr['name']).not_to         be_nil
-          expect(json_attr['provider']).to         eq('wms')
-          expect(json_attr['connectorUrl']).not_to be_present
-          expect(json_attr['dataPath']).not_to     be_present
-          expect(json_attr['tableName']).not_to    be_present
-          expect(json_attr['tags']).to             eq(["tag1", "tag2"])
-        end
-
-        it 'Allows to delete wms dataset for superadmin' do
-          delete "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Superadmin"}}
+      context 'Find datasets by name' do
+        it 'Allows to find datasets by name' do
+          get '/dataset?name=json test'
 
           expect(status).to eq(200)
-          expect(json_main['message']).to eq('Dataset would be deleted!')
+          expect(json.length).to eq(2)
+        end
+
+        it 'Allows to find datasets by name' do
+          get '/dataset?name=ArcGIS'
+
+          expect(status).to eq(200)
+          expect(json.length).to eq(1)
+        end
+      end
+
+      context 'Create dataset with valid legend' do
+        it 'Allows to create dataset with valid legend' do
+          post '/dataset', params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
+                                    "dataset": {"provider": "featureservice", "application": ["gfw"],
+                                                 "legend": {"long": "123", "lat": "123", "country": "pais", "region": "barrio", "date": ["start_date", "end_date"]},
+                                                 "connectorUrl": "https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga_County/FeatureServer/0?f=json",
+                                                 "name": "Test dataset", "format": 0, "data_path": "features", "attributesPath": "fields",
+                                                  "tags": ["tag1", "tag1", "Tag1", "tag2"]}}
+
+          expect(status).to eq(201)
+          expect(json_attr['name']).to   eq('Test dataset')
+          expect(json_attr['legend']).to eq({"long" => "123", "lat" => "123", "country" => "pais", "region" => "barrio", "date" => ["start_date", "end_date"]})
         end
       end
     end
