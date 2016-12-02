@@ -68,20 +68,22 @@ class Dataset < ApplicationRecord
 
   scope :filter_apps, ->(app)  { where('application ?| array[:keys]', keys: ["#{app}"])   }
   scope :filter_name, ->(name) { where('LOWER(datasets.name) LIKE LOWER(?)', "%#{name}%") }
+  scope :filter_tags, ->(tags) { where('tags ?| array[:keys]', keys: tags)                }
 
   validates :name, presence: true, on: :create
 
   class << self
     def fetch_all(options)
-      connector_type = options['connector_type'].downcase if options['connector_type'].present?
-      status         = options['status'].downcase         if options['status'].present?
-      app            = options['app'].downcase            if options['app'].present?
-      including      = options['includes']                if options['includes'].present?
-      provider       = options['provider']                if options['provider'].present?
-      page_number    = options['page']['number']          if options['page'].present? && options['page']['number'].present?
-      page_size      = options['page']['size']            if options['page'].present? && options['page']['size'].present?
-      sort           = options['sort']                    if options['sort'].present?
-      find_by_name   = options['name']                    if options['name'].present?
+      connector_type = options['connector_type'].downcase  if options['connector_type'].present?
+      status         = options['status'].downcase          if options['status'].present?
+      app            = options['app'].downcase             if options['app'].present?
+      including      = options['includes']                 if options['includes'].present?
+      provider       = options['provider']                 if options['provider'].present?
+      page_number    = options['page']['number']           if options['page'].present? && options['page']['number'].present?
+      page_size      = options['page']['size']             if options['page'].present? && options['page']['size'].present?
+      sort           = options['sort']                     if options['sort'].present?
+      find_by_name   = options['name']                     if options['name'].present?
+      find_by_tags   = options['tags'].downcase.split(',') if options['tags'].present?
 
       cache_options  = 'dataset-list'
       cache_options += "_#{connector_type}"          if connector_type.present?
@@ -93,6 +95,7 @@ class Dataset < ApplicationRecord
       cache_options += "_sort:#{sort}"               if sort.present?
       cache_options += "_provider:#{provider}"       if provider.present?
       cache_options += "_name:word_#{find_by_name}"  if find_by_name.present?
+      cache_options += "_tags:word_#{find_by_tags}"  if find_by_tags.present?
 
       if datasets = Rails.cache.read(cache_key(cache_options))
         datasets
@@ -117,6 +120,7 @@ class Dataset < ApplicationRecord
         datasets = app_filter(datasets, app)           if app.present?
         datasets = provider_filter(datasets, provider) if provider.present?
         datasets = filter_name(find_by_name)           if find_by_name.present?
+        datasets = filter_tags(find_by_tags)           if find_by_tags.present?
 
         datasets = includes_filter(datasets, including, app) if including.present? && datasets.any?
 
