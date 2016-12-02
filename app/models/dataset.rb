@@ -94,8 +94,8 @@ class Dataset < ApplicationRecord
       cache_options += "_page_size:#{page_size}"     if page_size.present?
       cache_options += "_sort:#{sort}"               if sort.present?
       cache_options += "_provider:#{provider}"       if provider.present?
-      cache_options += "_name:word_#{find_by_name}"  if find_by_name.present?
-      cache_options += "_tags:word_#{find_by_tags}"  if find_by_tags.present?
+      cache_options += "_name:words_#{find_by_name}"  if find_by_name.present?
+      cache_options += "_tags:words_#{find_by_tags}"  if find_by_tags.present?
 
       if datasets = Rails.cache.read(cache_key(cache_options))
         datasets
@@ -119,8 +119,8 @@ class Dataset < ApplicationRecord
 
         datasets = app_filter(datasets, app)           if app.present?
         datasets = provider_filter(datasets, provider) if provider.present?
-        datasets = filter_name(find_by_name)           if find_by_name.present?
-        datasets = filter_tags(find_by_tags)           if find_by_tags.present?
+        datasets = datasets.filter_name(find_by_name)  if find_by_name.present?
+        datasets = datasets.filter_tags(find_by_tags)  if find_by_tags.present?
 
         datasets = includes_filter(datasets, including, app) if including.present? && datasets.any?
 
