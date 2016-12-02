@@ -43,6 +43,7 @@ class DocConnector < ApplicationRecord
     params_for_adapter['to_delete']     = true if options.include?('delete')
     params_for_adapter['to_update']     = true if options['to_update'].present?
     params_for_adapter['overwrite']     = true if options['overwrite'].present?
+    params_for_adapter['legend']        = dataset.legend if dataset.legend.present?
 
     ConnectorServiceJob.perform_later(object, params_for_adapter)
     dataset.update_attributes(status: 0)
