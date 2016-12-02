@@ -538,6 +538,22 @@ module V1
         end
       end
 
+      context 'Find datasets by tags' do
+        it 'Allows to find datasets by name' do
+          get '/dataset?tags=tag1'
+
+          expect(status).to eq(200)
+          expect(json.length).to eq(3)
+        end
+
+        it 'Allows to find datasets by tags' do
+          get '/dataset?tags=tag2,tag4'
+
+          expect(status).to eq(200)
+          expect(json.length).to eq(4)
+        end
+      end
+
       context 'Create dataset with valid legend' do
         it 'Allows to create dataset with valid legend' do
           post '/dataset', params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
