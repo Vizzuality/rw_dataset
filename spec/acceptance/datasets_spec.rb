@@ -543,14 +543,14 @@ module V1
           get '/dataset?tags=tag1'
 
           expect(status).to eq(200)
-          expect(json.length).to eq(3)
+          expect(json.length).to eq(2)
         end
 
         it 'Allows to find datasets by tags' do
           get '/dataset?tags=tag2,tag4'
 
           expect(status).to eq(200)
-          expect(json.length).to eq(4)
+          expect(json.length).to eq(3)
         end
       end
 

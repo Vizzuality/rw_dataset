@@ -102,6 +102,7 @@ rest_data_5:
   user_id: '3242-32442-432'
   layer_info: [{"application": "gfw", "default": false, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30j"}]
   application: ['gfw']
+  tags: ["tag4"]
 
 rest_data_6:
   dateable_id: 'd547146d-de0c-47ff-a406-5125667fd323'
