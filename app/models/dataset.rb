@@ -51,6 +51,7 @@ class Dataset < ApplicationRecord
 
   before_validation(on: [:create, :update]) do
     validate_name
+    validate_legend
   end
 
   scope :recent,             -> { order('updated_at DESC') }
@@ -315,10 +316,29 @@ class Dataset < ApplicationRecord
       self.errors.add(:name, "must be a valid string") if valid_json?(self.name)
     end
 
+    def validate_legend
+      if self.legend.present? && valid_legend?(self.legend.to_json).blank?
+        self.errors.add(:legend, 'must be a valid JSON object. Example: {"legend": {"long": "123", "lat": "123", "country": "pais", "region": "barrio", "date": ["start_date", "end_date"]}}')
+      end
+    end
+
     def valid_json?(json)
       begin
         JSON.parse(json)
         return true
+      rescue JSON::ParserError
+        return false
+      end
+    end
+
+    def valid_legend?(json)
+      begin
+        json = JSON.parse(json)
+        if (json.keys | ['long', 'lat', 'country', 'region', 'date']).size == 5
+          return true
+        else
+          return false
+        end
       rescue JSON::ParserError
         return false
       end
