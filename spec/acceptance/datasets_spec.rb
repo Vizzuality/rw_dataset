@@ -55,7 +55,7 @@ module V1
         it 'Allows to create rest dataset by a admin with tags and topics' do
           post '/dataset', params: {"loggedUser": {"role": "admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-432"},
                                     "dataset": {"provider": "cartodb", "tableName": "public.carts_test_endoint", "application": ["gfw"],
-                                                 "connectorUrl": "https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint",
+                                                 "connectorUrl": "https://rschumann.cartodb.com/api/v2/sql?q=select from public.carts_test_endoint",
                                                  "name": "mydataset(prep)", "format": 0, "data_path": "rows", "attributesPath": "fields",
                                                   "tags": ["tag1", "tag1", "Tag1", "tag2"], "topics": ["topic1", "topic1", "Topic1", "topic2"]}
                                     }
@@ -554,7 +554,7 @@ module V1
         end
       end
 
-      context 'Create dataset with valid legend' do
+      context 'Create dataset with legend' do
         it 'Allows to create dataset with valid legend' do
           post '/dataset', params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
                                     "dataset": {"provider": "featureservice", "application": ["gfw"],
@@ -566,6 +566,18 @@ module V1
           expect(status).to eq(201)
           expect(json_attr['name']).to   eq('Test dataset')
           expect(json_attr['legend']).to eq({"long" => "123", "lat" => "123", "country" => "pais", "region" => "barrio", "date" => ["start_date", "end_date"]})
+        end
+
+        it 'Do not allows to create dataset with not valid legend' do
+          post '/dataset', params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
+                                    "dataset": {"provider": "featureservice", "application": ["gfw"],
+                                                 "legend": {"not_valid_key": "123", "lat": "123", "country": "pais", "region": "barrio", "date": ["start_date", "end_date"]},
+                                                 "connectorUrl": "https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga_County/FeatureServer/0?f=json",
+                                                 "name": "Test dataset", "format": 0, "data_path": "features", "attributesPath": "fields",
+                                                  "tags": ["tag1", "tag1", "Tag1", "tag2"]}}
+
+          expect(status).to eq(422)
+          expect(json_main['errors'][0]['title']).to eq(["Dataset legend must be a valid JSON object. Example: {\"legend\": {\"long\": \"123\", \"lat\": \"123\", \"country\": \"pais\", \"region\": \"barrio\", \"date\": [\"start_date\", \"end_date\"]}}"])
         end
       end
     end
