@@ -3,4 +3,4 @@ test:
   database: rw_dataset_test
   username: postgres
   password:
-  port: 5433
+  port: 5432
