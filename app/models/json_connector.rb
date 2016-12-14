@@ -74,6 +74,6 @@ class JsonConnector < ApplicationRecord
                       options_connector_url
                     end
 
-    connector_url.present? && connector_url.include?('http') ? connector_url : "#{Service::SERVICE_URL}#{connector_url}"
+    # connector_url.present? && connector_url.include?('http') ? connector_url : "#{Service::SERVICE_URL}#{connector_url}"
   end
 end
