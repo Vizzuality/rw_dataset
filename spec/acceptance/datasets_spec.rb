@@ -246,7 +246,7 @@ module V1
 
         it 'Do not allows to update rest dataset by superadmin user if table_name, provider or connector_type present' do
           patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "Superadmin", "extraUserData": { }, "id": "3242-32442-436"},
-                                                   "dataset": {"provider": "featureservice", "application": ["testapp"],
+                                                   "dataset": {"provider": "cartodb", "application": ["testapp"],
                                                                "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
                                                                "tableName": "not_valid",
                                                                "connectorType": "not_valid",
@@ -258,7 +258,7 @@ module V1
 
         it 'Do not allows to update rest dataset by admin user if not in apps check begore table_name, provider or connector_type not allowed' do
           patch "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "admin", "extraUserData": { "apps": ["blablaapp"] }, "id": "3242-32442-436"},
-                                                   "dataset": {"provider": "featureservice", "application": ["testapp"],
+                                                   "dataset": {"provider": "cartodb", "application": ["testapp"],
                                                                "connectorUrl": "https://insights.cartodb.com/tables/cait_2_0_country_ghg_emissions_filtered/public/map",
                                                                "tableName": "not_valid",
                                                                "connectorType": "not_valid",
