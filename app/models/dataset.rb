@@ -85,6 +85,7 @@ class Dataset < ApplicationRecord
       sort           = options['sort']                     if options['sort'].present?
       find_by_name   = options['name']                     if options['name'].present?
       find_by_tags   = options['tags'].downcase.split(',') if options['tags'].present?
+      expire_cache   = options['cache']['expire']          if options['cache'].present? && options['cache']['expire'].present?
 
       cache_options  = 'dataset-list'
       cache_options += "_#{connector_type}"          if connector_type.present?
@@ -95,8 +96,10 @@ class Dataset < ApplicationRecord
       cache_options += "_page_size:#{page_size}"     if page_size.present?
       cache_options += "_sort:#{sort}"               if sort.present?
       cache_options += "_provider:#{provider}"       if provider.present?
-      cache_options += "_name:words_#{find_by_name}"  if find_by_name.present?
-      cache_options += "_tags:words_#{find_by_tags}"  if find_by_tags.present?
+      cache_options += "_name:words_#{find_by_name}" if find_by_name.present?
+      cache_options += "_tags:words_#{find_by_tags}" if find_by_tags.present?
+
+      Rails.cache.delete(cache_key(cache_options)) if expire_cache.present?
 
       if datasets = Rails.cache.read(cache_key(cache_options))
         datasets
