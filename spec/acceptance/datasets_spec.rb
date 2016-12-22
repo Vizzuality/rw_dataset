@@ -18,6 +18,8 @@ module V1
         expect(json.length).to              eq(10)
         expect(dataset_json['provider']).to eq('rwjson')
         expect(dataset_rest['provider']).to eq('cartodb')
+        expect(dataset_rest['status']).to eq('saved')
+        expect(dataset_rest['overwrite']).to eq(false)
       end
     end
 

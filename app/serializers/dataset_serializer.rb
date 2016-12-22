@@ -40,14 +40,7 @@ class DatasetSerializer < ApplicationSerializer
   end
 
   def status
-    case object.try(:status)
-    when 0
-      return 'pending'
-    when 1
-      return 'saved'
-    when 2
-      return 'failed'
-    end
+    object.status_txt
   end
 
   def connector_url
