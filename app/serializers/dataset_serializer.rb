@@ -47,9 +47,9 @@ class DatasetSerializer < ApplicationSerializer
     return object.dateable.table_name if object.dateable.try(:table_name).present?
     case object.dateable.try(:connector_provider)
     when 'cartodb'
-      Connector.cartodb_table_name_param(object.dateable.connector_url)
+      Connector.cartodb_table_name_param(object.dateable.connector_url) if object.dateable.connector_url.present?
     when 'featureservice'
-      Connector.arcgis_table_name_param(object.dateable.connector_url)
+      Connector.arcgis_table_name_param(object.dateable.connector_url) if object.dateable.connector_url.present?
     when 'rwjson'
       Connector.json_table_name_param
     end
