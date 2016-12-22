@@ -157,7 +157,7 @@ class Dataset < ApplicationRecord
         app = app.split(',')
       end
 
-      including.each do |include|
+      including.uniq.each do |include|
         case include
         when 'metadata'
           Metadata.data = MetadataService.populate_dataset(dataset_ids, app)

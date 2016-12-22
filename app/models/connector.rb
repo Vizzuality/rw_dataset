@@ -24,9 +24,9 @@ class Connector
         WmsConnector.new(options)
       else
         if options['connector_provider'].present? && options['connector_provider'].include?('cartodb') && options['table_name'].blank?
-          options['table_name'] = cartodb_table_name_param(options['connector_url'])
+          options['table_name'] = cartodb_table_name_param(options['connector_url']) if options['connector_url'].present?
         elsif options['connector_provider'].present? && options['connector_provider'].include?('featureservice') && options['table_name'].blank?
-          options['table_name'] = arcgis_table_name_param(options['connector_url'])
+          options['table_name'] = arcgis_table_name_param(options['connector_url']) if options['connector_url'].present?
         else
           options
         end
