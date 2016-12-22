@@ -207,6 +207,18 @@ module V1
         expect(json.size).to eq(10)
         expect(json[0]['attributes']['name']).to eq('Wms test set 1')
       end
+
+      context "Filter on ids" do
+        let!(:id_1) { Dataset.find_by(name: 'cartodb test set').id }
+        let!(:id_2) { Dataset.find_by(name: 'arcgis test set').id  }
+
+        it 'Show list of datasets for specific ids' do
+          get "/dataset?ids=#{id_1},#{id_2}"
+
+          expect(status).to eq(200)
+          expect(json.size).to eq(2)
+        end
+      end
     end
   end
 end

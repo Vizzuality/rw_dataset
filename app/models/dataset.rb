@@ -68,6 +68,7 @@ class Dataset < ApplicationRecord
   scope :filter_wms,  -> { where(dateable_type: 'WmsConnector').includes(:dateable)  }
 
   scope :filter_apps, ->(app)  { where('application ?| array[:keys]', keys: ["#{app}"])   }
+  scope :filter_ids,  ->(id)   { where('id IN (?)', id)                                   }
   scope :filter_name, ->(name) { where('LOWER(datasets.name) LIKE LOWER(?)', "%#{name}%") }
   scope :filter_tags, ->(tags) { where('tags ?| array[:keys]', keys: tags)                }
 
@@ -78,6 +79,7 @@ class Dataset < ApplicationRecord
       connector_type = options['connector_type'].downcase  if options['connector_type'].present?
       status         = options['status'].downcase          if options['status'].present?
       app            = options['app'].downcase             if options['app'].present?
+      ids            = options['ids']                      if options['ids'].present?
       including      = options['includes']                 if options['includes'].present?
       provider       = options['provider']                 if options['provider'].present?
       page_number    = options['page']['number']           if options['page'].present? && options['page']['number'].present?
@@ -91,6 +93,7 @@ class Dataset < ApplicationRecord
       cache_options += "_#{connector_type}"          if connector_type.present?
       cache_options += "_status:#{status}"           if status.present?
       cache_options += "_app:#{app}"                 if app.present?
+      cache_options += "_ids:#{ids}"                 if ids.present?
       cache_options += "_includes:#{including}"      if including.present?
       cache_options += "_page_number:#{page_number}" if page_number.present?
       cache_options += "_page_size:#{page_size}"     if page_size.present?
@@ -122,6 +125,7 @@ class Dataset < ApplicationRecord
                    end
 
         datasets = app_filter(datasets, app)           if app.present?
+        datasets = datasets.filter_ids(ids)            if ids.present?
         datasets = provider_filter(datasets, provider) if provider.present?
         datasets = datasets.filter_name(find_by_name)  if find_by_name.present?
         datasets = datasets.filter_tags(find_by_tags)  if find_by_tags.present?
