@@ -34,17 +34,17 @@ class Connector
       end
     end
 
-    def cartodb_table_name_param(connector_url)
+    def cartodb_table_name_param(connector_url=nil)
       if connector_url.present? && connector_url.include?('/tables/')
         URI(connector_url).path.split("/tables/")[1].split("/")[0]
       else
         URI.decode(connector_url).downcase.split('from ')[1].split(' ')[0] if connector_url.present?
-      end
+      end rescue nil
     end
 
     def arcgis_table_name_param(connector_url)
       URI(connector_url).path.split(/services|FeatureServer/)[1].gsub('/','') if connector_url.present?
-    end
+    end rescue nil
 
     def json_table_name_param
       'data'
