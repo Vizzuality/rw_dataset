@@ -95,8 +95,13 @@ module V1
       if @dataset.deleted?
         render json: { success: true, message: 'Dataset deleted!' }, status: 200
       else
-        @dateable.connect_to_service('delete')
-        render json: { success: true, message: 'Dataset would be deleted!' }, status: 200
+        if @dateable.connector_provider.include?('cartodb')
+          @dateable.destroy
+          render json: { success: true, message: 'Dataset deleted!' }, status: 200
+        else
+          @dateable.connect_to_service('delete')
+          render json: { success: true, message: 'Dataset would be deleted!' }, status: 200
+        end
       end
     end
 

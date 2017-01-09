@@ -337,10 +337,17 @@ module V1
         end
 
         it 'Allows to delete dataset' do
-          delete "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"}}
+          delete "/dataset/#{dataset_fs_id}", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"}}
 
           expect(status).to eq(200)
           expect(json_main['message']).to eq('Dataset would be deleted!')
+        end
+
+        it 'Allows to delete cartodb dataset' do
+          delete "/dataset/#{dataset_id}", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"}}
+
+          expect(status).to eq(200)
+          expect(json_main['message']).to eq('Dataset deleted!')
         end
 
         it 'Allows to create rest dataset for arcgis with tags' do
