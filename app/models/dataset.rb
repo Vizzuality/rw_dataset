@@ -47,7 +47,7 @@ class Dataset < ApplicationRecord
   before_save  :merge_apps,        if: 'application.present? && application_changed?'
   after_save   :call_tags_service, if: 'tags_changed? || topics_changed?'
   after_save   :clear_cache
-  after_create :update_data_path,  if: "data_path.blank? && dateable_type.include?('JsonConnector')"
+  # after_create :update_data_path,  if: "data_path.blank? && dateable_type.include?('JsonConnector')"
 
   before_validation(on: [:create, :update]) do
     validate_name
