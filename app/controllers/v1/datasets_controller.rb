@@ -5,7 +5,7 @@ module V1
 
     before_action :set_dataset,      except: [:index, :create, :info]
     before_action :populate_dataset, only: :show, if: :params_includes_present?
-    before_action :sanitise_params,  only: :index
+    before_action :sanitize_params,  only: :index
 
     include Authorization
     include Clone
@@ -141,7 +141,7 @@ module V1
         params[:includes].present?
       end
 
-      def sanitise_params
+      def sanitize_params
         params['ids'] = params['ids'].split(',').select { |id| /^[a-z0-9]+[-a-z0-9]*[a-z0-9]+$/i.match(id) } if params['ids'].present?
       end
   end
