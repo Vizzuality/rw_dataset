@@ -36,6 +36,7 @@ class RestConnector < ApplicationRecord
     params_for_adapter = {}
     params_for_adapter['dataset_id']      = dataset.id
     params_for_adapter['connector_url']   = connector_url
+    params_for_adapter['table_name']      = Connector.cartodb_table_name_param(connector_url) if self.connector_provider.include?('cartodb')
     params_for_adapter['provider']        = connector_provider
     params_for_adapter['data_path']       = dataset.data_path
 

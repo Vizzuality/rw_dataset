@@ -9,7 +9,7 @@ class ApplicationController < ActionController::API
   protected
 
     def record_not_found
-      render json: { errors: [{ status: '404', title: 'Record not found' }] } ,  status: 404
+      render json: { errors: [{ status: '404', title: 'Record not found' }] },  status: 404
     end
 
     def deep_underscore_params!(val = request.parameters)
