@@ -27,7 +27,7 @@ module ParamsHandler
     private
 
       def dataset_params
-        dataset_params_sanitizer.except(:table_name, :user_id).tap do |create_params|
+        dataset_params_sanitizer.except(:user_id).tap do |create_params|
           create_params[:dataset_attributes][:user_id] = params.dig(:logged_user, :id)
         end
       end

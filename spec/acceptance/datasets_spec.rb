@@ -376,6 +376,19 @@ module V1
           expect(json_attr['tags']).to         eq(["tag1", "tag2"])
         end
 
+        it 'Allows to create rest dataset for gee owned by an manager, without tags and only required attributes' do
+          post '/dataset', params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-432"},
+                                    "dataset": {"provider": "gee", "application": ["gfw"],
+                                    "tableName": "ft:1qpKIcYQMBsXLA9RLWCaV9D0Hus2cMQHhI-ViKHo", "name": "GEE test api"}}
+
+          expect(status).to eq(201)
+          expect(json_attr['name']).not_to         be_nil
+          expect(json_attr['provider']).to         eq('gee')
+          expect(json_attr['connectorUrl']).not_to be_present
+          expect(json_attr['dataPath']).not_to     be_present
+          expect(json_attr['tableName']).to        eq('ft:1qpKIcYQMBsXLA9RLWCaV9D0Hus2cMQHhI-ViKHo')
+        end
+
         it 'Validation of name' do
           post '/dataset', params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
                                     "dataset": {"provider": "featureservice", "application": ["gfw"],

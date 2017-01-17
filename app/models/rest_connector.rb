@@ -14,9 +14,9 @@
 class RestConnector < ApplicationRecord
   self.table_name = :rest_connectors
 
-  PROVIDER = %w(cartodb featureservice).freeze
+  PROVIDER = %w(cartodb featureservice gee).freeze
 
-  enum connector_provider: { cartodb: 0, featureservice: 1 }
+  enum connector_provider: { cartodb: 0, featureservice: 1, gee: 2 }
 
   before_update :generate_table_name, if: 'connector_url_changed?'
 
