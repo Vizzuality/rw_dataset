@@ -464,8 +464,10 @@ module V1
                                     }}
 
           expect(status).to eq(201)
-          expect(json_attr['name']).to     eq('Json external data test api')
-          expect(json_attr['provider']).to eq('rwjson')
+          expect(json_attr['name']).to         eq('Json external data test api')
+          expect(json_attr['provider']).to     eq('rwjson')
+          expect(json_attr['connectorUrl']).to eq('http://api.resourcewatch.org:81/query/3db3a4cd-f654-41bd-b26b-8c865f02f933?limit=10')
+          expect(json_attr['dataPath']).to     eq('data')
         end
 
         it 'Allows to delete dataset' do
