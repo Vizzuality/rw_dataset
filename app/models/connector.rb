@@ -13,7 +13,6 @@ class Connector
       when 'json'
         options = options['data'].present?            ? options.except(:data)            : options
         options = options['data_attributes'].present? ? options.except(:data_attributes) : options
-        options = options['connector_url'].present?   ? options.except(:connector_url)   : options
         options['table_name'] = json_table_name_param if options['table_name'].blank?
         JsonConnector.new(options)
       when 'document'
