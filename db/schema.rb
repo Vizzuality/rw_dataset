@@ -26,8 +26,8 @@ ActiveRecord::Schema.define(version: 20170117160359) do
     t.string   "attributes_path"
     t.integer  "row_count"
     t.integer  "status",          default: 0
-    t.datetime "created_at",                                                                                 null: false
-    t.datetime "updated_at",                                                                                 null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
     t.jsonb    "tags",            default: []
     t.jsonb    "application",     default: []
     t.jsonb    "layer_info",      default: []
@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(version: 20170117160359) do
     t.string   "subtitle"
     t.jsonb    "topics",          default: []
     t.string   "user_id"
-    t.jsonb    "legend",          default: {"lat"=>"", "date"=>[], "long"=>"", "region"=>"", "country"=>""}
+    t.jsonb    "legend",          default: {}
     t.index ["application"], name: "index_datasets_on_application", using: :gin
     t.index ["dateable_id", "dateable_type"], name: "index_datasets_on_connector_and_connector_type", unique: true, using: :btree
     t.index ["layer_info"], name: "index_datasets_on_layer_info", using: :gin
