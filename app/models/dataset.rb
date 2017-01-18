@@ -209,6 +209,7 @@ class Dataset < ApplicationRecord
       provider_value = case provider
                        when 'cartodb'        then 0
                        when 'featureservice' then 1
+                       when 'gee'            then 2
                        when 'rwjson'         then 0
                        when 'csv'            then 0
                        when 'wms'            then 0
@@ -217,7 +218,7 @@ class Dataset < ApplicationRecord
                        end
 
       case provider
-      when 'cartodb', 'featureservice'
+      when 'cartodb', 'featureservice', 'gee'
         joins(:rest_connector).where('rest_connectors.connector_provider = ?', provider_value)
       when 'rwjson' then joins(:json_connector).where('json_connectors.connector_provider = ?', provider_value)
       when 'csv'    then joins(:doc_connector).where('doc_connectors.connector_provider = ?', provider_value)
