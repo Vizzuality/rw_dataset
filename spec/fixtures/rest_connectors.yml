@@ -75,3 +75,11 @@ rest_connector_9:
   table_name:  'Public_Schools_in_Onondaga'
   created_at: '2016-03-02 20:00:00.050118'
   updated_at: '2016-03-02 20:00:00.050118'
+
+rest_connector_10:
+  id: 'd547146d-de0c-47ff-a406-5125667fd300'
+  connector_provider: 2
+  connector_url: ''
+  table_name:  '123456789'
+  created_at: '2016-03-02 20:00:00.050118'
+  updated_at: '2016-03-02 20:00:00.050118'
