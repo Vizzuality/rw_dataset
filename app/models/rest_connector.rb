@@ -14,9 +14,9 @@
 class RestConnector < ApplicationRecord
   self.table_name = :rest_connectors
 
-  PROVIDER = %w(cartodb featureservice).freeze
+  PROVIDER = %w(cartodb featureservice gee).freeze
 
-  enum connector_provider: { cartodb: 0, featureservice: 1 }
+  enum connector_provider: { cartodb: 0, featureservice: 1, gee: 2 }
 
   before_update :generate_table_name, if: 'connector_url_changed?'
 
@@ -36,6 +36,7 @@ class RestConnector < ApplicationRecord
     params_for_adapter = {}
     params_for_adapter['dataset_id']      = dataset.id
     params_for_adapter['connector_url']   = connector_url
+    params_for_adapter['table_name']      = build_table_name_for_send
     params_for_adapter['provider']        = connector_provider
     params_for_adapter['data_path']       = dataset.data_path
 
@@ -46,6 +47,14 @@ class RestConnector < ApplicationRecord
 
     ConnectorServiceJob.perform_later(object, params_for_adapter)
     dataset.update_attributes(status: 0)
+  end
+
+  def build_table_name_for_send
+    if self.connector_provider.include?('cartodb')
+      Connector.cartodb_table_name_param(connector_url)
+    elsif self.connector_provider.include?('gee')
+      table_name
+    end
   end
 
   private

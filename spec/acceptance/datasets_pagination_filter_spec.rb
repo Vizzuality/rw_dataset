@@ -25,8 +25,8 @@ module V1
 
         dataset = json[0]['attributes']
         expect(status).to eq(200)
-        expect(json.length).to              eq(7)
-        expect(dataset['provider']).to      eq('cartodb')
+        expect(json.length).to              eq(8)
+        expect(dataset['provider']).to      eq('gee')
         expect(dataset['connectorType']).to eq('rest')
       end
 
@@ -67,6 +67,16 @@ module V1
         expect(status).to eq(200)
         expect(json.length).to              eq(2)
         expect(dataset['provider']).to      eq('featureservice')
+        expect(dataset['connectorType']).to eq('rest')
+      end
+
+      it 'Allows to access datasets list filtering by provider gee' do
+        get '/dataset?provider=gee'
+
+        dataset = json[0]['attributes']
+        expect(status).to eq(200)
+        expect(json.length).to              eq(1)
+        expect(dataset['provider']).to      eq('gee')
         expect(dataset['connectorType']).to eq('rest')
       end
 
@@ -175,7 +185,7 @@ module V1
         get '/dataset?page[number]=2&page[size]=10&status=all'
 
         expect(status).to eq(200)
-        expect(json.size).to eq(3)
+        expect(json.size).to eq(4)
       end
 
       it 'Show list of datasets for all apps first page' do
@@ -189,7 +199,7 @@ module V1
         get '/dataset?page[number]=1&page[size]=100&status=all'
 
         expect(status).to eq(200)
-        expect(json.size).to eq(13)
+        expect(json.size).to eq(14)
       end
 
       it 'Show list of layers for all apps sort by name' do
@@ -206,6 +216,18 @@ module V1
         expect(status).to eq(200)
         expect(json.size).to eq(10)
         expect(json[0]['attributes']['name']).to eq('Wms test set 1')
+      end
+
+      context "Filter on ids" do
+        let!(:id_1) { Dataset.find_by(name: 'cartodb test set').id }
+        let!(:id_2) { Dataset.find_by(name: 'arcgis test set').id  }
+
+        it 'Show list of datasets for specific ids' do
+          get "/dataset?ids=#{id_1},#{id_2}"
+
+          expect(status).to eq(200)
+          expect(json.size).to eq(2)
+        end
       end
     end
   end

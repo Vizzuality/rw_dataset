@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161201084341) do
+ActiveRecord::Schema.define(version: 20170117160359) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(version: 20161201084341) do
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
     t.string   "table_name"
+    t.string   "connector_url"
     t.index ["connector_provider"], name: "index_json_connectors_on_connector_provider", using: :btree
   end
 

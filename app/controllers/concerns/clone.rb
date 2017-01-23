@@ -24,7 +24,7 @@ module Clone
             dataset_attributes: {
               name: @dataset.attributes['name'] + '_copy',
               format: @dataset.attributes['format'],
-              data_path: @dataset.attributes['data_path'],
+              data_path: 'data',
               attributes_path: @dataset.attributes['attributes_path'],
               row_count: @dataset.attributes['row_count'],
               user_id: user_id,

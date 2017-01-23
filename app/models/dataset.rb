@@ -47,12 +47,13 @@ class Dataset < ApplicationRecord
   before_save  :merge_apps,        if: 'application.present? && application_changed?'
   after_save   :call_tags_service, if: 'tags_changed? || topics_changed?'
   after_save   :clear_cache
-  after_create :update_data_path,  if: "data_path.blank? && dateable_type.include?('JsonConnector')"
 
   before_validation(on: [:create, :update]) do
     validate_name
     validate_legend
   end
+
+  validates :name, presence: true, on: :create
 
   scope :recent,             -> { order('updated_at DESC') }
   scope :including_dateable, -> { includes(:dateable)      }
@@ -68,16 +69,16 @@ class Dataset < ApplicationRecord
   scope :filter_wms,  -> { where(dateable_type: 'WmsConnector').includes(:dateable)  }
 
   scope :filter_apps, ->(app)  { where('application ?| array[:keys]', keys: ["#{app}"])   }
+  scope :filter_ids,  ->(id)   { where('id IN (?)', id)                                   }
   scope :filter_name, ->(name) { where('LOWER(datasets.name) LIKE LOWER(?)', "%#{name}%") }
   scope :filter_tags, ->(tags) { where('tags ?| array[:keys]', keys: tags)                }
-
-  validates :name, presence: true, on: :create
 
   class << self
     def fetch_all(options)
       connector_type = options['connector_type'].downcase  if options['connector_type'].present?
       status         = options['status'].downcase          if options['status'].present?
       app            = options['app'].downcase             if options['app'].present?
+      ids            = options['ids']                      if options['ids'].present?
       including      = options['includes']                 if options['includes'].present?
       provider       = options['provider']                 if options['provider'].present?
       page_number    = options['page']['number']           if options['page'].present? && options['page']['number'].present?
@@ -91,6 +92,7 @@ class Dataset < ApplicationRecord
       cache_options += "_#{connector_type}"          if connector_type.present?
       cache_options += "_status:#{status}"           if status.present?
       cache_options += "_app:#{app}"                 if app.present?
+      cache_options += "_ids:#{ids}"                 if ids.present?
       cache_options += "_includes:#{including}"      if including.present?
       cache_options += "_page_number:#{page_number}" if page_number.present?
       cache_options += "_page_size:#{page_size}"     if page_size.present?
@@ -122,6 +124,7 @@ class Dataset < ApplicationRecord
                    end
 
         datasets = app_filter(datasets, app)           if app.present?
+        datasets = datasets.filter_ids(ids)            if ids.present?
         datasets = provider_filter(datasets, provider) if provider.present?
         datasets = datasets.filter_name(find_by_name)  if find_by_name.present?
         datasets = datasets.filter_tags(find_by_tags)  if find_by_tags.present?
@@ -157,7 +160,7 @@ class Dataset < ApplicationRecord
         app = app.split(',')
       end
 
-      including.each do |include|
+      including.uniq.each do |include|
         case include
         when 'metadata'
           Metadata.data = MetadataService.populate_dataset(dataset_ids, app)
@@ -206,6 +209,7 @@ class Dataset < ApplicationRecord
       provider_value = case provider
                        when 'cartodb'        then 0
                        when 'featureservice' then 1
+                       when 'gee'            then 2
                        when 'rwjson'         then 0
                        when 'csv'            then 0
                        when 'wms'            then 0
@@ -214,7 +218,7 @@ class Dataset < ApplicationRecord
                        end
 
       case provider
-      when 'cartodb', 'featureservice'
+      when 'cartodb', 'featureservice', 'gee'
         joins(:rest_connector).where('rest_connectors.connector_provider = ?', provider_value)
       when 'rwjson' then joins(:json_connector).where('json_connectors.connector_provider = ?', provider_value)
       when 'csv'    then joins(:doc_connector).where('doc_connectors.connector_provider = ?', provider_value)
@@ -291,10 +295,6 @@ class Dataset < ApplicationRecord
       self.application = self.application.each { |a| a.downcase! }.uniq
     end
 
-    def update_data_path
-      self.update_attributes(data_path: 'data')
-    end
-
     def clear_cache
       Rails.cache.delete_matched('*datasets_*')
     end
@@ -321,7 +321,7 @@ class Dataset < ApplicationRecord
 
     def validate_legend
       if self.legend.present? && valid_legend?(self.legend.to_json).blank?
-        self.errors.add(:legend, 'must be a valid JSON object. Example: {"legend": {"long": "123", "lat": "123", "country": "pais", "region": "barrio", "date": ["start_date", "end_date"]}}')
+        self.errors.add(:legend, 'must be a valid JSON object. Example: {"legend": {"long": "123", "lat": "123", "country": ["pais"], "region": ["barrio"], "date": ["start_date", "end_date"]}}')
       end
     end
 
@@ -337,8 +337,18 @@ class Dataset < ApplicationRecord
     def valid_legend?(json)
       begin
         json = JSON.parse(json)
-        if (json.keys | ['long', 'lat', 'country', 'region', 'date']).size == 5
-          return true
+        if (json.keys & ['long', 'lat', 'country', 'region', 'date']).size == json.keys.size
+          is_valid = []
+          is_valid <<  json['long'].is_a?(String)   if json['long'].present?
+          is_valid <<  json['lat'].is_a?(String)    if json['lat'].present?
+          is_valid <<  json['country'].is_a?(Array) if json['country'].present?
+          is_valid <<  json['region'].is_a?(Array)  if json['region'].present?
+          is_valid <<  json['date'].is_a?(Array)    if json['date'].present?
+          if is_valid.include?(false)
+            return false
+          else
+            return true
+          end
         else
           return false
         end

@@ -26,13 +26,21 @@
 
 class DatasetSerializer < ApplicationSerializer
   attributes :id, :application, :name, :subtitle, :data_path, :attributes_path, :connector_type, :provider, :user_id,
-             :connector_url, :table_name, :topics, :tags, :legend, :cloned_host
+             :connector_url, :table_name, :topics, :tags, :legend, :cloned_host, :status, :overwrite
   attribute :metadata, if: :metadata_not_null?
   attribute :layer,    if: :layer_not_null?
   attribute :widget,   if: :widget_not_null?
 
   def provider
     object.dateable.try(:provider_txt)
+  end
+
+  def overwrite
+    object.try(:data_overwrite)
+  end
+
+  def status
+    object.status_txt
   end
 
   def connector_url
@@ -47,9 +55,9 @@ class DatasetSerializer < ApplicationSerializer
     return object.dateable.table_name if object.dateable.try(:table_name).present?
     case object.dateable.try(:connector_provider)
     when 'cartodb'
-      Connector.cartodb_table_name_param(object.dateable.connector_url)
+      Connector.cartodb_table_name_param(object.dateable.try(:connector_url))
     when 'featureservice'
-      Connector.arcgis_table_name_param(object.dateable.connector_url)
+      Connector.arcgis_table_name_param(object.dateable.try(:connector_url))
     when 'rwjson'
       Connector.json_table_name_param
     end
