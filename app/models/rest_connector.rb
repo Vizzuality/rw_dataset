@@ -62,8 +62,10 @@ class RestConnector < ApplicationRecord
     def generate_table_name
       self.table_name = if self.connector_provider.include?('cartodb')
                           Connector.cartodb_table_name_param(self.connector_url)
-                        else
+                        elsif self.connector_provider.include?('featureservice')
                           Connector.arcgis_table_name_param(self.connector_url)
+                        else
+                          self.table_name
                         end
     end
 end
