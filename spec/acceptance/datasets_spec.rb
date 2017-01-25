@@ -73,6 +73,23 @@ module V1
           expect(json_attr['userId']).to       eq('3242-32442-432')
         end
 
+        it 'Allows to create rest dataset by a admin with vocabularies' do
+          post '/dataset', params: {"loggedUser": {"role": "admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-432"},
+                                    "dataset": {"provider": "cartodb", "tableName": "public.carts_test_endoint", "application": ["gfw"],
+                                                 "connectorUrl": "https://rschumann.cartodb.com/api/v2/sql?q=select from public.carts_test_endoint",
+                                                 "name": "mydataset(prep)", "format": 0, "data_path": "rows", "attributesPath": "fields",
+                                                 "vocabularies": { "voc_1": {"tags": ["tag_1", "tag_2"]} }}
+                                    }
+
+          expect(status).to eq(201)
+          expect(json_attr['name']).to         eq('mydataset(prep)')
+          expect(json_attr['provider']).to     eq('cartodb')
+          expect(json_attr['connectorUrl']).to be_present
+          expect(json_attr['dataPath']).to     be_present
+          expect(json_attr['tableName']).to    be_present
+          expect(json_attr['userId']).to       eq('3242-32442-432')
+        end
+
         it 'Allows to create rest dataset by a admin with tags and topics extracting table name from url' do
           post '/dataset', params: {"loggedUser": {"role": "admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-432"},
                                     "dataset": {"provider": "cartodb", "application": ["gfw"],

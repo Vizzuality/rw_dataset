@@ -27,7 +27,7 @@ module Connection
       headers['authentication'] = Service::SERVICE_TOKEN
 
       body = {}
-      if ressource == 'metadata'
+      if ressource.include?('metadata') || ressource.include?('vocabulary')
         body['ids'] = options['ids'] if options['ids'].present?
         body['app'] = options['app'] if options['ids'].present? && options['app'].present?
       else
@@ -38,7 +38,7 @@ module Connection
 
       method = options['ids'].present? ? 'post' : 'get'
 
-      url  = if ressource == 'metadata'
+      url  = if ressource.include?('metadata') || ressource.include?('vocabulary')
                "#{Service::SERVICE_URL}/dataset"
              else
                "#{Service::SERVICE_URL}"
@@ -46,15 +46,15 @@ module Connection
 
       url += if options['ids'].present?
                "/#{ressource}/find-by-ids"
-             elsif options['ids'].blank? && ressource == 'metadata'
+             elsif options['ids'].blank? && (ressource.include?('metadata') || ressource.include?('vocabulary'))
                "/#{options['dataset_id']}/#{ressource}"
              else
                "/dataset/#{options['dataset_id']}/#{ressource}"
              end
 
-      if options['app'].present? && options['ids'].blank? && ressource == 'metadata'
+      if options['app'].present? && options['ids'].blank? && (ressource.include?('metadata') || ressource.include?('vocabulary'))
         url += "?application=#{options['app']}"
-      elsif options['app'].present? && ressource != 'metadata'
+      elsif options['app'].present? && (ressource != 'metadata' || ressource != 'vocabulary')
         url += "?app=#{options['app']}"
       end
       url  = URI.decode(url)

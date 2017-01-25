@@ -32,7 +32,7 @@ class Dataset < ApplicationRecord
   FORMAT = %w(JSON).freeze
   STATUS = %w(pending saved failed deleted).freeze
 
-  attr_accessor :metadata, :layer, :widget
+  attr_accessor :metadata, :layer, :widget, :vocabulary, :vocabularies
 
   store_accessor :legend, :country, :region, :date, :lat, :long
 
@@ -45,7 +45,7 @@ class Dataset < ApplicationRecord
   before_save  :merge_tags,        if: 'tags.present? && tags_changed?'
   before_save  :merge_topics,      if: 'topics.present? && topics_changed?'
   before_save  :merge_apps,        if: 'application.present? && application_changed?'
-  after_save   :call_tags_service, if: 'tags_changed? || topics_changed?'
+  after_save   :call_tags_service, if: 'tags_changed? || topics_changed? || vocabularies.present?'
   after_save   :clear_cache
 
   before_validation(on: [:create, :update]) do
@@ -300,19 +300,22 @@ class Dataset < ApplicationRecord
     end
 
     def call_tags_service
-      params_for_tags = {}
-      params_for_tags['taggable_id']    = self.id
-      params_for_tags['taggable_type']  = self.class.name
-      params_for_tags['taggable_slug']  = self.try(:slug)
-      params_for_tags['tags_list']      = tags
+      # params_for_tags = {}
+      # params_for_tags['taggable_id']    = self.id
+      # params_for_tags['taggable_type']  = self.class.name
+      # params_for_tags['taggable_slug']  = self.try(:slug)
+      # params_for_tags['tags_list']      = tags
 
-      params_for_topics = {}
-      params_for_topics['topicable_id']   = params_for_tags['taggable_id']
-      params_for_topics['topicable_type'] = params_for_tags['taggable_type']
-      params_for_topics['topicable_slug'] = params_for_tags['taggable_slug']
-      params_for_topics['topics_list']    = topics
+      # params_for_topics = {}
+      # params_for_topics['topicable_id']   = params_for_tags['taggable_id']
+      # params_for_topics['topicable_type'] = params_for_tags['taggable_type']
+      # params_for_topics['topicable_slug'] = params_for_tags['taggable_slug']
+      # params_for_topics['topics_list']    = topics
 
-      TagServiceJob.perform_later('Dataset', params_for_tags, params_for_topics)
+      params_for_vocabularies = self.vocabularies
+      params_for_tags         = tags
+
+      VocabularyServiceJob.perform_later(self.class.name, self.id, params_for_tags, params_for_vocabularies)
     end
 
     def validate_name
