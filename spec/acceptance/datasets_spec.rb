@@ -77,8 +77,8 @@ module V1
                                     "dataset": {"provider": "cartodb", "tableName": "public.carts_test_endoint", "application": ["gfw"],
                                                  "connectorUrl": "https://rschumann.cartodb.com/api/v2/sql?q=select from public.carts_test_endoint",
                                                  "name": "mydataset(prep)", "format": 0, "data_path": "rows", "attributesPath": "fields",
-                                                 "vocabularies": { "voc_1": {"tags": ["tag_1", "tag_2"]} }}
-                                    }
+                                                 "vocabularies": { "voc_1": {"tags": ["tag_1", "tag_2"]}}
+                                                 }}
 
           expect(status).to eq(201)
           expect(json_attr['name']).to         eq('mydataset(prep)')
@@ -86,7 +86,51 @@ module V1
           expect(json_attr['connectorUrl']).to be_present
           expect(json_attr['dataPath']).to     be_present
           expect(json_attr['tableName']).to    be_present
+          expect(json_attr['tags']).to         eq(['tag_1', 'tag_2'])
           expect(json_attr['userId']).to       eq('3242-32442-432')
+        end
+
+        it 'Allows to create rest dataset by a admin with vocabularies and tags' do
+          post '/dataset', params: {"loggedUser": {"role": "admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-432"},
+                                    "dataset": {"provider": "cartodb", "tableName": "public.carts_test_endoint", "application": ["gfw"],
+                                                 "connectorUrl": "https://rschumann.cartodb.com/api/v2/sql?q=select from public.carts_test_endoint",
+                                                 "name": "mydataset(prep)", "format": 0, "data_path": "rows", "attributesPath": "fields",
+                                                 "vocabularies": { "voc_1": {"tags": ["tag_1", "tag_2"]}},
+                                                 "tags": ["tag_3", "tag_4"]
+                                                 }}
+
+          expect(status).to eq(201)
+          expect(json_attr['name']).to         eq('mydataset(prep)')
+          expect(json_attr['provider']).to     eq('cartodb')
+          expect(json_attr['connectorUrl']).to be_present
+          expect(json_attr['dataPath']).to     be_present
+          expect(json_attr['tableName']).to    be_present
+          expect(json_attr['tags']).to         eq(['tag_3', 'tag_4', "tag_1", "tag_2"])
+          expect(json_attr['userId']).to       eq('3242-32442-432')
+        end
+
+        it 'Do not allows to create dataset with not valid vocabularies' do
+          post '/dataset', params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
+                                    "dataset": {"provider": "featureservice", "application": ["gfw"],
+                                                 "connectorUrl": "https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga_County/FeatureServer/0?f=json",
+                                                 "name": "Test dataset", "format": 0, "data_path": "features", "attributesPath": "fields",
+                                                  "vocabularies": { "voc_1": {"tags": ["tag_1", "tag_2"]}, "voc_2": ["tag_1", "tag_2"]}
+                                                  }}
+
+          expect(status).to eq(422)
+          expect(json_main['errors'][0]['title']).to eq(["Dataset vocabularies must be a valid JSON object. Example: {\"vocabularies\": {\"my vocabulary\": {\"tags\": [\"my tag 1\", \"my tag 2\"]}}}"])
+        end
+
+        it 'Do not allows to create dataset with not valid tags' do
+          post '/dataset', params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
+                                    "dataset": {"provider": "featureservice", "application": ["gfw"],
+                                                 "connectorUrl": "https://services.arcgis.com/uDTUpUPbk8X8mXwl/arcgis/rest/services/Public_Schools_in_Onondaga_County/FeatureServer/0?f=json",
+                                                 "name": "Test dataset", "format": 0, "data_path": "features", "attributesPath": "fields",
+                                                  "tags": {"voc 1": ['tag 1']}
+                                                  }}
+
+          expect(status).to eq(422)
+          expect(json_main['errors'][0]['title']).to eq(["Dataset tags must be a valid JSON array. Example: {\"tags\": [\"tag 1\", \"tag 2\"]"])
         end
 
         it 'Allows to create rest dataset by a admin with tags and extracting table name from url' do

@@ -41,17 +41,12 @@ class Dataset < ApplicationRecord
   belongs_to :doc_connector,  -> { where("datasets.dateable_type = 'DocConnector'")  }, foreign_key: :dateable_id, optional: true
   belongs_to :wms_connector,  -> { where("datasets.dateable_type = 'WmsConnector'")  }, foreign_key: :dateable_id, optional: true
 
-  before_save  :merge_tags,        if: 'tags.present? && tags_changed?'
+  before_save  :merge_tags,        if: '(tags.present? && tags_changed?) || vocabularies.present?'
   before_save  :merge_apps,        if: 'application.present? && application_changed?'
   after_update :call_tags_service, if: 'tags_changed? || vocabularies.present?'
   after_save   :clear_cache
 
-  before_validation(on: [:create, :update]) do
-    validate_name
-    validate_legend
-  end
-
-  validates :name, presence: true, on: :create
+  include DatasetValidations
 
   scope :recent,             -> { order('updated_at DESC') }
   scope :including_dateable, -> { includes(:dateable)      }
@@ -290,7 +285,16 @@ class Dataset < ApplicationRecord
   private
 
     def merge_tags
-      self.tags = self.tags.each { |t| t.downcase! }.uniq
+      composited_tags = self.tags.each { |t| t.downcase! }.uniq
+      if self.vocabularies.present?
+        self.vocabularies.to_a.each do |voc|
+          voc[1]['tags'].each do |tag|
+            composited_tags << tag
+          end
+        end
+      end
+
+      self.tags = composited_tags.each { |t| t.downcase! }.uniq
     end
 
     def merge_apps
@@ -306,47 +310,5 @@ class Dataset < ApplicationRecord
       params_for_tags         = tags
 
       VocabularyServiceJob.perform_later(self.class.name, self.id, params_for_tags, params_for_vocabularies)
-    end
-
-    def validate_name
-      self.errors.add(:name, "must be a valid string") if valid_json?(self.name)
-    end
-
-    def validate_legend
-      if self.legend.present? && valid_legend?(self.legend.to_json).blank?
-        self.errors.add(:legend, 'must be a valid JSON object. Example: {"legend": {"long": "123", "lat": "123", "country": ["pais"], "region": ["barrio"], "date": ["start_date", "end_date"]}}')
-      end
-    end
-
-    def valid_json?(json)
-      begin
-        JSON.parse(json)
-        return true
-      rescue JSON::ParserError
-        return false
-      end
-    end
-
-    def valid_legend?(json)
-      begin
-        json = JSON.parse(json)
-        if (json.keys & ['long', 'lat', 'country', 'region', 'date']).size == json.keys.size
-          is_valid = []
-          is_valid <<  json['long'].is_a?(String)   if json['long'].present?
-          is_valid <<  json['lat'].is_a?(String)    if json['lat'].present?
-          is_valid <<  json['country'].is_a?(Array) if json['country'].present?
-          is_valid <<  json['region'].is_a?(Array)  if json['region'].present?
-          is_valid <<  json['date'].is_a?(Array)    if json['date'].present?
-          if is_valid.include?(false)
-            return false
-          else
-            return true
-          end
-        else
-          return false
-        end
-      rescue JSON::ParserError
-        return false
-      end
     end
 end
