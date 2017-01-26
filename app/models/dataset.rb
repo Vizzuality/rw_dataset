@@ -175,6 +175,11 @@ class Dataset < ApplicationRecord
           datasets = datasets.each do |dataset|
                        dataset.widget = Widget.where(dataset: dataset.id)
                      end
+        when 'vocabulary'
+          Vocabulary.data = VocabularyService.populate_dataset(dataset_ids, app)
+          datasets = datasets.each do |dataset|
+                       dataset.vocabulary = Vocabulary.where(id: dataset.id)
+                     end
         end
       end
 
@@ -275,6 +280,9 @@ class Dataset < ApplicationRecord
       when 'widget'
         Widget.data = WidgetService.populate_dataset(self.id, app)
         @widget     = Widget.where(dataset: self.id)
+      when 'vocabulary'
+        Vocabulary.data = VocabularyService.populate_dataset(self.id, app)
+        @vocabulary     = Vocabulary.all
       end
     end
   end
