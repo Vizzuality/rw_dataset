@@ -45,6 +45,51 @@ module V1
                                   ]
                          }}
 
+    let!(:dataset_vocabularies_faild) {{"data": [{
+                                      "type": "resource",
+                                      "id": "#{dataset_id}",
+                                      "attributes": {
+                                        "voc_2": [
+                                          "a"
+                                        ],
+                                        "legacy": [
+                                          "tag_15",
+                                          "tag_25"
+                                        ],
+                                        "voc_10": [
+                                          "tag_10",
+                                          "tag_20"
+                                        ],
+                                        "voc_15": [
+                                          "tag_10",
+                                          "tag_20"
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "type": "resource",
+                                      "id": "#{dataset_id}",
+                                      "attributes": {
+                                        "voc_2": [
+                                          "a"
+                                        ],
+                                        "legacy": [
+                                          "tag_15",
+                                          "tag_25"
+                                        ],
+                                        "voc_10": [
+                                          "tag_10",
+                                          "tag_20"
+                                        ],
+                                        "voc_15": [
+                                          "tag_10",
+                                          "tag_20"
+                                        ]
+                                      }
+                                    }
+                                  ]
+                         }}
+
     before(:each) do
       ServiceSetting.create(name: 'api-gateway', listener: true, token: '3123123der324eewr434ewr4324', url: 'http://192.168.99.100:8000')
     end
@@ -66,6 +111,25 @@ module V1
           expect(status).to eq(200)
           expect(json.length).to eq(1)
           expect(dataset_json['vocabulary']).to eq([{"attributes"=>{"voc_2"=>["a"], "legacy"=>["tag_15", "tag_25"], "voc_10"=>["tag_10", "tag_20"], "voc_15"=>["tag_10", "tag_20"], "id"=>"#{dataset_id}"}}])
+        end
+      end
+
+      context 'datasets list with wrong vocabularies' do
+        before(:each) do
+          stub_request(:post, "http://192.168.99.100:8000/dataset/vocabulary/find-by-ids").
+          with(:body => "{\"ids\":[\"#{dataset_id}\"]}",
+               :headers => {'Accept'=>'application/json', 'Authentication'=>'3123123der324eewr434ewr4324', 'Content-Type'=>'application/json'}).
+          to_return(:status => 200, :body => Oj.dump(dataset_vocabularies_faild), :headers => {})
+        end
+
+        it 'Show empty vocabulary for datasets' do
+          get "/dataset?connector_type=wms&includes=vocabulary"
+
+          dataset_json = json[0]['attributes']
+
+          expect(status).to eq(200)
+          expect(json.length).to eq(1)
+          expect(dataset_json['vocabulary']).to be_nil
         end
       end
 
