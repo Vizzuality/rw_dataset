@@ -19,8 +19,7 @@ module ParamsHandler
                                                            data_overwrite: params[:dataset].dig(:data_overwrite),
                                                            subtitle: params[:dataset].dig(:subtitle),
                                                            vocabularies: params[:dataset].dig(:vocabularies),
-                                                           tags: params[:dataset].dig(:tags),
-                                                           topics: params[:dataset].dig(:topics) }.reject{ |_, v| v.nil? })
+                                                           tags: params[:dataset].dig(:tags) }.reject{ |_, v| v.nil? })
                               .permit!
                               .reject{ |_, v| v.nil? }
     end

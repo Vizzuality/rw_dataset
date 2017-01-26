@@ -19,14 +19,13 @@
 #  layer_info      :jsonb
 #  data_overwrite  :boolean          default(FALSE)
 #  subtitle        :string
-#  topics          :jsonb
 #  user_id         :string
 #  legend          :jsonb
 #
 
 class DatasetSerializer < ApplicationSerializer
   attributes :id, :application, :name, :subtitle, :data_path, :attributes_path, :connector_type, :provider, :user_id,
-             :connector_url, :table_name, :topics, :tags, :legend, :cloned_host, :status, :overwrite
+             :connector_url, :table_name, :tags, :legend, :cloned_host, :status, :overwrite
   attribute :metadata, if: :metadata_not_null?
   attribute :layer,    if: :layer_not_null?
   attribute :widget,   if: :widget_not_null?

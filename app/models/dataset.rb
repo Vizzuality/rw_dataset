@@ -19,7 +19,6 @@
 #  layer_info      :jsonb
 #  data_overwrite  :boolean          default(FALSE)
 #  subtitle        :string
-#  topics          :jsonb
 #  user_id         :string
 #  legend          :jsonb
 #
@@ -43,9 +42,8 @@ class Dataset < ApplicationRecord
   belongs_to :wms_connector,  -> { where("datasets.dateable_type = 'WmsConnector'")  }, foreign_key: :dateable_id, optional: true
 
   before_save  :merge_tags,        if: 'tags.present? && tags_changed?'
-  before_save  :merge_topics,      if: 'topics.present? && topics_changed?'
   before_save  :merge_apps,        if: 'application.present? && application_changed?'
-  after_save   :call_tags_service, if: 'tags_changed? || topics_changed? || vocabularies.present?'
+  after_update :call_tags_service, if: 'tags_changed? || vocabularies.present?'
   after_save   :clear_cache
 
   before_validation(on: [:create, :update]) do
@@ -287,10 +285,6 @@ class Dataset < ApplicationRecord
       self.tags = self.tags.each { |t| t.downcase! }.uniq
     end
 
-    def merge_topics
-      self.topics = self.topics.each { |t| t.downcase! }.uniq
-    end
-
     def merge_apps
       self.application = self.application.each { |a| a.downcase! }.uniq
     end
@@ -300,18 +294,6 @@ class Dataset < ApplicationRecord
     end
 
     def call_tags_service
-      # params_for_tags = {}
-      # params_for_tags['taggable_id']    = self.id
-      # params_for_tags['taggable_type']  = self.class.name
-      # params_for_tags['taggable_slug']  = self.try(:slug)
-      # params_for_tags['tags_list']      = tags
-
-      # params_for_topics = {}
-      # params_for_topics['topicable_id']   = params_for_tags['taggable_id']
-      # params_for_topics['topicable_type'] = params_for_tags['taggable_type']
-      # params_for_topics['topicable_slug'] = params_for_tags['taggable_slug']
-      # params_for_topics['topics_list']    = topics
-
       params_for_vocabularies = self.vocabularies
       params_for_tags         = tags
 
