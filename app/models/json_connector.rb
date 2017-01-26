@@ -13,6 +13,7 @@
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
 #  table_name                 :string
+#  connector_url              :string
 #
 
 require 'oj'
