@@ -54,7 +54,7 @@ module V1
           expect(json_attr['tags']).to         be_empty
         end
 
-        it 'Allows to create rest dataset by a admin with tags and topics' do
+        it 'Allows to create rest dataset by a admin with tags' do
           post '/dataset', params: {"loggedUser": {"role": "admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-432"},
                                     "dataset": {"provider": "cartodb", "tableName": "public.carts_test_endoint", "application": ["gfw"],
                                                  "connectorUrl": "https://rschumann.cartodb.com/api/v2/sql?q=select from public.carts_test_endoint",
@@ -89,7 +89,7 @@ module V1
           expect(json_attr['userId']).to       eq('3242-32442-432')
         end
 
-        it 'Allows to create rest dataset by a admin with tags and topics extracting table name from url' do
+        it 'Allows to create rest dataset by a admin with tags and extracting table name from url' do
           post '/dataset', params: {"loggedUser": {"role": "admin", "extraUserData": { "apps": ["gfw","prep"] }, "id": "3242-32442-432"},
                                     "dataset": {"provider": "cartodb", "application": ["gfw"],
                                                  "connectorUrl": "https://rschumann.cartodb.com/api/v2/sql?q=select%20*%20from%20public.carts_test_endoint",
