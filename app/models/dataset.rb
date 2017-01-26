@@ -19,7 +19,6 @@
 #  layer_info      :jsonb
 #  data_overwrite  :boolean          default(FALSE)
 #  subtitle        :string
-#  topics          :jsonb
 #  user_id         :string
 #  legend          :jsonb
 #
@@ -32,7 +31,7 @@ class Dataset < ApplicationRecord
   FORMAT = %w(JSON).freeze
   STATUS = %w(pending saved failed deleted).freeze
 
-  attr_accessor :metadata, :layer, :widget
+  attr_accessor :metadata, :layer, :widget, :vocabulary, :vocabularies
 
   store_accessor :legend, :country, :region, :date, :lat, :long
 
@@ -43,9 +42,8 @@ class Dataset < ApplicationRecord
   belongs_to :wms_connector,  -> { where("datasets.dateable_type = 'WmsConnector'")  }, foreign_key: :dateable_id, optional: true
 
   before_save  :merge_tags,        if: 'tags.present? && tags_changed?'
-  before_save  :merge_topics,      if: 'topics.present? && topics_changed?'
   before_save  :merge_apps,        if: 'application.present? && application_changed?'
-  after_save   :call_tags_service, if: 'tags_changed? || topics_changed?'
+  after_update :call_tags_service, if: 'tags_changed? || vocabularies.present?'
   after_save   :clear_cache
 
   before_validation(on: [:create, :update]) do
@@ -177,6 +175,11 @@ class Dataset < ApplicationRecord
           datasets = datasets.each do |dataset|
                        dataset.widget = Widget.where(dataset: dataset.id)
                      end
+        when 'vocabulary'
+          Vocabulary.data = VocabularyService.populate_dataset(dataset_ids, app)
+          datasets = datasets.each do |dataset|
+                       dataset.vocabulary = Vocabulary.where(id: dataset.id)
+                     end
         end
       end
 
@@ -277,6 +280,9 @@ class Dataset < ApplicationRecord
       when 'widget'
         Widget.data = WidgetService.populate_dataset(self.id, app)
         @widget     = Widget.where(dataset: self.id)
+      when 'vocabulary'
+        Vocabulary.data = VocabularyService.populate_dataset(self.id, app)
+        @vocabulary     = Vocabulary.all
       end
     end
   end
@@ -285,10 +291,6 @@ class Dataset < ApplicationRecord
 
     def merge_tags
       self.tags = self.tags.each { |t| t.downcase! }.uniq
-    end
-
-    def merge_topics
-      self.topics = self.topics.each { |t| t.downcase! }.uniq
     end
 
     def merge_apps
@@ -300,19 +302,10 @@ class Dataset < ApplicationRecord
     end
 
     def call_tags_service
-      params_for_tags = {}
-      params_for_tags['taggable_id']    = self.id
-      params_for_tags['taggable_type']  = self.class.name
-      params_for_tags['taggable_slug']  = self.try(:slug)
-      params_for_tags['tags_list']      = tags
+      params_for_vocabularies = self.vocabularies
+      params_for_tags         = tags
 
-      params_for_topics = {}
-      params_for_topics['topicable_id']   = params_for_tags['taggable_id']
-      params_for_topics['topicable_type'] = params_for_tags['taggable_type']
-      params_for_topics['topicable_slug'] = params_for_tags['taggable_slug']
-      params_for_topics['topics_list']    = topics
-
-      TagServiceJob.perform_later('Dataset', params_for_tags, params_for_topics)
+      VocabularyServiceJob.perform_later(self.class.name, self.id, params_for_tags, params_for_vocabularies)
     end
 
     def validate_name

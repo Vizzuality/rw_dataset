@@ -18,7 +18,6 @@
 #  layer_info      :jsonb
 #  data_overwrite  :boolean          default(FALSE)
 #  subtitle        :string
-#  topics          :jsonb
 #  user_id         :string
 #  legend          :jsonb
 #
