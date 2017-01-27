@@ -28,12 +28,16 @@ module DatasetValidations
       def validate_vocabularies
         if self.vocabularies.present? && valid_vocabulary?(self.vocabularies.to_json).blank?
           self.errors.add(:vocabularies, 'must be a valid JSON object. Example: {"vocabularies": {"my vocabulary": {"tags": ["my tag 1", "my tag 2"]}}}')
+        else
+          merge_tags if vocabularies.present?
         end
       end
 
       def validate_tags
         if self.tags.present? && valid_tags?(self.tags.to_json).blank?
           self.errors.add(:tags, 'must be a valid JSON array. Example: {"tags": ["tag 1", "tag 2"]')
+        else
+          merge_tags if tags.present? && tags_changed?
         end
       end
 
@@ -113,6 +117,19 @@ module DatasetValidations
         rescue JSON::ParserError
           return false
         end
+      end
+
+      def merge_tags
+        composited_tags = self.tags.each { |t| t.downcase! }.uniq
+        if self.vocabularies.present?
+          self.vocabularies.to_a.each do |voc|
+            voc[1]['tags'].each do |tag|
+              composited_tags << tag
+            end
+          end
+        end
+
+        self.tags = composited_tags.each { |t| t.downcase! }.uniq
       end
   end
 
