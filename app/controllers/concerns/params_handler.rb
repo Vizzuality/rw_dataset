@@ -47,24 +47,6 @@ module ParamsHandler
           end
         end
       end
-
-      def dataset_data_params_for_update
-        if @json_connector && params[:data_id].present?
-          params.require(:dataset).merge(data_to_update: true, data_id: params[:data_id], logged_user: params[:logged_user]).permit!
-        else
-          params.require(:dataset).merge(to_update: true, logged_user: params[:logged_user]).permit!
-        end
-      end
-
-      def dataset_data_params_for_overwrite
-        params.require(:dataset).merge(overwrite: true, logged_user: params[:logged_user]).permit! if @overwriteable
-      end
-
-      def dataset_data_params_for_delete
-        if @json_connector && params[:data_id].present?
-          params.merge(to_delete: true, data_to_update: true, data_id: params[:data_id], logged_user: params[:logged_user])
-        end
-      end
   end
 
   class_methods {}

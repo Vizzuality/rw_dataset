@@ -37,42 +37,42 @@ module V1
       end
     end
 
-    def update_data
-      begin
-        @dateable.connect_to_service(dataset_data_params_for_update)
-        render json: { success: true, message: 'Dataset data update in progress' }, status: 200
-      rescue
-        render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
-      end
-    end
+    # def update_data
+    #   begin
+    #     @dateable.connect_to_service(dataset_data_params_for_update)
+    #     render json: { success: true, message: 'Dataset data update in progress' }, status: 200
+    #   rescue
+    #     render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
+    #   end
+    # end
 
-    def overwrite_data
-      begin
-        if @dataset.data_overwrite? && @overwriteable
-          if @dateable.update(dataset_params_for_update)
-            @dateable.connect_to_service(dataset_data_params_for_overwrite)
-            render json: { success: true, message: 'Dataset data update in progress' }, status: 200
-          else
-            render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
-          end
-        elsif @overwriteable
-          render json: { errors: [{ status: 422, title: "Dataset data is locked and can't be updated" }] }, status: 422
-        else
-          render json: { errors: [{ status: 422, title: 'Not a fuction' }] }, status: 422
-        end
-      rescue
-        render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
-      end
-    end
+    # def overwrite_data
+    #   begin
+    #     if @dataset.data_overwrite? && @overwriteable
+    #       if @dateable.update(dataset_params_for_update)
+    #         @dateable.connect_to_service(dataset_data_params_for_overwrite)
+    #         render json: { success: true, message: 'Dataset data update in progress' }, status: 200
+    #       else
+    #         render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
+    #       end
+    #     elsif @overwriteable
+    #       render json: { errors: [{ status: 422, title: "Dataset data is locked and can't be updated" }] }, status: 422
+    #     else
+    #       render json: { errors: [{ status: 422, title: 'Not a fuction' }] }, status: 422
+    #     end
+    #   rescue
+    #     render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
+    #   end
+    # end
 
-    def delete_data
-      begin
-        @dateable.connect_to_service(dataset_data_params_for_delete)
-        render json: { success: true, message: 'Dataset data deleted' }, status: 200
-      rescue
-        render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
-      end
-    end
+    # def delete_data
+    #   begin
+    #     @dateable.connect_to_service(dataset_data_params_for_delete)
+    #     render json: { success: true, message: 'Dataset data deleted' }, status: 200
+    #   rescue
+    #     render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
+    #   end
+    # end
 
     def create
       begin
