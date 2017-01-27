@@ -173,6 +173,7 @@ class Dataset < ApplicationRecord
                             end
           datasets = datasets.each do |dataset|
                        dataset.vocabulary = Vocabulary.where(resource: { 'id' => dataset.id, 'type' => 'dataset' })
+                                                      .map! { |v| { attributes: { resource: v.resource, tags: v.tags, name: v.name } }}
                      end
         end
       end
