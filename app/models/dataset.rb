@@ -151,31 +151,28 @@ class Dataset < ApplicationRecord
       end
 
       including.uniq.each do |include|
-        begin
-          case include
-          when 'metadata'
-            Metadata.data = MetadataService.populate_dataset(dataset_ids, app)
-            datasets = datasets.each do |dataset|
-                         dataset.metadata = Metadata.where(dataset: dataset.id)
-                       end
-          when 'layer'
-            Layer.data = LayerService.populate_dataset(dataset_ids, app)
-            datasets = datasets.each do |dataset|
-                         dataset.layer = Layer.where(dataset: dataset.id)
-                       end
-          when 'widget'
-            Widget.data = WidgetService.populate_dataset(dataset_ids, app)
-            datasets = datasets.each do |dataset|
-                         dataset.widget = Widget.where(dataset: dataset.id)
-                       end
-          when 'vocabulary'
-            Vocabulary.data = VocabularyService.populate_dataset(dataset_ids, app)
-            datasets = datasets.each do |dataset|
-                         dataset.vocabulary = Vocabulary.where(dataset: dataset.id)
-                       end
-          end
-        rescue
-          []
+        case include
+        when 'metadata'
+          Metadata.data = MetadataService.populate_dataset(dataset_ids, app)
+          datasets = datasets.each do |dataset|
+                       dataset.metadata = Metadata.where(dataset: dataset.id)
+                     end
+        when 'layer'
+          Layer.data = LayerService.populate_dataset(dataset_ids, app)
+          datasets = datasets.each do |dataset|
+                       dataset.layer = Layer.where(dataset: dataset.id)
+                     end
+        when 'widget'
+          Widget.data = WidgetService.populate_dataset(dataset_ids, app)
+          datasets = datasets.each do |dataset|
+                       dataset.widget = Widget.where(dataset: dataset.id)
+                     end
+        when 'vocabulary'
+          Vocabulary.data = VocabularyService.populate_dataset(dataset_ids, app)
+          puts Vocabulary.data.inspect
+          datasets = datasets.each do |dataset|
+                       dataset.vocabulary = Vocabulary.where(resource: { 'id' => dataset.id, 'type' => 'dataset' })
+                     end
         end
       end
 
