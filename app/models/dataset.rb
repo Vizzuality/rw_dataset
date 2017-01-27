@@ -41,11 +41,9 @@ class Dataset < ApplicationRecord
   belongs_to :doc_connector,  -> { where("datasets.dateable_type = 'DocConnector'")  }, foreign_key: :dateable_id, optional: true
   belongs_to :wms_connector,  -> { where("datasets.dateable_type = 'WmsConnector'")  }, foreign_key: :dateable_id, optional: true
 
-  before_save  :merge_apps,        if: 'application.present? && application_changed?'
-  after_update :call_tags_service, if: 'tags_changed? || vocabularies.present?'
-  after_save   :clear_cache
+  after_save :clear_cache
 
-  include DatasetValidations
+  include DatasetFunctions
 
   scope :recent,             -> { order('updated_at DESC') }
   scope :including_dateable, -> { includes(:dateable)      }
@@ -287,18 +285,7 @@ class Dataset < ApplicationRecord
 
   private
 
-    def merge_apps
-      self.application = self.application.each { |a| a.downcase! }.uniq
-    end
-
     def clear_cache
       Rails.cache.delete_matched('*datasets_*')
-    end
-
-    def call_tags_service
-      params_for_vocabularies = self.vocabularies
-      params_for_tags         = tags
-
-      VocabularyServiceJob.perform_later(self.class.name, self.id, params_for_tags, params_for_vocabularies)
     end
 end

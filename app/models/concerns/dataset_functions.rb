@@ -1,8 +1,11 @@
 # frozen_string_literal: true
-module DatasetValidations
+module DatasetFunctions
   extend ActiveSupport::Concern
 
   included do
+    before_save  :merge_apps,        if: 'application.present? && application_changed?'
+    after_update :call_tags_service, if: 'tags_changed? || vocabularies.present?'
+
     before_validation(on: [:create, :update]) do
       validate_name
       validate_legend
@@ -11,7 +14,6 @@ module DatasetValidations
     end
 
     validates :name, presence: true, on: :create
-
 
     private
 
@@ -119,6 +121,10 @@ module DatasetValidations
         end
       end
 
+      def merge_apps
+        self.application = self.application.each { |a| a.downcase! }.uniq
+      end
+
       def merge_tags
         composited_tags = self.tags.each { |t| t.downcase! }.uniq
         if self.vocabularies.present?
@@ -130,6 +136,13 @@ module DatasetValidations
         end
 
         self.tags = composited_tags.each { |t| t.downcase! }.uniq
+      end
+
+      def call_tags_service
+        params_for_vocabularies = self.vocabularies
+        params_for_tags         = tags
+
+        VocabularyServiceJob.perform_later(self.class.name, self.id, params_for_tags, params_for_vocabularies)
       end
   end
 
