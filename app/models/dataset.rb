@@ -76,7 +76,7 @@ class Dataset < ApplicationRecord
       sort           = options['sort']                     if options['sort'].present?
       find_by_name   = options['name']                     if options['name'].present?
       find_by_tags   = options['tags'].downcase.split(',') if options['tags'].present?
-      expire_cache   = options['cache']['expire']          if options['cache'].present? && options['cache']['expire'].present?
+      expire_cache   = options['cache']['expire']          if options['cache'].present? && options['cache'][','].present?
 
       cache_options  = 'dataset-list'
       cache_options += "_#{connector_type}"          if connector_type.present?
@@ -168,8 +168,9 @@ class Dataset < ApplicationRecord
                        dataset.widget = Widget.where(dataset: dataset.id)
                      end
         when 'vocabulary'
-          Vocabulary.data = VocabularyService.populate_dataset(dataset_ids, app)
-          puts Vocabulary.data.inspect
+          Vocabulary.data = VocabularyService.populate_dataset(dataset_ids, app).each do |vocabulary_data|
+                              vocabulary_data.merge!(id: SecureRandom.uuid)
+                            end
           datasets = datasets.each do |dataset|
                        dataset.vocabulary = Vocabulary.where(resource: { 'id' => dataset.id, 'type' => 'dataset' })
                      end

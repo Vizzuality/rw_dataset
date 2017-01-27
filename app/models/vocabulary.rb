@@ -2,5 +2,5 @@
 class Vocabulary < ActiveHash::Base
   include ActiveModel::Serialization
 
-  fields :id
+  fields :id, :tags, :name, :resource
 end
