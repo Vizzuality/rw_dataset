@@ -111,7 +111,7 @@ module V1
 
           expect(status).to eq(200)
           expect(json.length).to eq(1)
-          expect(dataset_json['vocabulary'][0]['attributes']['tags']).to eq(["test tag 1", "tag_1", "tag_2"])
+          expect(dataset_json['vocabulary']).to eq([{"attributes"=>{"resource"=>{"id"=>"#{dataset_id}", "type"=>"dataset"}, "tags"=>["test tag 1", "tag_1", "tag_2"], "name"=>"legacy"}}])
         end
       end
 

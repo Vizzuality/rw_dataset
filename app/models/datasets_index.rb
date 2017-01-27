@@ -77,7 +77,7 @@ class DatasetsIndex
 
     def rebuild_params
       @rebuild_params = begin
-        rejected = ['action', 'controller', 'logged_user', 'logedUser']
+        rejected = ['action', 'controller', 'logged_user', 'loggedUser']
         params.to_unsafe_h.reject { |key, value| rejected.include?(key.to_s) }
       end
     end
