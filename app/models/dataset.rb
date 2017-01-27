@@ -41,7 +41,6 @@ class Dataset < ApplicationRecord
   belongs_to :doc_connector,  -> { where("datasets.dateable_type = 'DocConnector'")  }, foreign_key: :dateable_id, optional: true
   belongs_to :wms_connector,  -> { where("datasets.dateable_type = 'WmsConnector'")  }, foreign_key: :dateable_id, optional: true
 
-  before_save  :merge_tags,        if: '(tags.present? && tags_changed?) || vocabularies.present?'
   before_save  :merge_apps,        if: 'application.present? && application_changed?'
   after_update :call_tags_service, if: 'tags_changed? || vocabularies.present?'
   after_save   :clear_cache
@@ -287,19 +286,6 @@ class Dataset < ApplicationRecord
   end
 
   private
-
-    def merge_tags
-      composited_tags = self.tags.each { |t| t.downcase! }.uniq
-      if self.vocabularies.present?
-        self.vocabularies.to_a.each do |voc|
-          voc[1]['tags'].each do |tag|
-            composited_tags << tag
-          end
-        end
-      end
-
-      self.tags = composited_tags.each { |t| t.downcase! }.uniq
-    end
 
     def merge_apps
       self.application = self.application.each { |a| a.downcase! }.uniq
