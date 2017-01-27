@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module DatasetValidations
+module DatasetFunctions
   extend ActiveSupport::Concern
 
   included do
@@ -10,8 +10,10 @@ module DatasetValidations
       validate_tags
     end
 
-    validates :name, presence: true, on: :create
+    before_save  :merge_apps,        if: 'application.present? && application_changed?'
+    after_update :call_tags_service, if: 'tags_changed? || vocabularies.present?'
 
+    validates :name, presence: true, on: :create
 
     private
 
@@ -130,6 +132,17 @@ module DatasetValidations
         end
 
         self.tags = composited_tags.each { |t| t.downcase! }.uniq
+      end
+
+      def merge_apps
+        self.application = self.application.each { |a| a.downcase! }.uniq
+      end
+
+      def call_tags_service
+        params_for_vocabularies = self.vocabularies
+        params_for_tags         = tags
+
+        VocabularyServiceJob.perform_later(self.class.name, self.id, params_for_tags, params_for_vocabularies)
       end
   end
 
