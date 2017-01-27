@@ -9,86 +9,90 @@ module V1
 
     let!(:dataset_id) { Dataset.find_by(name: 'Wms test set 1').id }
 
-    let!(:vocabularies_data) {{"data": [{
-                                    "id": "voc_2",
+    let!(:vocabularies_data) {{"data": [
+                                  {
+                                    "id": "voc_1",
                                     "type": "vocabulary",
                                     "attributes": {
                                       "tags": [
-                                        "a"
-                                      ]
+                                        "tag_1",
+                                        "tag_2"
+                                      ],
+                                      "name": "voc_1"
+                                    }
+                                  },
+                                  {
+                                    "id": "legacy",
+                                    "type": "vocabulary",
+                                    "attributes": {
+                                      "tags": [
+                                        "test tag 1",
+                                        "tag_1",
+                                        "tag_2"
+                                      ],
+                                      "name": "legacy"
                                     }
                                   }
                                 ]
-                         }}
+                              }}
 
-    let!(:dataset_vocabularies) {{"data": [{
-                                      "type": "resource",
-                                      "id": "#{dataset_id}",
-                                      "attributes": {
-                                        "voc_2": [
-                                          "a"
-                                        ],
-                                        "legacy": [
-                                          "tag_15",
-                                          "tag_25"
-                                        ],
-                                        "voc_10": [
-                                          "tag_10",
-                                          "tag_20"
-                                        ],
-                                        "voc_15": [
-                                          "tag_10",
-                                          "tag_20"
-                                        ]
-                                      }
-                                    }
-                                  ]
-                         }}
-
-    let!(:dataset_vocabularies_faild) {{"data": [{
-                                      "type": "resource",
-                                      "id": "#{dataset_id}",
-                                      "attributes": {
-                                        "voc_2": [
-                                          "a"
-                                        ],
-                                        "legacy": [
-                                          "tag_15",
-                                          "tag_25"
-                                        ],
-                                        "voc_10": [
-                                          "tag_10",
-                                          "tag_20"
-                                        ],
-                                        "voc_15": [
-                                          "tag_10",
-                                          "tag_20"
-                                        ]
-                                      }
-                                    },
+    let!(:dataset_vocabularies) {{"data": [
                                     {
-                                      "type": "resource",
-                                      "id": "#{dataset_id}",
+                                      "id": "legacy",
+                                      "type": "vocabulary",
                                       "attributes": {
-                                        "voc_2": [
-                                          "a"
+                                        "dataset": "#{dataset_id}",
+                                        "resource": {
+                                          "id": "#{dataset_id}",
+                                          "type": "dataset"
+                                        },
+                                        "tags": [
+                                          "test tag 1",
+                                          "tag_1",
+                                          "tag_2"
                                         ],
-                                        "legacy": [
-                                          "tag_15",
-                                          "tag_25"
-                                        ],
-                                        "voc_10": [
-                                          "tag_10",
-                                          "tag_20"
-                                        ],
-                                        "voc_15": [
-                                          "tag_10",
-                                          "tag_20"
-                                        ]
+                                        "name": "legacy"
                                       }
                                     }
                                   ]
-                         }}
+                                }}
+
+    let!(:dataset_vocabularies_faild) {{"data": [
+                                                  {
+                                                    "id": "voc_1",
+                                                    "type": "vocabulary",
+                                                    "attributes": {
+                                                      "dataset": "#{dataset_id}",
+                                                      "resource": {
+                                                        "id": "#{dataset_id}",
+                                                        "type": "dataset"
+                                                      },
+                                                      "tags": [
+                                                        "tag_1",
+                                                        "tag_2"
+                                                      ],
+                                                      "name": "voc_1"
+                                                    }
+                                                  },
+                                                  {
+                                                    "id": "voc_1",
+                                                    "type": "vocabulary",
+                                                    "attributes": {
+                                                      "dataset": "#{dataset_id}",
+                                                      "resource": {
+                                                        "id": "#{dataset_id}",
+                                                        "type": "dataset"
+                                                      },
+                                                      "tags": [
+                                                        "test tag 1",
+                                                        "tag_1",
+                                                        "tag_2"
+                                                      ],
+                                                      "name": "legacy"
+                                                    }
+                                                  }
+                                                ]
+                                       }}
 
     before(:each) do
       ServiceSetting.create(name: 'api-gateway', listener: true, token: '3123123der324eewr434ewr4324', url: 'http://192.168.99.100:8000')
@@ -110,7 +114,7 @@ module V1
 
           expect(status).to eq(200)
           expect(json.length).to eq(1)
-          expect(dataset_json['vocabulary']).to eq([{"attributes"=>{"voc_2"=>["a"], "legacy"=>["tag_15", "tag_25"], "voc_10"=>["tag_10", "tag_20"], "voc_15"=>["tag_10", "tag_20"], "id"=>"#{dataset_id}"}}])
+          expect(dataset_json['vocabulary']).to eq([{"attributes"=>{"dataset"=>"#{dataset_id}", "resource"=>{"id"=>"#{dataset_id}", "type"=>"dataset"}, "tags"=>["test tag 1", "tag_1", "tag_2"], "name"=>"legacy", "id"=>"legacy"}}])
         end
       end
 
@@ -144,7 +148,7 @@ module V1
           get "/dataset/#{dataset_id}?includes=vocabulary"
 
           expect(status).to eq(200)
-          expect(json_attr['vocabulary']).to eq([{"attributes"=>{"tags"=>["a"], "id"=>"voc_2"}}])
+          expect(json_attr['vocabulary']).to eq([{"attributes"=>{"tags"=>["tag_1", "tag_2"], "name"=>"voc_1", "id"=>"voc_1"}}, {"attributes"=>{"tags"=>["test tag 1", "tag_1", "tag_2"], "name"=>"legacy", "id"=>"legacy"}}])
         end
 
         it 'Show empty vocabulary for specific dataset' do

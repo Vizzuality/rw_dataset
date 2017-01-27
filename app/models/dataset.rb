@@ -171,7 +171,7 @@ class Dataset < ApplicationRecord
           when 'vocabulary'
             Vocabulary.data = VocabularyService.populate_dataset(dataset_ids, app)
             datasets = datasets.each do |dataset|
-                         dataset.vocabulary = Vocabulary.where(id: dataset.id)
+                         dataset.vocabulary = Vocabulary.where(dataset: dataset.id)
                        end
           end
         rescue
