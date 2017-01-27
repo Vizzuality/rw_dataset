@@ -3,15 +3,15 @@ module DatasetFunctions
   extend ActiveSupport::Concern
 
   included do
+    before_save  :merge_apps,        if: 'application.present? && application_changed?'
+    after_update :call_tags_service, if: 'tags_changed? || vocabularies.present?'
+
     before_validation(on: [:create, :update]) do
       validate_name
       validate_legend
       validate_vocabularies
       validate_tags
     end
-
-    before_save  :merge_apps,        if: 'application.present? && application_changed?'
-    after_update :call_tags_service, if: 'tags_changed? || vocabularies.present?'
 
     validates :name, presence: true, on: :create
 
@@ -121,6 +121,10 @@ module DatasetFunctions
         end
       end
 
+      def merge_apps
+        self.application = self.application.each { |a| a.downcase! }.uniq
+      end
+
       def merge_tags
         composited_tags = self.tags.each { |t| t.downcase! }.uniq
         if self.vocabularies.present?
@@ -132,10 +136,6 @@ module DatasetFunctions
         end
 
         self.tags = composited_tags.each { |t| t.downcase! }.uniq
-      end
-
-      def merge_apps
-        self.application = self.application.each { |a| a.downcase! }.uniq
       end
 
       def call_tags_service
