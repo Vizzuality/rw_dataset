@@ -35,7 +35,7 @@ class DatasetsIndex
   private
 
     def options_filter
-      params.permit(:connector_type, :provider, :status, :dataset, :tags, :app, :sort, :name, :cache, :logged_user, :includes, dataset: {}, ids: []).tap do |filter_params|
+      params.permit(:connector_type, :provider, :status, :dataset, :tags, :id, :app, :sort, :name, :cache, :logged_user, :includes, dataset: {}, ids: []).tap do |filter_params|
         filter_params[:page]= {}
         filter_params[:page][:number] = params[:page][:number] if params[:page].present? && params[:page][:number].present?
         filter_params[:page][:size]   = params[:page][:size]   if params[:page].present? && params[:page][:size].present?
@@ -77,7 +77,7 @@ class DatasetsIndex
 
     def rebuild_params
       @rebuild_params = begin
-        rejected = ['action', 'controller']
+        rejected = ['action', 'controller', 'logged_user', 'loggedUser']
         params.to_unsafe_h.reject { |key, value| rejected.include?(key.to_s) }
       end
     end

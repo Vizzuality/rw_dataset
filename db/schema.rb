@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170117160359) do
+ActiveRecord::Schema.define(version: 20170126084425) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,7 +33,6 @@ ActiveRecord::Schema.define(version: 20170117160359) do
     t.jsonb    "layer_info",      default: []
     t.boolean  "data_overwrite",  default: false
     t.string   "subtitle"
-    t.jsonb    "topics",          default: []
     t.string   "user_id"
     t.jsonb    "legend",          default: {}
     t.index ["application"], name: "index_datasets_on_application", using: :gin
@@ -41,7 +40,6 @@ ActiveRecord::Schema.define(version: 20170117160359) do
     t.index ["layer_info"], name: "index_datasets_on_layer_info", using: :gin
     t.index ["legend"], name: "index_datasets_on_legend", using: :gin
     t.index ["tags"], name: "index_datasets_on_tags", using: :gin
-    t.index ["topics"], name: "index_datasets_on_topics", using: :gin
   end
 
   create_table "doc_connectors", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|

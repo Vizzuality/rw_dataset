@@ -19,17 +19,18 @@
 #  layer_info      :jsonb
 #  data_overwrite  :boolean          default(FALSE)
 #  subtitle        :string
-#  topics          :jsonb
 #  user_id         :string
 #  legend          :jsonb
 #
 
 class DatasetSerializer < ApplicationSerializer
   attributes :id, :application, :name, :subtitle, :data_path, :attributes_path, :connector_type, :provider, :user_id,
-             :connector_url, :table_name, :topics, :tags, :legend, :cloned_host, :status, :overwrite
-  attribute :metadata, if: :metadata_not_null?
-  attribute :layer,    if: :layer_not_null?
-  attribute :widget,   if: :widget_not_null?
+             :connector_url, :table_name, :tags, :legend, :cloned_host, :status, :overwrite
+
+  attribute :metadata,   if: :metadata_not_null?
+  attribute :layer,      if: :layer_not_null?
+  attribute :widget,     if: :widget_not_null?
+  attribute :vocabulary, if: :vocabulary_not_null?
 
   def provider
     object.dateable.try(:provider_txt)
@@ -81,6 +82,12 @@ class DatasetSerializer < ApplicationSerializer
     end
   end
 
+  def vocabulary
+    object.try(:vocabulary).tap do |vocabulary|
+      VocabularySerializer.new(vocabulary)
+    end
+  end
+
   def cloned_host
     data = {}
     data['host_provider'] = object.dateable.try(:parent_connector_provider_txt)
@@ -107,5 +114,9 @@ class DatasetSerializer < ApplicationSerializer
 
   def widget_not_null?
     true if !object.widget.nil?
+  end
+
+  def vocabulary_not_null?
+    true if !object.vocabulary.nil?
   end
 end

@@ -19,7 +19,6 @@
 #  layer_info      :jsonb
 #  data_overwrite  :boolean          default(FALSE)
 #  subtitle        :string
-#  topics          :jsonb
 #  user_id         :string
 #  legend          :jsonb
 #
@@ -32,7 +31,7 @@ class Dataset < ApplicationRecord
   FORMAT = %w(JSON).freeze
   STATUS = %w(pending saved failed deleted).freeze
 
-  attr_accessor :metadata, :layer, :widget
+  attr_accessor :metadata, :layer, :widget, :vocabulary, :vocabularies
 
   store_accessor :legend, :country, :region, :date, :lat, :long
 
@@ -42,18 +41,9 @@ class Dataset < ApplicationRecord
   belongs_to :doc_connector,  -> { where("datasets.dateable_type = 'DocConnector'")  }, foreign_key: :dateable_id, optional: true
   belongs_to :wms_connector,  -> { where("datasets.dateable_type = 'WmsConnector'")  }, foreign_key: :dateable_id, optional: true
 
-  before_save  :merge_tags,        if: 'tags.present? && tags_changed?'
-  before_save  :merge_topics,      if: 'topics.present? && topics_changed?'
-  before_save  :merge_apps,        if: 'application.present? && application_changed?'
-  after_save   :call_tags_service, if: 'tags_changed? || topics_changed?'
-  after_save   :clear_cache
+  after_save :clear_cache
 
-  before_validation(on: [:create, :update]) do
-    validate_name
-    validate_legend
-  end
-
-  validates :name, presence: true, on: :create
+  include DatasetFunctions
 
   scope :recent,             -> { order('updated_at DESC') }
   scope :including_dateable, -> { includes(:dateable)      }
@@ -86,7 +76,7 @@ class Dataset < ApplicationRecord
       sort           = options['sort']                     if options['sort'].present?
       find_by_name   = options['name']                     if options['name'].present?
       find_by_tags   = options['tags'].downcase.split(',') if options['tags'].present?
-      expire_cache   = options['cache']['expire']          if options['cache'].present? && options['cache']['expire'].present?
+      expire_cache   = options['cache']['expire']          if options['cache'].present? && options['cache'][','].present?
 
       cache_options  = 'dataset-list'
       cache_options += "_#{connector_type}"          if connector_type.present?
@@ -176,6 +166,14 @@ class Dataset < ApplicationRecord
           Widget.data = WidgetService.populate_dataset(dataset_ids, app)
           datasets = datasets.each do |dataset|
                        dataset.widget = Widget.where(dataset: dataset.id)
+                     end
+        when 'vocabulary'
+          Vocabulary.data = VocabularyService.populate_dataset(dataset_ids, app).each do |vocabulary_data|
+                              vocabulary_data.merge!(id: SecureRandom.uuid)
+                            end
+          datasets = datasets.each do |dataset|
+                       dataset.vocabulary = Vocabulary.where(resource: { 'id' => dataset.id, 'type' => 'dataset' })
+                                                      .map! { |v| { attributes: { resource: v.resource, tags: v.tags, name: v.name } }}
                      end
         end
       end
@@ -277,83 +275,16 @@ class Dataset < ApplicationRecord
       when 'widget'
         Widget.data = WidgetService.populate_dataset(self.id, app)
         @widget     = Widget.where(dataset: self.id)
+      when 'vocabulary'
+        Vocabulary.data = VocabularyService.populate_dataset(self.id, app)
+        @vocabulary     = Vocabulary.all
       end
     end
   end
 
   private
 
-    def merge_tags
-      self.tags = self.tags.each { |t| t.downcase! }.uniq
-    end
-
-    def merge_topics
-      self.topics = self.topics.each { |t| t.downcase! }.uniq
-    end
-
-    def merge_apps
-      self.application = self.application.each { |a| a.downcase! }.uniq
-    end
-
     def clear_cache
       Rails.cache.delete_matched('*datasets_*')
-    end
-
-    def call_tags_service
-      params_for_tags = {}
-      params_for_tags['taggable_id']    = self.id
-      params_for_tags['taggable_type']  = self.class.name
-      params_for_tags['taggable_slug']  = self.try(:slug)
-      params_for_tags['tags_list']      = tags
-
-      params_for_topics = {}
-      params_for_topics['topicable_id']   = params_for_tags['taggable_id']
-      params_for_topics['topicable_type'] = params_for_tags['taggable_type']
-      params_for_topics['topicable_slug'] = params_for_tags['taggable_slug']
-      params_for_topics['topics_list']    = topics
-
-      TagServiceJob.perform_later('Dataset', params_for_tags, params_for_topics)
-    end
-
-    def validate_name
-      self.errors.add(:name, "must be a valid string") if valid_json?(self.name)
-    end
-
-    def validate_legend
-      if self.legend.present? && valid_legend?(self.legend.to_json).blank?
-        self.errors.add(:legend, 'must be a valid JSON object. Example: {"legend": {"long": "123", "lat": "123", "country": ["pais"], "region": ["barrio"], "date": ["start_date", "end_date"]}}')
-      end
-    end
-
-    def valid_json?(json)
-      begin
-        JSON.parse(json)
-        return true
-      rescue JSON::ParserError
-        return false
-      end
-    end
-
-    def valid_legend?(json)
-      begin
-        json = JSON.parse(json)
-        if (json.keys & ['long', 'lat', 'country', 'region', 'date']).size == json.keys.size
-          is_valid = []
-          is_valid <<  json['long'].is_a?(String)   if json['long'].present?
-          is_valid <<  json['lat'].is_a?(String)    if json['lat'].present?
-          is_valid <<  json['country'].is_a?(Array) if json['country'].present?
-          is_valid <<  json['region'].is_a?(Array)  if json['region'].present?
-          is_valid <<  json['date'].is_a?(Array)    if json['date'].present?
-          if is_valid.include?(false)
-            return false
-          else
-            return true
-          end
-        else
-          return false
-        end
-      rescue JSON::ParserError
-        return false
-      end
     end
 end
