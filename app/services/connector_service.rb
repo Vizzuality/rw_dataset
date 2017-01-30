@@ -26,7 +26,7 @@ module ConnectorService
             when 'DocConnector'  then "#{Service::SERVICE_URL}/doc-datasets/#{options['provider']}"
             end
 
-      url += "/#{options['dataset_id']}"   if options['to_delete'].present? || options['to_update'].present?
+      url += "/#{options['dataset_id']}" if options['to_delete'].present? || options['to_update'].present?
       url  = URI.decode(url)
 
       method = options['to_delete'].present? ? 'delete' : 'post'

@@ -62,46 +62,6 @@
         }]
       },
       {
-        "url": "/dataset/:id/data",
-        "method": "POST",
-        "authenticated": true,
-        "endpoints": [{
-            "method": "POST",
-            "baseUrl": "http://localhost:3000",
-            "path": "/dataset/:id/data"
-        }]
-      },
-      {
-        "url": "/dataset/:id/data-overwrite",
-        "method": "POST",
-        "authenticated": true,
-        "endpoints": [{
-            "method": "POST",
-            "baseUrl": "http://localhost:3000",
-            "path": "/dataset/:id/data-overwrite"
-        }]
-      },
-      {
-        "url": "/dataset/:id/data/:data_id",
-        "method": "POST",
-        "authenticated": true,
-        "endpoints": [{
-            "method": "POST",
-            "baseUrl": "http://localhost:3000",
-            "path": "/dataset/:id/data/:data_id"
-        }]
-      },
-      {
-        "url": "/dataset/:id/data/:data_id",
-        "method": "DELETE",
-        "authenticated": true,
-        "endpoints": [{
-            "method": "DELETE",
-            "baseUrl": "http://localhost:3000",
-            "path": "/dataset/:id/data/:data_id"
-        }]
-      },
-      {
         "url": "/dataset/:id",
         "method": "DELETE",
         "authenticated": true,
