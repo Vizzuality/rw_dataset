@@ -8,9 +8,13 @@ module VocabularyService
     end
 
     def connect_to_service(object_class, object_id, options_tags, options_vocabularies)
-      body_tag          = { legacy: { tags: options_tags } }
-      body_vocabularies = options_vocabularies
-      body              = body_vocabularies.merge!(body_tag)
+      body_tag          = { legacy: { tags: options_tags } } if options_tags.present?
+      body_vocabularies = options_vocabularies               if options_vocabularies.present?
+
+      body = {}
+      body = body.merge!(body_vocabularies) if body_vocabularies.present?
+      body = body.merge!(body_tag)          if body_tag.present?
+      body
 
       headers = {}
       headers['Accept']         = 'application/json'
