@@ -58,11 +58,11 @@ class Dataset < ApplicationRecord
   scope :filter_doc,  -> { where(dateable_type: 'DocConnector').includes(:dateable)  }
   scope :filter_wms,  -> { where(dateable_type: 'WmsConnector').includes(:dateable)  }
 
-  scope :filter_apps,    ->(app)  { where('application ?| array[:keys]', keys: app.split(',')) }
+  scope :filter_apps,     ->(app)  { where('application ?| array[:keys]', keys: app.split(',')) }
   scope :filter_apps_and, ->(app)  { where('application ?& array[:keys]', keys: app.split('@')) }
-  scope :filter_ids,     ->(id)   { where('id IN (?)', id)                                     }
-  scope :filter_name,    ->(name) { where('LOWER(datasets.name) LIKE LOWER(?)', "%#{name}%")   }
-  scope :filter_tags,    ->(tags) { where('tags ?| array[:keys]', keys: tags)                  }
+  scope :filter_ids,      ->(id)   { where('id IN (?)', id)                                     }
+  scope :filter_name,     ->(name) { where('LOWER(datasets.name) LIKE LOWER(?)', "%#{name}%")   }
+  scope :filter_tags,     ->(tags) { where('tags ?| array[:keys]', keys: tags)                  }
 
   class << self
     def fetch_all(options)
