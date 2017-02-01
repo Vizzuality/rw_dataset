@@ -120,7 +120,7 @@
               {
                 "name": "app",
                 "in": "query",
-                "description": "Filter datasets on application (prep, gfw, etc..)",
+                "description": "Filter datasets on application (For filter or -- prep,gfw,etc.. -- for filter and prep@gfw@prep@etc..)",
                 "type": "string"
               },
               {
