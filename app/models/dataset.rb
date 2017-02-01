@@ -59,7 +59,7 @@ class Dataset < ApplicationRecord
   scope :filter_wms,  -> { where(dateable_type: 'WmsConnector').includes(:dateable)  }
 
   scope :filter_apps,    ->(app)  { where('application ?| array[:keys]', keys: app.split(',')) }
-  scope :filter_apps_or, ->(app)  { where('application ?& array[:keys]', keys: app.split('@')) }
+  scope :filter_apps_and, ->(app)  { where('application ?& array[:keys]', keys: app.split('@')) }
   scope :filter_ids,     ->(id)   { where('id IN (?)', id)                                     }
   scope :filter_name,    ->(name) { where('LOWER(datasets.name) LIKE LOWER(?)', "%#{name}%")   }
   scope :filter_tags,    ->(tags) { where('tags ?| array[:keys]', keys: tags)                  }
@@ -188,7 +188,7 @@ class Dataset < ApplicationRecord
                    if app.include?(',')
                      datasets.filter_apps(app)
                    else
-                     datasets.filter_apps_or(app)
+                     datasets.filter_apps_and(app)
                    end
                  else
                    datasets.available
