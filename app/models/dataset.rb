@@ -58,10 +58,11 @@ class Dataset < ApplicationRecord
   scope :filter_doc,  -> { where(dateable_type: 'DocConnector').includes(:dateable)  }
   scope :filter_wms,  -> { where(dateable_type: 'WmsConnector').includes(:dateable)  }
 
-  scope :filter_apps, ->(app)  { where('application ?| array[:keys]', keys: ["#{app}"])   }
-  scope :filter_ids,  ->(id)   { where('id IN (?)', id)                                   }
-  scope :filter_name, ->(name) { where('LOWER(datasets.name) LIKE LOWER(?)', "%#{name}%") }
-  scope :filter_tags, ->(tags) { where('tags ?| array[:keys]', keys: tags)                }
+  scope :filter_apps,    ->(app)  { where('application ?| array[:keys]', keys: app.split(',')) }
+  scope :filter_apps_or, ->(app)  { where('application ?& array[:keys]', keys: app.split('@')) }
+  scope :filter_ids,     ->(id)   { where('id IN (?)', id)                                     }
+  scope :filter_name,    ->(name) { where('LOWER(datasets.name) LIKE LOWER(?)', "%#{name}%")   }
+  scope :filter_tags,    ->(tags) { where('tags ?| array[:keys]', keys: tags)                  }
 
   class << self
     def fetch_all(options)
@@ -184,7 +185,11 @@ class Dataset < ApplicationRecord
     def app_filter(scope, app)
       datasets = scope
       datasets = if app.present? && !app.include?('all')
-                   datasets.filter_apps(app)
+                   if app.include?(',')
+                     datasets.filter_apps(app)
+                   else
+                     datasets.filter_apps_or(app)
+                   end
                  else
                    datasets.available
                  end
