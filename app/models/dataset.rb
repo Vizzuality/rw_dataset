@@ -148,7 +148,7 @@ class Dataset < ApplicationRecord
       including   = including.split(',') if including.present?
       app         = applications         if applications.present? && !applications.include?('all')
       if app.present? && app.include?(',')
-        app = app.split(',')
+        app = app.split(/[,,@]/)
       end
 
       including.uniq.each do |include|
@@ -266,7 +266,7 @@ class Dataset < ApplicationRecord
     includes = includes.split(',') if includes.present?
     app      = applications        if applications.present? && !applications.include?('all')
     if app.present? && app.include?(',')
-      app = app.split(',')
+      app = app.split(/[,,@]/)
     end
 
     includes.each do |include|
