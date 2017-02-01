@@ -458,16 +458,6 @@ module V1
           expect(status).to eq(422)
           expect(json_main['errors'][0]['title']).to eq(["Dataset name must be a valid string"])
         end
-
-        it 'Do not allow to overwrite not a json dataset' do
-          post "/dataset/#{dataset_id}/data-overwrite", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
-                                                                 "dataset": {"data": [
-                                                                             {"cartodbId": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
-                                                                             {"cartodbId": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
-
-          expect(status).to eq(422)
-          expect(json_main['errors'][0]['title']).to eq("Not a fuction")
-        end
       end
 
       context 'Json dataset' do
@@ -535,43 +525,6 @@ module V1
           expect(status).to eq(200)
           expect(json_main['message']).to eq('Dataset would be deleted!')
         end
-
-        it 'Allows to update dataset data' do
-          post "/dataset/#{dataset_id}/data", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["Gfw", "gfw","wrw"] }, "id": "3242-32442-432"},
-                                                       "dataset": {"data": [
-                                                       {"cartodbId": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
-                                                       {"cartodbId": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
-
-          expect(status).to eq(200)
-          expect(json_main['message']).to eq('Dataset data update in progress')
-        end
-
-        it 'Allows to overwrite json dataset data' do
-          post "/dataset/#{dataset_id}/data-overwrite", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
-                                                                 "dataset": {"data": [
-                                                                                {"cartodbId": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
-                                                                                {"cartodbId": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
-
-          expect(status).to eq(200)
-          expect(json_main['message']).to eq('Dataset data update in progress')
-        end
-
-        it 'Do not allow to overwrite locked json dataset data' do
-          post "/dataset/#{locked_dataset_id}/data-overwrite", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
-                                                                        "dataset": {"data": [
-                                                                                       {"cartodbId": 10,"iso": "BRA","name": "Brazil","year": "2016","population": 999999},
-                                                                                       {"cartodbId": 11,"iso": "BRA","name": "Brazil","year": "2016","population": 888888}]}}
-
-          expect(status).to eq(422)
-          expect(json_main['errors'][0]['title']).to eq("Dataset data is locked and can't be updated")
-        end
-
-        it 'Allows to delete dataset data' do
-          delete "/dataset/#{dataset_id}/data/e3b4acca-d34d-46b9-833f-08c3a14fe2f5", params: {"loggedUser": {"role": "manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"}}
-
-          expect(status).to eq(200)
-          expect(json_main['message']).to eq('Dataset data deleted')
-        end
       end
 
       context 'Doc dataset' do
@@ -591,18 +544,6 @@ module V1
           expect(json_attr['provider']).to     eq('csv')
           expect(json_attr['connectorUrl']).to be_present
           expect(json_attr['tags']).to         eq(["tag1", "tag2"])
-        end
-
-        it 'Allows to overwrite csv dataset data' do
-          post "/dataset/#{csv_dataset_id}/data-overwrite", params: {"loggedUser": {"role": "Manager", "extraUserData": { "apps": ["gfw","wrw"] }, "id": "3242-32442-432"},
-                                                                     "dataset": {"connector_url": "http://new-url.org",
-                                                                                 "polygon": "Madrid alcobendas",
-                                                                                 "point": { "lat": "23233233", "long": "66565676" }}}
-
-          expect(status).to eq(200)
-          expect(DocConnector.find(csv_dataset_id).connector_url).to  eq('http://new-url.org')
-          expect(DocConnector.find(csv_dataset_id).table_name).not_to be_present
-          expect(json_main['message']).to                             eq('Dataset data update in progress')
         end
 
         it 'Allows to update dataset table_name from internal microservice' do

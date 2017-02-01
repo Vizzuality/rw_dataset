@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 class VocabularySerializer < ApplicationSerializer
-  attributes :id
+  attributes :resource, :tags, :name
 end

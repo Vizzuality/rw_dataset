@@ -60,8 +60,6 @@ class JsonConnector < ApplicationRecord
     params_for_adapter['data']            = Oj.dump(options['data'])            if options['data'].present?
     params_for_adapter['to_delete']       = true                                if options.include?('delete') || options['to_delete'].present?
     params_for_adapter['to_update']       = true                                if options['to_update'].present?
-    params_for_adapter['data_to_update']  = true                                if options['data_to_update'].present?
-    params_for_adapter['overwrite']       = true                                if options['overwrite'].present?
     params_for_adapter['legend']          = dataset.legend                      if dataset.legend.present?
 
     ConnectorServiceJob.perform_later(object, params_for_adapter)
