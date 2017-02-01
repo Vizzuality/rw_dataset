@@ -175,10 +175,11 @@ module V1
       end
 
       it 'Show list of datasets for app WRW or GFW' do
-        get '/dataset?app=wrw;gfw'
+        get '/dataset?app=wrw@gfw'
 
         expect(status).to eq(200)
         expect(json.size).to eq(1)
+        expect(json[0]['attributes']['application']).to eq(['gfw','wrw','prep'])
       end
 
       it 'Show blank list of datasets for not existing app' do

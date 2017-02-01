@@ -36,7 +36,7 @@ rest_data_1:
   updated_at: '2016-03-01 20:00:00.050118'
   tags: ["tag1", "tag3", "tag2"]
   layer_info: [{"application": "wrw", "default": false, "layer_id": "b9ff59c8-8756-4dca-b6c3-02740a54e30m"}]
-  application: ['gfw', 'wrw']
+  application: ['gfw', 'wrw', 'prep']
   user_id: '3242-32442-432'
 
 rest_data_2:
