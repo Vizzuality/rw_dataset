@@ -3,9 +3,10 @@ module V1
   class DatasetsController < ApplicationController
     include ParamsHandler
 
-    before_action :set_dataset,      except: [:index, :create, :info]
-    before_action :populate_dataset, only: :show, if: :params_includes_present?
-    before_action :sanitize_params,  only: :index
+    before_action :set_dataset,           except: [:index, :create, :info]
+    before_action :populate_dataset,      only: :show, if: :params_includes_present?
+    before_action :sanitize_params,       only: :index
+    before_action :reject_corrupt_params, only: [:update, :create]
 
     include Authorization
     include Clone
@@ -127,6 +128,16 @@ module V1
           dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :user_id).tap do |update_params|
             update_params[:dataset_attributes][:user_id] = params[:dataset][:user_id] if params[:dataset][:user_id].present? && params[:logged_user][:role] == 'superadmin'
           end
+        end
+      end
+
+      def reject_corrupt_params
+        if params[:dataset].present? && params[:dataset][:dataset_attributes].present?
+          render json: { errors: [{ status: 422, title: 'The attribute dataset_attributes is not valid' }] }, status: 422
+        elsif params[:dataset].blank? || params[:name].present? ||
+              params[:connector_url].present? || params[:data].present? ||
+              params[:table_name].present? || params[:connector_type] || params[:provider].present?
+          render json: { errors: [{ status: 422, title: 'The attribute dataset is not present' }] }, status: 422
         end
       end
   end
