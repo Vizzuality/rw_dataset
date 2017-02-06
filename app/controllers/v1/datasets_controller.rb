@@ -3,9 +3,10 @@ module V1
   class DatasetsController < ApplicationController
     include ParamsHandler
 
-    before_action :set_dataset,      except: [:index, :create, :info]
-    before_action :populate_dataset, only: :show, if: :params_includes_present?
-    before_action :sanitize_params,  only: :index
+    before_action :set_dataset,           except: [:index, :create, :info]
+    before_action :populate_dataset,      only: :show, if: :params_includes_present?
+    before_action :sanitize_params,       only: :index
+    before_action :reject_corrupt_params, only: [:update, :create]
 
     include Authorization
     include Clone
@@ -34,43 +35,6 @@ module V1
         end
       rescue StandardError => e
         render json: { errors: [{ status: 422, title: e }] }, status: 422
-      end
-    end
-
-    def update_data
-      begin
-        @dateable.connect_to_service(dataset_data_params_for_update)
-        render json: { success: true, message: 'Dataset data update in progress' }, status: 200
-      rescue
-        render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
-      end
-    end
-
-    def overwrite_data
-      begin
-        if @dataset.data_overwrite? && @overwriteable
-          if @dateable.update(dataset_params_for_update)
-            @dateable.connect_to_service(dataset_data_params_for_overwrite)
-            render json: { success: true, message: 'Dataset data update in progress' }, status: 200
-          else
-            render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
-          end
-        elsif @overwriteable
-          render json: { errors: [{ status: 422, title: "Dataset data is locked and can't be updated" }] }, status: 422
-        else
-          render json: { errors: [{ status: 422, title: 'Not a fuction' }] }, status: 422
-        end
-      rescue
-        render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
-      end
-    end
-
-    def delete_data
-      begin
-        @dateable.connect_to_service(dataset_data_params_for_delete)
-        render json: { success: true, message: 'Dataset data deleted' }, status: 200
-      rescue
-        render json: { errors: [{ status: 422, title: 'Error updating dataset data' }] }, status: 422
       end
     end
 
@@ -143,6 +107,38 @@ module V1
 
       def sanitize_params
         params['ids'] = params['ids'].split(',').select { |id| /^[a-z0-9]+[-a-z0-9]*[a-z0-9]+$/i.match(id) } if params['ids'].present?
+      end
+
+      def dataset_params
+        dataset_params_sanitizer.except(:user_id).tap do |create_params|
+          create_params[:dataset_attributes][:user_id] = params.dig(:logged_user, :id)
+        end
+      end
+
+      def dataset_params_for_update
+        if @json_connector
+          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :connector_url, :user_id).tap do |update_params|
+            update_params[:dataset_attributes][:user_id] = params[:dataset][:user_id] if params[:dataset][:user_id].present? && params[:logged_user][:role] == 'superadmin'
+          end
+        elsif @doc_connector
+          dataset_params_sanitizer.except(:point, :polygon, :logged_user, :user_id).tap do |update_params|
+            update_params[:dataset_attributes][:user_id] = params[:dataset][:user_id] if params[:dataset][:user_id].present? && params[:logged_user][:role] == 'superadmin'
+          end
+        else
+          dataset_params_sanitizer.except(:data, :data_attributes, :logged_user, :user_id).tap do |update_params|
+            update_params[:dataset_attributes][:user_id] = params[:dataset][:user_id] if params[:dataset][:user_id].present? && params[:logged_user][:role] == 'superadmin'
+          end
+        end
+      end
+
+      def reject_corrupt_params
+        if params[:dataset].present? && params[:dataset][:dataset_attributes].present?
+          render json: { errors: [{ status: 422, title: 'The attribute dataset_attributes is not valid' }] }, status: 422
+        elsif params[:dataset].blank? || params[:name].present? ||
+              params[:connector_url].present? || params[:data].present? ||
+              params[:table_name].present? || params[:connector_type] || params[:provider].present?
+          render json: { errors: [{ status: 422, title: 'The attribute dataset is not present' }] }, status: 422
+        end
       end
   end
 end

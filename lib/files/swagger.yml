@@ -52,7 +52,7 @@ paths:
           type: string
         - name: app
           in: query
-          description: Filter datasets on application (prep, gfw, etc..)
+          description: Filter datasets on application (For filter or -- prep,gfw,etc.. -- for filter and prep@gfw@prep@etc..)
           type: string
         - name: ids
           in: query
@@ -237,7 +237,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  /dataset/{id}/data:
+  /dataset/{id}/concat:
     post:
       summary: Update dataset data (Insert new data for json dataset)
       description: Update dataset data
@@ -254,7 +254,7 @@ paths:
           type: string
           required: true
           description: ID of dataset
-        - name: dataset
+        - name: null
           in: body
           description: Dataset data to save
           required: true
@@ -317,7 +317,7 @@ paths:
           type: string
           required: true
           description: ID of dataset's data object
-        - name: dataset
+        - name: null
           in: body
           description: Dataset data value to save
           required: true
@@ -362,7 +362,7 @@ paths:
           type: string
           required: true
           description: ID of dataset
-        - name: dataset
+        - name: null
           in: body
           description: Dataset data to save
           required: true
